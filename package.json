@@ -1,0 +1,36 @@
+{
+  "name": "wxapp-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm-run-all --parallel serve electron webpack:watch",
+    "serve": "node index.js",
+    "electron": "electron ./public/main.js",
+    "webpack": "webpack",
+    "webpack:watch": "npm run webpack -- --watch"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "electron": "^1.7.9",
+    "electron-packager": "^9.1.0",
+    "electron-prebuilt": "^1.4.13",
+    "electron-reload": "^1.2.2",
+    "npm-run-all": "^4.1.1",
+    "webpack": "^3.8.1"
+  },
+  "dependencies": {
+    "express": "~4.15.2",
+    "react": "^16.0.0",
+    "react-color": "^2.13.8",
+    "react-dom": "^16.0.0",
+    "react-redux": "^5.0.6",
+    "react-tap-event-plugin": "^3.0.2",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
+    "request": "^2.83.0"
+  }
+}
