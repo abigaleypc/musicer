@@ -1,9 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
+import { connect } from 'react-redux';
+
+import reducers from './store/reducers'
+// import * as actions from './store/actions'
 
 import Home from './Constants/Home/Home'
 import Header from './Constants/Header/Header'
@@ -15,19 +20,9 @@ const logger = createLogger({
   collapsed: true
 });
 
-const actions = {
-  IS_LOGIN: 'IS_LOGIN',
-  USER_NAME: 'USE_NAME'
-}
-
-const reducers = {
-  login: (state = actions.IS_LOGIN, action) => {
-    return state;
-  }
-}
 
 const store = createStore(
-  combineReducers({ reducers }),
+  reducers,
   applyMiddleware(
     logger,
     thunk
@@ -63,9 +58,7 @@ const styles = {
   }
 }
 
-
-
-let mainWindow = ReactDOM.render(
+ReactDOM.render(
   <Provider store={store}>
     <Root />
   </Provider>,

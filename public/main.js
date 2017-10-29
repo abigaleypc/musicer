@@ -14,7 +14,7 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 })
 
-  // and load the index.html of the app.
+  // and load the index.html of the app;
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
@@ -74,5 +74,15 @@ app.on('activate', function () {
   }
 })
 
+global.sharedObject = {
+  LOGIN: 'default value'
+}
+const {ipcMain} = require('electron')
+ipcMain.on('login-event', (event, arg) => {
+  console.log('-------------ipcMain----------------');
+  console.log(arg);
+  console.log('------------------------------------');
+  mainWindow.webContents.send('login-event', arg);
+})
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

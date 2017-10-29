@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm-run-all --parallel serve electron webpack:watch",
-    "serve": "node index.js",
+    "serve": "nodemon index.js",
     "electron": "electron ./public/main.js",
     "webpack": "webpack",
     "webpack:watch": "npm run webpack -- --watch"
@@ -14,6 +14,7 @@
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "electron": "^1.7.9",
     "electron-packager": "^9.1.0",
     "electron-prebuilt": "^1.4.13",

@@ -34,7 +34,8 @@ export default class Root extends React.Component {
     return (
       <div>
          {/* <ShadeModal /> */}
-        <video src={this.state.mp4Info.url} controls="controls" autoPlay></video>
+        <video src={this.state.mp4Info.url} controls="controls" ></video>
+        {/* autoPlay */}
         <button onClick={this.getMp4Info}>下一首</button>
         <p>歌曲名：{this.state.mp4Info.albumtitle}</p>
         <p>歌手：{this.state.mp4Info.artist}</p>
