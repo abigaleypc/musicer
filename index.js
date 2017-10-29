@@ -1,13 +1,12 @@
 const express = require('express');
 const request = require('request');
 
+const PORT = process.env.PORT || 8082;
 const app = express();
-
-app.listen(8082);
 
 const loginUrl = 'https://www.douban.com/service/auth2/token';
 
-app.get('/login', function (req, res, next) {
+app.post('/login', function (req, res) {
   var myJSONObject = {
     apikey: '02646d3fb69a52ff072d47bf23cef8fd',
     client_id: '02646d3fb69a52ff072d47bf23cef8fd',
@@ -42,7 +41,7 @@ app.get('/login', function (req, res, next) {
   });
 })
 
-app.get('/get_douban_fm', function (req, res, next) {
+app.get('/get_douban_fm', function (req, res) {
   let sid = (req.query.sid ? req.query.sid : 2234059);
   request.get({
     uri: 'https://douban.fm/j/v2/playlist',
@@ -69,8 +68,11 @@ app.get('/get_douban_fm', function (req, res, next) {
       pb: 128,
       apikey: ''
     }
-
   }, (err, response, data) => {
     res.send(data)
   })
-})
+});
+
+app.listen(PORT, () => {
+  console.log(`The server has been set up at 0.0.0.0:${PORT}`);
+});

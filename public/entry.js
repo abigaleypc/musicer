@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
+import Header from './Components/Header/Header';
+import Home from './Components/Home/Home';
 import reducers from './store/reducers'
 
 const logger = createLogger({
@@ -44,7 +47,6 @@ const styles = {
   header: {
   },
   home: {
-
   }
 }
 
@@ -52,6 +54,5 @@ ReactDOM.render(
   <Provider store={store}>
     <Root />
   </Provider>,
-  // <Root />,
   document.getElementById('root')
 );

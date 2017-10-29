@@ -1,8 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-
-import ShadeModal from '../../Components/ShadeModal';
-
 
 export default class Root extends React.Component {
   constructor(props){
@@ -12,7 +8,7 @@ export default class Root extends React.Component {
     };
     this.getMp4Info = this.getMp4Info.bind(this)
   }
-  
+
   getMp4Info(){
     let result = ''
     let self = this;
@@ -47,6 +43,3 @@ export default class Root extends React.Component {
 
 const styles = {
 }
-
-
-
