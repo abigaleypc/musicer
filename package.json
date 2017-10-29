@@ -19,6 +19,8 @@
     "electron-packager": "^9.1.0",
     "electron-prebuilt": "^1.4.13",
     "electron-reload": "^1.2.2",
+    "eslint": "^4.10.0",
+    "nodemon": "^1.12.1",
     "npm-run-all": "^4.1.1",
     "webpack": "^3.8.1"
   },

@@ -3,13 +3,9 @@ const request = require('request');
 
 const app = express();
 
-client.on('error', error => {
-  console.error(`Redis created failed with ERROR: ${error}`);
-});
-
 app.listen(8082);
 
-const url = 'https://www.douban.com/service/auth2/token';
+const loginUrl = 'https://www.douban.com/service/auth2/token';
 
 app.get('/login', function (req, res, next) {
   var myJSONObject = {
@@ -24,7 +20,7 @@ app.get('/login', function (req, res, next) {
     username: req.query.username,
     password: req.query.password
   };
-  request.post('https://www.douban.com/service/auth2/token', {
+  request.post(loginUrl, {
     json: true,
     headers: {
       "Accept": "text/javascript, text/html, application/xml, text/xml, */*",
