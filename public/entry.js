@@ -1,20 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
-import { connect } from 'react-redux';
 
 import reducers from './store/reducers'
-// import * as actions from './store/actions'
-
-import Home from './Constants/Home/Home'
-import Header from './Constants/Header/Header'
-
-import ShadeModal from './Components/ShadeModal'
-
 
 const logger = createLogger({
   collapsed: true
@@ -65,4 +55,3 @@ ReactDOM.render(
   // <Root />,
   document.getElementById('root')
 );
-

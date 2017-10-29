@@ -11,6 +11,9 @@
         },
         "sourceType": "module"
     },
+    "plugins": [
+        "react"
+    ],
     "rules": {
         "no-const-assign": "warn",
         "no-this-before-super": "warn",
