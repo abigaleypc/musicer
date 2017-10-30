@@ -15,7 +15,7 @@ export default class Root extends React.Component {
     let sid = this.state.mp4Info.sid?this.state.mp4Info.sid:null;
 
 
-    fetch('http://localhost:8082/get_douban_fm',{sid: sid?sid:null})
+    fetch('http://localhost:8082/playlist',{sid: sid?sid:null})
       .then(res => res.json())
       .then(function(data) {
         self.setState({
