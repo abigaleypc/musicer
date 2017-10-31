@@ -25,9 +25,13 @@ app.post('/login', function (req, res) {
   }).on('data', data => {
     try {
       data = JSON.parse(data);
-      res.json({ code: 1, msg: 'success' })
+      if (data.access_token) {
+        res.json({ code: 1, msg: 'success' })
+      } else {
+        res.json({ code: 0, msg: 'fail' })
+      }
     } catch (err) {
-      res.json({ code: 1, msg: 'fail' })
+      res.json({ code: 0, msg: 'fail' })
     }
   });
 })
