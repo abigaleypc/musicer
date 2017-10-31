@@ -1,7 +1,9 @@
 const express = require('express');
 const request = require('request');
 
-const { httpHeader, AuthKey } = require('./config/config')
+const { httpHeader, AuthKey } = require('./config/config');
+
+const LKV = require('./utils/lkv');
 
 const PORT = process.env.PORT || 8082;
 const app = express();
@@ -12,20 +14,21 @@ const playlistUrl = 'https://api.douban.com/v2/fm/playlist';
 let access_token = "0a95c075f8a9d30d1fc14161e9fd7927";
 
 app.post('/login', function (req, res) {
-  var myJSONObject = Object.assign({}, AuthKey, {
+  var params = Object.assign({}, AuthKey, {
     username: req.query.username,
     password: req.query.password
   })
   request.post(loginUrl, {
     json: true,
     headers: httpHeader,
-    qs: myJSONObject
+    qs: params
   }).on('error', err => {
     res.status(500).end(err);
   }).on('data', data => {
     try {
       data = JSON.parse(data);
       if (data.access_token) {
+        LKV.set(params.username, data);
         res.json({ code: 1, msg: 'success' })
       } else {
         res.json({ code: 0, msg: 'fail' })

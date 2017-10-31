@@ -20,13 +20,10 @@
       let username = document.getElementById('username').value;
       let password = document.getElementById('password').value;
       verifyNotNull(username, password).then(res => {
-        console.log('------------------------------------');
-        console.log(res);
-        console.log('------------------------------------');
+        // if (res.code === 1) {
+        //   ipcRenderer.send('is-login-window', false)
+        // }
       }).catch(err => {
-        console.log('------------------------------------');
-        console.log(err);
-        console.log('------------------------------------');
       })
 
 
@@ -57,7 +54,7 @@
 
     function verifyNotNull(username, password) {
       let u = username, p = password;
-      
+
       return new Promise(function (resolve, reject) {
         if (u && p) {
           let res = verifyUser(u, p)

@@ -3,6 +3,7 @@
  */
 
 export const LOGIN = 'LOGIN';
+export const LOGINWINDOW = 'LOGINWINDOW';
 export const USER_NAME = 'USER_NAME';
 export const MUSIC_LIST = 'MUSIC_LIST';
 
@@ -13,6 +14,11 @@ export const MUSIC_LIST = 'MUSIC_LIST';
 export function tologinAction(payload) {
   return { type: LOGIN, payload }
 }
+
+export function loginwindowAction(payload) {
+  return { type: LOGINWINDOW, payload }
+}
+
 
 export function addMusic(music) {
   return { type: MUSIC_LIST, music }

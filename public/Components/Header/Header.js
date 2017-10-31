@@ -2,52 +2,44 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { LOGIN, tologinAction } from '../../store/actions';
+import {tologinAction, loginwindowAction } from '../../store/actions';
+
+import Login from './Login'
 
 const { ipcRenderer } = window.require('electron')
 
 
 function mapStateToProps(state) {
   const { isLogin } = state.toLoginReducer;
-  return { isLogin };
+  const { loginWindow } = state.loginwindowReducer
+
+  return { isLogin, loginWindow };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    tologinAction
+    tologinAction, loginwindowAction
   }, dispatch);
 }
 
-// const { app } = window.require('electron').remote;
-const BrowserWindow = window.require('electron').remote.BrowserWindow
-const path = require('path')
-
-const manageWindowBtn = document.getElementById('manage-window')
-let win
 
 class Header extends React.Component {
   constructor(props) {
     super(props);
   }
-
-  loginWindow() {
-
-    const modalPath = path.join('file://', __dirname, '/Users/yuabigale/Documents/Codes/bitbucket/douban.fm/public/loginWindow.html')
-
-    win = new BrowserWindow({ width: 400, height: 275 })
-    win.on('close', function () { win = null })
-    win.loadURL(modalPath)
-    win.show()
+  login() {
+    this.props.loginwindowAction({ loginWindow: true })
   }
-
   render() {
     ipcRenderer.on('login-event', (event, arg) => {
-      this.props.tologinAction(arg)
+      this.props.tologinAction(arg);
+      this.props.loginwindowAction({loginWindow:false})
     })
     return (
       <div style={styles.header}>
+        <Login />
         <h4>豆瓣FM</h4>
-        <button onClick={this.loginWindow.bind(this)}>登录：{this.props.isLogin ? '已登录' : '未登录'}</button>
+        <button onClick={this.login.bind(this)}>登录：{this.props.isLogin ? '已登录' : '未登录'}</button>
       </div>
     )
   }
