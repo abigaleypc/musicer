@@ -29,7 +29,7 @@ app.post('/login', function (req, res) {
       data = JSON.parse(data);
       if (data.access_token) {
         LKV.set(params.username, data);
-        res.json({ code: 1, msg: 'success' })
+        res.json({ code: 1, msg: 'success',douban_user_name:data.douban_user_name })
       } else {
         res.json({ code: 0, msg: 'fail' })
       }
