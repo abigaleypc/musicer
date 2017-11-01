@@ -8,6 +8,7 @@ module.exports = {
     publicPath: "/assets/"
   },
   devtool: "source-map",
+  target: "electron",
   module: {
     rules: [
       {
@@ -16,7 +17,7 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
           options: {
-            presets: ['env', 'stage-0', 'react',]
+            presets: ['env', 'react']
           }
         }]
       }
