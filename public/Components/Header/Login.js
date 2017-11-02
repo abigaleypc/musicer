@@ -31,7 +31,7 @@ class Login extends React.Component {
   openWindow() {
 
     const modalPath = path.join('file://', __dirname, '/Users/yuabigale/Documents/Codes/bitbucket/douban.fm/public/loginWindow.html')
-    win = new BrowserWindow({ width: 400, height: 275 });
+    win = new BrowserWindow({ width: 300, height: 350,frame:false});
 
     win.loadURL(modalPath);
     win.show()

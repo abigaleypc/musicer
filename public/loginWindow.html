@@ -4,12 +4,74 @@
 <head>
   <meta charset="UTF-8">
   <title>登录</title>
+  <style>
+    .login-content {
+      margin: 0 15%;
+      padding: 0 auto;
+      text-align: center;
+    }
+
+    .logo {
+      width: 100%;
+      margin: 30px 0;
+    }
+
+    input {
+      width: 100%;
+      height: 30px;
+      display: inline-block;
+      border-style: solid;
+      border-width: 1px;
+      border: 1px solid #e1e1e1;
+      padding: 0 5px;
+      box-sizing: border-box;
+    }
+    input:first-child {
+      border-radius: 5px 5px 0 0;
+    }
+    input:last-child {
+      border-radius: 0 0 5px 5px;
+      border-top: 0;
+    }
+
+    .loginBtn {
+      width: 100%;
+      height: 30px;
+      background: rgb(47, 152, 66);
+      color: white;
+      display: inline-block;
+      margin: 30px 0;
+      line-height: 30px;
+      border-radius: 4px;
+    }
+
+    .closeBtn {
+      text-decoration: none;
+      font-size: 20px;
+      color: rgb(47, 152, 66);
+    }
+  </style>
 </head>
 
 <body>
-  <input id="username" name="username" type="text" placeholder="用户名" />
-  <input id="password" name="password" type="password" placeholder="密码" />
-  <button id="login">login</button>
+
+  <a class="closeBtn" href="javascript:window.close()">✘</a>
+  <div class="login-content">
+    <img class="logo" src="https://img3.doubanio.com/dae/staticng/s/bragi/fac999b8062c57ed5308bd24d761678880ebea30/deploy/b6a46d59a094ec51ec67452607965e2c.svg"
+      alt="">
+    <div>
+      <input id="username" name="username" type="text" placeholder="用户名" />
+      <input id="password" name="password" type="password" placeholder="密码" />
+    </div>
+    <!-- <div>
+    <input type="text" name="captcha_solution" value="" placeholder="验证码">
+    <div>
+      <img src="" alt="" id="captcha_img">
+    </div>
+  </div> -->
+    <a id="login" class="loginBtn">登录</a>
+  </div>
+
   <script>
     const { ipcRenderer } = window.require('electron');
     const request = require('request')
@@ -43,10 +105,15 @@
       }).on('data', res => {
         let result = JSON.parse(res.toString());
         if (result.code == 1) {
-          ipcRenderer.send('login-event', { isLogin: true });
+          ipcRenderer.send('login-event', {
+            isLogin: true,
+            basic: result.payload.account_info
+          });
+        } else if (result.code == -1) {
+          document.getElementById('captcha_img').src = result.payload.captcha_image_url;
         } else {
           //提示密码错误
-          ipcRenderer.send('login-event', { isLogin: false })
+          ipcRenderer.send('login-event', { isLogin: false, userName: null })
         }
       })
     }

@@ -4,8 +4,7 @@
 
 export const LOGIN = 'LOGIN';
 export const LOGINWINDOW = 'LOGINWINDOW';
-export const USER_NAME = 'USER_NAME';
-export const MUSIC_LIST = 'MUSIC_LIST';
+export const USER_INFO = 'USER_INFO';
 
 /*
  * action 创建函数
@@ -20,6 +19,8 @@ export function loginwindowAction(payload) {
 }
 
 
-export function addMusic(music) {
-  return { type: MUSIC_LIST, music }
+export function userInfoAction(payload) {
+  return { type: USER_INFO, payload }
 }
+
+
