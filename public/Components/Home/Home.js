@@ -1,6 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
+import { Player } from 'Video-react'
 
 import { userInfoAction } from '../../store/actions'
 
@@ -50,8 +51,11 @@ class Home extends React.Component {
   render() {
     return (
       <div>
+        <Player ref="player" preload="metadata">
+          <source src={this.state.songInfo.url} />
+        </Player>
         <div><img src={this.state.songInfo.picture} /></div>
-        <video src={this.state.songInfo.url} controls="controls" ></video>
+        {/* <video src={this.state.songInfo.url} controls="controls" ></video> */}
         {/* autoPlay */}
         <button onClick={this.getSongInfo}>下一首</button>
         <button onClick={this.like.bind(this)}>喜欢</button>
