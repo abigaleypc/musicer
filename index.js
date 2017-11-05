@@ -14,6 +14,10 @@ const playlistUrl = 'https://api.douban.com/v2/fm/playlist';
 let access_token = "0a95c075f8a9d30d1fc14161e9fd7927";
 
 app.post('/login', function (req, res) {
+
+  let Authorization;
+  access_token && (Authorization = 'Bearer ' + access_token);
+
   var params = Object.assign({}, AuthKey, {
     username: req.query.username,
     password: req.query.password
@@ -29,21 +33,51 @@ app.post('/login', function (req, res) {
       data = JSON.parse(data);
       if (data.access_token) {
         LKV.set(params.username, data);
-        res.json({ code: 1, msg: 'success',douban_user_name:data.douban_user_name })
+        getBasic(params.username, params.password, Authorization).then(result => {
+          if (result.status == 'failed') {
+            res.json({ code: -1, msg: 'failed', payload: result.payload })
+          } else {
+            res.json({ code: 1, msg: 'success', payload: result.payload })
+          }
+        });
+
       } else {
-        res.json({ code: 0, msg: 'fail' })
+        res.json({ code: 0, msg: 'failed' })
       }
     } catch (err) {
-      res.json({ code: 0, msg: 'fail' })
+      res.json({ code: 0, msg: 'failed' })
     }
   });
 })
+function getBasic(username, password, Authorization) {
+  return new Promise((resolve, reject) => {
+    request.post('https://accounts.douban.com/j/popup/login/basic', {
+      json: true,
+      headers: Object.assign({}, httpHeader, { Authorization }),
+      qs: {
+        source: 'fm',
+        referer: 'https://douban.fm/',
+        ck: 'L-UM',
+        name: username,
+        password: password,
+        captcha_solution: null,
+        captcha_id: null
+      }
+    }).on('error', err => {
+      result = { code: 500 }
+    }).on('data', data => {
+      try {
+        resolve(JSON.parse(data));
+      } catch (err) {
+        reject(err)
+      }
+    })
+  })
+}
 
 app.get('/playlist', function (req, res) {
-
   let Authorization;
-
-  access_token && (Authorization = 'Bearer ' + access_token)
+  access_token && (Authorization = 'Bearer ' + access_token);
   request.get(playlistUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, { Authorization }),
@@ -65,7 +99,7 @@ app.get('/playlist', function (req, res) {
     res.status(500).end(err);
   }).on('data', data => {
     try {
-      data = JSON.parse(data)
+      data = JSON.parse(data);
     } catch (err) {
 
     }
@@ -73,7 +107,19 @@ app.get('/playlist', function (req, res) {
   })
 })
 
+app.get('/like', function (req, res) {
+
+})
+
 
 app.listen(PORT, () => {
   console.log(`The server has been set up at 0.0.0.0:${PORT}`);
 });
+
+// if (process.env.NODE_ENV === 'dev') {
+//   const electronHot = require('electron-hot-loader');
+//   electronHot.install();
+//   electronHot.watchJsx(['public/**/*.jsx']);
+//   electronHot.watchCss(['public/**/*.css']);
+// }
+

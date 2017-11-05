@@ -1,40 +1,62 @@
 import React from 'react';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux';
 
-export default class Root extends React.Component {
-  constructor(props){
+import { userInfoAction } from '../../store/actions'
+
+function mapStateToProps(state) {
+  const { userInfo } = state.userInfoReducer;
+  return { userInfo };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ userInfoAction }, dispatch)
+
+}
+
+
+class Home extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
-      mp4Info: ''
+      songInfo: ''
     };
-    this.getMp4Info = this.getMp4Info.bind(this)
+    this.getSongInfo = this.getSongInfo.bind(this)
   }
 
-  getMp4Info(){
+  getSongInfo() {
     let result = ''
     let self = this;
-    let sid = this.state.mp4Info.sid?this.state.mp4Info.sid:null;
+
+    // this.props.userName;
 
 
-    fetch('http://localhost:8082/playlist',{sid: sid?sid:null})
+    fetch('http://localhost:8082/playlist')
       .then(res => res.json())
-      .then(function(data) {
+      .then(function (data) {
         self.setState({
-            mp4Info: data.song[0]
+          songInfo: data.song[0]
         })
       });
   }
-  componentWillMount(){
-    this.getMp4Info();
+
+  like() {
+
+
   }
-  render(){
+  componentWillMount() {
+    this.getSongInfo();
+  }
+  render() {
     return (
       <div>
-         {/* <ShadeModal /> */}
-        <video src={this.state.mp4Info.url} controls="controls" ></video>
+        <div><img src={this.state.songInfo.picture} /></div>
+        <video src={this.state.songInfo.url} controls="controls" ></video>
         {/* autoPlay */}
-        <button onClick={this.getMp4Info}>下一首</button>
-        <p>歌曲名：{this.state.mp4Info.albumtitle}</p>
-        <p>歌手：{this.state.mp4Info.artist}</p>
+        <button onClick={this.getSongInfo}>下一首</button>
+        <button onClick={this.like.bind(this)}>喜欢</button>
+        <p>歌曲名：{this.state.songInfo.albumtitle}</p>
+        <p>歌手：{this.state.songInfo.artist}</p>
       </div>
     )
   }
@@ -43,3 +65,10 @@ export default class Root extends React.Component {
 
 const styles = {
 }
+
+const connectHome = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);
+
+export default connectHome;

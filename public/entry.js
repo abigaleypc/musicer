@@ -29,14 +29,10 @@ class Root extends React.Component {
 
   render() {
     return (
-      <div>
-        <div style={styles.header}>
+      <div style={styles.content}>
           <Header />
-        </div>
 
-        <div style={styles.home}>
           <Home />
-        </div>
       </div>
     );
   }
@@ -44,9 +40,9 @@ class Root extends React.Component {
 
 
 const styles = {
-  header: {
-  },
-  home: {
+  content:{
+    
+    fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,PingFang SC,Source Han Sans CN,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif'
   }
 }
 

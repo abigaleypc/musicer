@@ -1,5 +1,5 @@
-import { combineReducers ,createRenderer} from 'redux'
-import { LOGIN, LOGINWINDOW } from './actions'
+import { combineReducers, createRenderer } from 'redux'
+import { LOGIN, LOGINWINDOW, USER_INFO } from './actions'
 
 
 function toLoginReducer(state = { isLogin: false }, action) {
@@ -20,14 +20,19 @@ function loginwindowReducer(state = { loginWindow: false }, action) {
   return nextState;
 }
 
-function addMusic(state = {}, music) {
-  state = music;
-  return state;
+function userInfoReducer(state = { userInfo: {} }, action) {
+  const { type, payload } = action;
+  let nextState = state;
+  if (type == USER_INFO) {
+    nextState.userInfo = payload.userInfo;
+  }
+  return nextState;
 }
 
 const doubanFmReducers = combineReducers({
   toLoginReducer,
-  loginwindowReducer
+  loginwindowReducer,
+  userInfoReducer
 })
 
 
