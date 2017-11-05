@@ -40,7 +40,6 @@
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
-    "request": "^2.83.0",
-    "video-react": "^0.8.9"
+    "request": "^2.83.0"
   }
 }
