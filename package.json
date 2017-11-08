@@ -31,9 +31,11 @@
   },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
+    "css-loader": "^0.28.7",
     "express": "~4.15.2",
     "react": "^16.0.0",
     "react-color": "^2.13.8",
+    "react-css-modules": "^4.7.1",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "react-tap-event-plugin": "^3.0.2",

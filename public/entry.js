@@ -5,8 +5,8 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
-import Header from './Components/Header/Header';
-import Home from './Components/Home/Home';
+import Header from './Components/Header';
+import Home from './Components/Home';
 import reducers from './store/reducers'
 
 const logger = createLogger({

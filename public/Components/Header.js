@@ -2,24 +2,29 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { tologinAction, loginwindowAction, userInfoAction } from '../../store/actions';
+import { tologinAction, userInfoAction } from '../store/actions';
 import Login from './Login';
-import { MainColor } from '../../Theme'
+import { MainColor, GrayColor } from '../Theme'
 
 const { ipcRenderer } = window.require('electron');
+
+// 打开新窗口
+const BrowserWindow = window.require('electron').remote.BrowserWindow
+const path = require('path')
+let win
+
 
 
 function mapStateToProps(state) {
   const { isLogin } = state.toLoginReducer;
-  const { loginWindow } = state.loginwindowReducer;
   const { userInfo } = state.userInfoReducer;
 
-  return { isLogin, loginWindow, userInfo };
+  return { isLogin, userInfo };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    tologinAction, loginwindowAction, userInfoAction
+    tologinAction, userInfoAction
   }, dispatch);
 }
 
@@ -33,18 +38,19 @@ class Header extends React.Component {
     }
   }
   login() {
-    this.props.loginwindowAction({ loginWindow: true })
+    const modalPath = `file://${window.__dirname}/login.html`;
+    win = new BrowserWindow({ width: 300, height: 350, frame: false });
+
+    win.loadURL(modalPath);
+    win.show()
+
   }
   logOut() {
     this.props.tologinAction({ isLogin: false })
   }
   render() {
 
-    console.log('------------------------------------');
-    console.log(this.props.userInfo);
-    console.log('------------------------------------');
     ipcRenderer.on('login-event', (event, arg) => {
-      this.props.loginwindowAction({ loginWindow: false });
       this.props.tologinAction({ isLogin: arg.isLogin });
       this.props.userInfoAction({ userInfo: arg.basic });
       this.setState({
@@ -68,7 +74,6 @@ class Header extends React.Component {
               <a style={styles.btn} onClick={this.login.bind(this)}>登录</a>
           }
         </div>
-        <Login />
       </div>
     )
   }
@@ -76,7 +81,7 @@ class Header extends React.Component {
 
 const styles = {
   header: {
-    backgroundColor: 'rgba(250, 250, 250, 0.93)',
+    backgroundColor: GrayColor,
     display: 'flex',
     justifyContent: 'space-between',
     height: 70,
