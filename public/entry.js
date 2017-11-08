@@ -27,6 +27,19 @@ class Root extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    fetch('http://localhost:8082/userInfo').then(res => res.json()).then(data => {
+      if (Object.keys(data).length > 0) {
+        for (let key in data) {
+          const userInfo = data[key].data;
+          console.log(userInfo);
+        }
+      }
+    }).catch(error => {
+      alert(error.errMsg);
+    })
+  }
+
   render() {
     return (
       <div style={styles.content}>

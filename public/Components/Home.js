@@ -10,7 +10,6 @@ import Trash from './Trash'
 import PlayAndPause from './PlayAndPause'
 import Next from './Next'
 
-
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
   return { userInfo };
@@ -45,6 +44,10 @@ class Home extends React.Component {
     this.delete = this.delete.bind(this)
   }
 
+  componentDidMount() {
+    console.log(this.props)
+  }
+
   initSong() {
     let self = this;
     self.setState({
@@ -75,12 +78,12 @@ class Home extends React.Component {
     this.setState({
       isLike: !this.state.isLike
     })
-
-
   }
+
   delete() {
 
   }
+
   onPlay(e) {
     let self = this;
     self.setState({
