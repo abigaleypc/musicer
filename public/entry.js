@@ -41,7 +41,6 @@ class Root extends React.Component {
 
 const styles = {
   content:{
-    
     fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,PingFang SC,Source Han Sans CN,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif'
   }
 }

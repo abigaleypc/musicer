@@ -37,6 +37,7 @@
     "react-color": "^2.13.8",
     "react-css-modules": "^4.7.1",
     "react-dom": "^16.0.0",
+    "react-native-video": "^2.0.0",
     "react-redux": "^5.0.6",
     "react-tap-event-plugin": "^3.0.2",
     "redux": "^3.7.2",
