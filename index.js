@@ -13,6 +13,19 @@ const playlistUrl = 'https://api.douban.com/v2/fm/playlist';
 
 let access_token = "0a95c075f8a9d30d1fc14161e9fd7927";
 
+app.get('/userInfo', (req, res) => {
+  LKV.getAll()
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      res.status(502).send({
+        errCode: -1,
+        errMsg: err
+      });
+    })
+});
+
 app.post('/login', function (req, res) {
 
   let Authorization;
@@ -49,6 +62,7 @@ app.post('/login', function (req, res) {
     }
   });
 })
+
 function getBasic(username, password, Authorization) {
   return new Promise((resolve, reject) => {
     request.post('https://accounts.douban.com/j/popup/login/basic', {

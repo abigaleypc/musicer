@@ -11,7 +11,6 @@ import PlayAndPause from './PlayAndPause'
 import Next from './Next'
 import VolumeSlider from './VolumeSlider'
 
-
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
   return { userInfo };
@@ -41,6 +40,10 @@ class Home extends React.Component {
     this.onTimeUpdate = this.onTimeUpdate.bind(this)
     this.like = this.like.bind(this)
     this.delete = this.delete.bind(this)
+  }
+
+  componentDidMount() {
+    console.log(this.props)
   }
 
   initSong() {
@@ -73,12 +76,12 @@ class Home extends React.Component {
     this.setState({
       isLike: !this.state.isLike
     })
-
-
   }
+
   delete() {
 
   }
+
   onPlay(e) {
     let self = this;
     self.setState({
