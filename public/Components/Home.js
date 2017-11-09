@@ -11,6 +11,8 @@ import PlayAndPause from './PlayAndPause'
 import Next from './Next'
 import VolumeSlider from './VolumeSlider'
 
+import '../style/Home.scss'
+
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
   return { userInfo };
@@ -118,116 +120,42 @@ class Home extends React.Component {
   }
   render() {
     return (
-      <div style={styles.section}>
-        <div style={styles.warpper}>
-          <div style={styles.left}><img src={this.state.songInfo.picture} style={{ width: '100%' }} />
+      <section>
+        <div className="warpper">
+          <div className="left"><img src={this.state.songInfo.picture} style={{ width: '100%' }} />
           </div>
 
-          <div style={styles.middle}>
-            <div style={styles.songType}>豆瓣精选MHz</div>
-            <div style={styles.songTitle}>{this.state.songInfo.albumtitle}</div>
-            <div style={styles.songAuthor}>{this.state.songInfo.artist}</div>
-            <div style={styles.volumeAndTime}>
+          <div className="middle">
+            <div className="songType">豆瓣精选MHz</div>
+            <div className="songTitle">{this.state.songInfo.albumtitle}</div>
+            <div className="songAuthor">{this.state.songInfo.artist}</div>
+            <div className="volumeAndTime">
               <span>-{this.state.minute}:{this.state.second}</span>
               <VolumeSlider setVolume={num => { this._video.volume = num }} />
             </div>
-            <div style={styles.process}>
+            <div className="process">
               <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div>
             </div>
 
-            <div style={styles.btnGroup}>
-              <div style={styles.supBtnGroup}>
-                <a onClick={this.like} style={styles.a}><RedHeart isLike={this.state.isLike} /></a>
-                <a onClick={this.delete} style={styles.a}><Trash /></a>
+            <div className="btnGroup">
+              <div className="supBtnGroup">
+                <a onClick={this.like}><RedHeart isLike={this.state.isLike} /></a>
+                <a onClick={this.delete}><Trash /></a>
               </div>
-              <div style={styles.supBtnGroup}>
-                <a onClick={this.onPause} style={styles.a}><PlayAndPause isPause={this.state.isPause} /></a>
-                <a onClick={this.nextSong} style={styles.a}><Next /></a>
+              <div className="supBtnGroup">
+                <a onClick={this.onPause}><PlayAndPause isPause={this.state.isPause} /></a>
+                <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
             <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} autoPlay onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate}></video>
           </div>
-          <div style={styles.right}><img src={this.state.songInfo.picture} style={styles.playingCover} /></div>
+          <div className="right"><img src={this.state.songInfo.picture} className="playingCover" /></div>
         </div>
-      </div>
+      </section>
     )
   }
 }
 
-
-const styles = {
-  a: {
-    display: 'inline-block',
-    cursor: 'pointer'
-  },
-  section: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  warpper: {
-    width: '780px',
-    marginTop: '20px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  left: {
-    width: '130px',
-    padding: 10
-
-  },
-  middle: {
-    width: '420px',
-    position: 'relative'
-  },
-  songType: {
-    color: MainColor,
-    marginBottom: '30px'
-  },
-  songTitle: {
-    fontSize: '22px',
-    width: '375px',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden'
-  },
-  songAuthor: {
-  },
-  volumeAndTime: {
-    marginTop: '30px'
-  },
-  process: {
-    position: 'relative',
-    width: '100%',
-    height: '3px',
-    background: GrayColor,
-    overflow: 'hidden',
-    margin: '15px 0'
-  },
-  currentProcess: {
-
-  },
-  right: {
-    width: '250px',
-    height: '250px'
-  },
-  playingCover: {
-    borderRadius: '50%',
-    width: '100%'
-  },
-  btnGroup: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  },
-  supBtnGroup: {
-    display: 'flex',
-    width: '75px',
-    justifyContent: 'space-around'
-
-  }
-}
 
 const connectHome = connect(
   mapStateToProps,

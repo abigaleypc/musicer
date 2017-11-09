@@ -1,4 +1,5 @@
 import React from 'react';
+import '../style/Header.scss'
 
 class volumeSlider extends React.Component {
   constructor(props) {
@@ -9,7 +10,6 @@ class volumeSlider extends React.Component {
     this.changeVolume = this.changeVolume.bind(this);
   }
   changeVolume(e){
-    console.log(this.state.volunmeWidth)
     let width = e.clientX -230
     this.setState({
       volunmeWidth:width
@@ -20,9 +20,8 @@ class volumeSlider extends React.Component {
     let volumeSVG;
 
     if(this.state.volunmeWidth>70){
-      console.log("大于70")
       volumeSVG = 
-      <svg viewBox="0,0,18,18" height="11" width="15" style={styles.trumpet}>
+      <svg viewBox="0,0,18,18" height="11" width="15" className='trumpet'>
       <desc></desc>
       <g id="outbox" stroke="none" strokeWidth="1" fill="no ne" fillRule="evenodd" >
         <g id="inbox" transform="translate(0.000000, 0.000000) scale(1.4)" fill="#919191">
@@ -34,7 +33,7 @@ class volumeSlider extends React.Component {
     </svg>
     }else if(this.state.volunmeWidth>30){
       volumeSVG = 
-      <svg viewBox="0,0,18,18" height="11" width="15" style={styles.trumpet}>
+      <svg viewBox="0,0,18,18" height="11" width="15" className='trumpet'>
       <desc></desc>
       <g id="outbox" stroke="none" strokeWidth="1" fill="no ne" fillRule="evenodd" >
         <g id="inbox" transform="translate(0.000000, 0.000000) scale(1.4)" fill="#919191">
@@ -45,7 +44,7 @@ class volumeSlider extends React.Component {
     </svg>
     }else {
       volumeSVG = 
-      <svg viewBox="0,0,18,18" height="11" width="15" style={styles.trumpet}>
+      <svg viewBox="0,0,18,18" height="11" width="15" className='trumpet'>
       <desc></desc>
       <g id="outbox" stroke="none" strokeWidth="1" fill="no ne" fillRule="evenodd" >
         <g id="inbox" transform="translate(0.000000, 0.000000) scale(1.4)" fill="#919191"><path d="M4.39035714,1.10464215 L1.5,4 L0.5,4 C0.302857143,4 0,4 0,4.5 L0,7.5 C0,8 0.302857143,8 0.5,8 L1.5,8 L4.39035714,10.8952903 C4.4925,10.9974324 4.64607143,11.0281465 4.77964286,10.9727897 C4.91321429,10.917433 5,10.7874338 5,10.642792 L5,1.35714044 C5,1.2128557 4.91285714,1.08249944 4.77964286,1.02714267 C4.73535714,1.00892851 4.68892857,1 4.64285714,1 C4.55,1 4.45857143,1.03642833 4.39035714,1.10464215 Z" id="Shape" transform="translate(2.500000, 6.000000) scale(1, -1) translate(-2.500000, -6.000000) "></path><path d="M7.12915286,8.59484045 C7.22027735,8.70345348 7.35098117,8.7596009 7.48306566,8.7596009 C7.58707645,8.7596009 7.69154746,8.72462382 7.77806971,8.65282876 C8.50154297,8.04809348 9,6.99999993 9,5.99733213 C9,4.99466434 8.49141802,3.9226391 7.75091645,3.31882427 C7.55394027,3.15774562 7.2639987,3.1890409 7.10338027,3.38509663 C6.94276184,3.58207281 6.97267645,3.87201438 7.16965263,4.03263281 C7.69799061,4.46340315 7.98629522,4.99558479 8,5.99779236 C8.01370478,6.99999993 7.70397353,7.51469303 7.18714117,7.94638382 C6.99200589,8.10930337 6.96669353,8.39970517 7.12915286,8.59484045 Z"></path></g>
@@ -57,8 +56,8 @@ class volumeSlider extends React.Component {
         <span>
           {volumeSVG}
           <div style={{display:'inline-block'}}>
-            <a onClick={this.changeVolume} style={styles.volumeClickModule}>
-              <div style={styles.volunmeBack} >
+            <a onClick={this.changeVolume} className='volumeClickModule'>
+              <div className='volunmeBack' >
                 <div style={{backgroundColor: 'rgb(151, 151, 151)', width:this.state.volunmeWidth,height:'2px'}} ></div>
               </div>
             </a>
@@ -70,24 +69,6 @@ class volumeSlider extends React.Component {
   }
 }
 
-const styles = { 
-  volumeClickModule:{
-    display: 'flex',
-    height: '10px',
-    alignItems: 'center'
-  },
-  volunmeBack:{
-    display:'block',
-    width:'100px',
-    height:'2px',
-    backgroundColor: 'rgb(229, 229, 232)'
-  },
-  trumpet:{
-    width:'20',
-    height:'20',
-    verticalAlign: 'middle',
-    padding:'0 15px'
-  }
-}
+
 
 export default volumeSlider;

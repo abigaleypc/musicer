@@ -9,6 +9,7 @@ import Header from './Components/Header';
 import Home from './Components/Home';
 import reducers from './store/reducers'
 
+
 const logger = createLogger({
   collapsed: true
 });
@@ -44,7 +45,6 @@ class Root extends React.Component {
     return (
       <div style={styles.content}>
           <Header />
-
           <Home />
       </div>
     );
