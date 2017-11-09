@@ -9,6 +9,7 @@ import RedHeart from './RedHeart'
 import Trash from './Trash'
 import PlayAndPause from './PlayAndPause'
 import Next from './Next'
+import VolumeSlider from './VolumeSlider'
 
 
 function mapStateToProps(state) {
@@ -31,8 +32,6 @@ class Home extends React.Component {
       isPause: false,
       totalTime: 0,
       remainTime: 0,
-      videoElement: null,
-      volume: .5,
       isLike: false
     };
     this.nextSong = this.nextSong.bind(this)
@@ -40,7 +39,6 @@ class Home extends React.Component {
     this.onPlay = this.onPlay.bind(this)
     this.onPause = this.onPause.bind(this)
     this.onTimeUpdate = this.onTimeUpdate.bind(this)
-    this.handleVolunmChange = this.handleVolunmChange.bind(this)
     this.like = this.like.bind(this)
     this.delete = this.delete.bind(this)
   }
@@ -84,20 +82,19 @@ class Home extends React.Component {
   onPlay(e) {
     let self = this;
     self.setState({
-      isBegining: true,
-      videoElement: e.target
+      isBegining: true
     })
+
   }
   onPause() {
-    console.log("isPause")
     let self = this;
     self.setState({
       isPause: !self.state.isPause
     })
     if (self.state.isPause) {
-      self.state.videoElement.play();
+      this._video.play();
     } else {
-      self.state.videoElement.pause();
+      this._video.pause();
     }
   }
   onTimeUpdate(data) {
@@ -112,11 +109,6 @@ class Home extends React.Component {
         minute: _remainMinute
       })
     }
-  }
-  handleVolunmChange(event) {
-    this.setState({ volume: event.target.value });
-    console.log(this.state.videoElement.volume = event.target.value)
-
   }
   componentWillMount() {
     this.nextSong();
@@ -134,12 +126,7 @@ class Home extends React.Component {
             <div style={styles.songAuthor}>{this.state.songInfo.artist}</div>
             <div style={styles.volumeAndTime}>
               <span>-{this.state.minute}:{this.state.second}</span>
-              <input
-                type="range"
-                min="0" max="1"
-                value={this.state.volume}
-                onChange={this.handleVolunmChange}
-                step="0.1" value={this.state.videoElement ? this.state.videoElement.volume : 0} />
+              <VolumeSlider setVolume={num => { this._video.volume = num }} />
             </div>
             <div style={styles.process}>
               <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div>
@@ -155,7 +142,7 @@ class Home extends React.Component {
                 <a onClick={this.nextSong} style={styles.a}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" autoPlay onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate}></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} autoPlay onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate}></video>
           </div>
           <div style={styles.right}><img src={this.state.songInfo.picture} style={styles.playingCover} /></div>
         </div>
@@ -231,9 +218,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between'
   },
-  supBtnGroup:{
+  supBtnGroup: {
     display: 'flex',
-    width:'75px',
+    width: '75px',
     justifyContent: 'space-around'
 
   }
