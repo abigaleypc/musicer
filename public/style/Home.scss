@@ -42,10 +42,6 @@ section {
                 overflow: hidden;
                 margin: 15px 0;
             }
-            .playingCover {
-                border-radius: 50%;
-                width: 100%;
-            }
             .btnGroup {
                 display: flex;
                 justify-content: space-between;
@@ -59,6 +55,10 @@ section {
         .right {
             width: 250px;
             height: 250px;
+            .playingCover {
+                border-radius: 50%;
+                width: 100%;
+            }
         }
     }
 }

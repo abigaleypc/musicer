@@ -133,7 +133,7 @@ class Home extends React.Component {
               <span>-{this.state.minute}:{this.state.second}</span>
               <VolumeSlider setVolume={num => { this._video.volume = num }} />
             </div>
-            <div className="process">
+            <div className="progress">
               <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div>
             </div>
 
@@ -149,7 +149,10 @@ class Home extends React.Component {
             </div>
             <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} autoPlay onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate}></video>
           </div>
-          <div className="right"><img src={this.state.songInfo.picture} className="playingCover" /></div>
+          
+          <div className="right">
+            <img src={this.state.songInfo.picture} className="playingCover" />
+            </div>
         </div>
       </section>
     )

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/Header.scss'
+import '../style/VolumeSlider.scss'
 
 class volumeSlider extends React.Component {
   constructor(props) {
