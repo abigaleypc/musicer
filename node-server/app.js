@@ -4,9 +4,12 @@ const request = require('request');
 const { httpHeader, AuthKey } = require('./config/config');
 
 const LKV = require('./utils/lkv');
+const createServer = require('./router/router')
 
 const PORT = process.env.PORT || 8082;
 const app = express();
+
+app.use(require('./middleware/cors'));
 
 const loginUrl = 'https://www.douban.com/service/auth2/token';
 const playlistUrl = 'https://api.douban.com/v2/fm/playlist';
@@ -26,41 +29,7 @@ app.get('/userInfo', (req, res) => {
     })
 });
 
-app.post('/login', function (req, res) {
 
-
-  var params = Object.assign({}, AuthKey, {
-    username: req.query.username,
-    password: req.query.password
-  })
-  request.post(loginUrl, {
-    json: true,
-    headers: httpHeader,
-    qs: params
-  }).on('error', err => {
-    res.status(500).end(err);
-  }).on('data', data => {
-    try {
-      data = JSON.parse(data);
-      if (data.access_token) {
-        LKV.set(params.username, data);
-        let Authorization = Authorization = 'Bearer ' + data.access_token;
-        getBasic(params.username, params.password, Authorization).then(result => {
-          if (result.status == 'failed') {
-            res.json({ code: -1, msg: 'failed', payload: result.payload })
-          } else {
-            res.json({ code: 1, msg: 'success', payload: result.payload })
-          }
-        });
-
-      } else {
-        res.json({ code: 0, msg: 'failed' })
-      }
-    } catch (err) {
-      res.json({ code: 0, msg: 'failed' })
-    }
-  });
-})
 
 function getBasic(username, password, Authorization) {
   return new Promise((resolve, reject) => {
@@ -123,6 +92,8 @@ app.get('/playlist', function (req, res) {
 app.get('/like', function (req, res) {
 
 })
+
+createServer(app)
 
 
 app.listen(PORT, () => {

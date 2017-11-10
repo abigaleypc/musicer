@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm-run-all --parallel serve electron webpack:watch",
-    "serve": "nodemon index.js",
+    "serve": "cd node-server && nodemon app.js",
     "electron": "electron ./public/main.js",
     "webpack": "webpack",
     "webpack:watch": "npm run webpack -- --watch",
