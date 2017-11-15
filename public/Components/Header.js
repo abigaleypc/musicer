@@ -14,8 +14,6 @@ const BrowserWindow = window.require('electron').remote.BrowserWindow
 const path = require('path')
 let win
 
-
-
 function mapStateToProps(state) {
   const { isLogin } = state.toLoginReducer;
   const { userInfo } = state.userInfoReducer;

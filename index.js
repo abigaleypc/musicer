@@ -1,25 +1,21 @@
 const express = require('express');
 const request = require('request');
-
-const { httpHeader, AuthKey, loginUrl, playlistUrl, access_token, lyricUrl } = require('./config/config');
-
 const LKV = require('./utils/lkv');
+const {userInfo} = require('./src/routes');
+
+const {
+  httpHeader,
+  AuthKey,
+  loginUrl,
+  playlistUrl,
+  access_token,
+  lyricUrl
+} = require('./config/config');
 
 const PORT = process.env.PORT || 8082;
 const app = express();
 
-app.get('/userInfo', (req, res) => {
-  LKV.getAll()
-    .then(data => {
-      res.json(data);
-    })
-    .catch(err => {
-      res.status(502).send({
-        errCode: -1,
-        errMsg: err
-      });
-    })
-});
+app.use('/userInfo', userInfo);
 
 app.post('/login', function (req, res) {
   let Authorization;
@@ -42,17 +38,31 @@ app.post('/login', function (req, res) {
         LKV.set(params.username, data);
         getBasic(params.username, params.password, Authorization).then(result => {
           if (result.status == 'failed') {
-            res.json({ code: -1, msg: 'failed', payload: result.payload })
+            res.json({
+              code: -1,
+              msg: 'failed',
+              payload: result.payload
+            })
           } else {
-            res.json({ code: 1, msg: 'success', payload: result.payload })
+            res.json({
+              code: 1,
+              msg: 'success',
+              payload: result.payload
+            })
           }
         });
 
       } else {
-        res.json({ code: 0, msg: 'failed' })
+        res.json({
+          code: 0,
+          msg: 'failed'
+        })
       }
     } catch (err) {
-      res.json({ code: 0, msg: 'failed' })
+      res.json({
+        code: 0,
+        msg: 'failed'
+      })
     }
   });
 })
@@ -61,7 +71,9 @@ function getBasic(username, password, Authorization) {
   return new Promise((resolve, reject) => {
     request.post('https://accounts.douban.com/j/popup/login/basic', {
       json: true,
-      headers: Object.assign({}, httpHeader, { Authorization }),
+      headers: Object.assign({}, httpHeader, {
+        Authorization
+      }),
       qs: {
         source: 'fm',
         referer: 'https://douban.fm/',
@@ -72,7 +84,7 @@ function getBasic(username, password, Authorization) {
         captcha_id: null
       }
     }).on('error', err => {
-      result = { code: 500 }
+      reject(err);
     }).on('data', data => {
       try {
         resolve(JSON.parse(data));
@@ -98,7 +110,9 @@ app.get('/playlist', function (req, res) {
   access_token && (Authorization = 'Bearer ' + access_token);
   request.get(playlistUrl, {
     json: true,
-    headers: Object.assign({}, httpHeader, { Authorization }),
+    headers: Object.assign({}, httpHeader, {
+      Authorization
+    }),
     qs: {
       alt: 'json',
       apikey: AuthKey.apikey,
@@ -123,24 +137,27 @@ app.get('/playlist', function (req, res) {
     }
     res.json(data)
   })
-})
-app.get('/nextSong',function(req,res) {
+});
+
+app.get('/nextSong', function (req, res) {
   let Authorization;
   access_token && (Authorization = 'Bearer ' + access_token);
   request.get('https://douban.fm/j/v2/playlist', {
     json: true,
-    headers: Object.assign({}, httpHeader, { Authorization }),
+    headers: Object.assign({}, httpHeader, {
+      Authorization
+    }),
     qs: {
-      'channel':-10,
-      'kbps':128,
-      'client':'s:mainsite|y:3.0',
-      'app_name':'radio_website',
-      'version':100,
-      'type':'s',
-      'sid':req.query.sid,
-      'pt':'',
-      'pb':128,
-      'apikey':''
+      'channel': -10,
+      'kbps': 128,
+      'client': 's:mainsite|y:3.0',
+      'app_name': 'radio_website',
+      'version': 100,
+      'type': 's',
+      'sid': req.query.sid,
+      'pt': '',
+      'pb': 128,
+      'apikey': ''
     }
   }).on('error', err => {
     res.status(500).end(err);
@@ -153,7 +170,7 @@ app.get('/nextSong',function(req,res) {
     res.json(data)
   })
 
-  
+
 })
 app.get('/like', function (req, res) {
 
@@ -162,7 +179,10 @@ app.get('/like', function (req, res) {
 app.get('/lyric', function (req, res) {
   console.log(req.query)
   if (!req.query || !req.query.sid || !req.query.ssid) {
-    res.send({ code: 0, msg: 'Parameters cannot be empty!' })
+    res.send({
+      code: 0,
+      msg: 'Parameters cannot be empty!'
+    })
   } else {
     request.get(lyricUrl, {
       json: true,
