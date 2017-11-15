@@ -1,7 +1,4 @@
-a {
-    display: inline-block;
-    cursor: pointer;
-}
+@import './main.scss';
 section {
     width: 100%;
     display: flex;
@@ -14,8 +11,10 @@ section {
         justify-content: center;
         align-items: center;
         .left {
-            width: 130px;
+            width: 220px;
             padding: 10px;
+            height: 381px;
+            overflow: hidden;
         }
         .middle {
             width: 420px;
@@ -31,8 +30,13 @@ section {
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
-            .volumeAndTime {
-                margin-top: 30px;
+            .volumeAnLyricGroup {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .volumeAndTime {
+                    margin-top: 30px;
+                }
             }
             .progress {
                 position: relative;

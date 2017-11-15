@@ -2,6 +2,7 @@
 function createServer(app) {
   console.log('-------------------------LOGIN--------------------------------')
   app.post('/login', function (req, res) {
+    console.log('------------------enter-------LOGIN--------------------------------')
     var params = Object.assign({}, AuthKey, {
       username: req.query.username,
       password: req.query.password

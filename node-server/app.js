@@ -93,7 +93,7 @@ app.get('/like', function (req, res) {
 
 })
 
-createServer(app)
+// createServer(app)
 
 
 app.listen(PORT, () => {
