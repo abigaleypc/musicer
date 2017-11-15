@@ -13,7 +13,7 @@ import VolumeSlider from './VolumeSlider'
 import LyricBtn from './LyricBtn'
 import Lyric from './Lyric'
 
-import '../style/Home.scss'
+import '../style/Home.less'
 
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;

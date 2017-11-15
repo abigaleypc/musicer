@@ -8,7 +8,7 @@ import { MainColor, GrayColor } from '../Theme'
 
 const { ipcRenderer } = window.require('electron');
 
-import '../style/Header.scss'
+import '../style/Header.less'
 // 打开新窗口
 const BrowserWindow = window.require('electron').remote.BrowserWindow
 const path = require('path')
