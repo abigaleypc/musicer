@@ -1,17 +1,12 @@
 const express = require('express');
 const request = require('request');
 
-const { httpHeader, AuthKey } = require('./config/config');
+const { httpHeader, AuthKey, loginUrl, playlistUrl, access_token } = require('./config/config');
 
 const LKV = require('./utils/lkv');
 
 const PORT = process.env.PORT || 8082;
 const app = express();
-
-const loginUrl = 'https://www.douban.com/service/auth2/token';
-const playlistUrl = 'https://api.douban.com/v2/fm/playlist';
-
-let access_token = "0a95c075f8a9d30d1fc14161e9fd7927";
 
 app.get('/userInfo', (req, res) => {
   LKV.getAll()
@@ -27,7 +22,6 @@ app.get('/userInfo', (req, res) => {
 });
 
 app.post('/login', function (req, res) {
-
   let Authorization;
   access_token && (Authorization = 'Bearer ' + access_token);
 

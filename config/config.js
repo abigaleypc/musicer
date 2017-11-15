@@ -18,3 +18,7 @@ exports.AuthKey = {
   grant_type: 'password',
   redirect_uri: 'http://www.douban.com/mobile/fm'
 }
+
+exports.loginUrl = 'https://www.douban.com/service/auth2/token';
+exports.playlistUrl = 'https://api.douban.com/v2/fm/playlist';
+exports.access_token = '0a95c075f8a9d30d1fc14161e9fd7927';

@@ -11,7 +11,7 @@ import PlayAndPause from './PlayAndPause'
 import Next from './Next'
 import VolumeSlider from './VolumeSlider'
 
-import '../style/Home.scss'
+import '../style/Home.less'
 
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
