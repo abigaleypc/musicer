@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/LyricBtn.scss'
+import '../style/LyricBtn.less'
 
 class LyricBtn extends React.Component {
   constructor(props) {

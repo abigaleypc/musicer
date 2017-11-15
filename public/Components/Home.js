@@ -132,13 +132,15 @@ class Home extends React.Component {
     fetch('http://localhost:8082/playlist')
       .then(res => res.json())
       .then(function (data) {
-        self.setState({
-          songInfo: data.song[0],
-          totalTime: data.song[0].length,
-          remainTime: data.song[0].length,
-          second: 0,
-          minute: 0,
-        })
+        if (data.song[0]) {
+          self.setState({
+            songInfo: data.song[0],
+            totalTime: data.song[0].length,
+            remainTime: data.song[0].length,
+            second: 0,
+            minute: 0,
+          })
+        }
       });
   }
   render() {

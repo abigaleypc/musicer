@@ -5,7 +5,7 @@ const { httpHeader, AuthKey, loginUrl, playlistUrl, access_token, lyricUrl } = r
 
 const LKV = require('./utils/lkv');
 
-const PORT = process.env.PORT || 8083;
+const PORT = process.env.PORT || 8082;
 const app = express();
 
 app.get('/userInfo', (req, res) => {
