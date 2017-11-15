@@ -1,0 +1,14 @@
+GET /j/v2/playlist?channel=0&kbps=128&client=s%3Amainsite%7Cy%3A3.0&app_name=radio_website&version=100&type=s&sid=2228485&pt=&pb=128&apikey= HTTP/1.1
+Host: douban.fm
+Connection: keep-alive
+Pragma: no-cache
+Cache-Control: no-cache
+Accept: text/javascript, text/html, application/xml, text/xml, */*
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+DNT: 1
+Referer: https://douban.fm/mine/hearts
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,zh-CN;q=0.8,zh;q=0.6,en;q=0.4
+Cookie: bid=0BJg1CnCSK8; flag="ok"; ac="1509268221"; dbcl2="62981188:v9u5mGED9AY"; ck=vkBD

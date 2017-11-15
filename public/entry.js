@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
-import Header from './Components/Header/Header';
-import Home from './Components/Home/Home';
+import Header from './Components/Header';
+import Home from './Components/Home';
 import reducers from './store/reducers'
+
 
 const logger = createLogger({
   collapsed: true
@@ -27,11 +28,23 @@ class Root extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    fetch('http://localhost:8082/userInfo').then(res => res.json()).then(data => {
+      if (Object.keys(data).length > 0) {
+        for (let key in data) {
+          const userInfo = data[key].data;
+          console.log(userInfo);
+        }
+      }
+    }).catch(error => {
+      alert(error.errMsg);
+    })
+  }
+
   render() {
     return (
       <div style={styles.content}>
           <Header />
-
           <Home />
       </div>
     );
@@ -41,7 +54,6 @@ class Root extends React.Component {
 
 const styles = {
   content:{
-    
     fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,PingFang SC,Source Han Sans CN,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif'
   }
 }

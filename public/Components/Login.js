@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { loginWindow, loginwindowAction } from '../../store/actions'
+import { loginWindow, loginwindowAction } from '../store/actions'
 
 const { ipcRenderer } = window.require('electron');
 

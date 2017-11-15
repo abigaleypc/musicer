@@ -1,0 +1,68 @@
+@import './main.scss';
+section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .warpper {
+        width: 780px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .left {
+            width: 220px;
+            padding: 10px;
+            height: 381px;
+            overflow: hidden;
+        }
+        .middle {
+            width: 420px;
+            position: relative;
+            .songType {
+                color: rgb(47, 152, 66);
+                margin-bottom: 30px;
+            }
+            .songTitle {
+                font-size: 22px;
+                width: 375px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            .volumeAnLyricGroup {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .volumeAndTime {
+                    margin-top: 30px;
+                }
+            }
+            .progress {
+                position: relative;
+                width: 100%;
+                height: 3px;
+                background: rgba(250, 250, 250, 0.93);
+                overflow: hidden;
+                margin: 15px 0;
+            }
+            .btnGroup {
+                display: flex;
+                justify-content: space-between;
+                .supBtnGroup {
+                    display: flex;
+                    width: 75px;
+                    justify-content: space-around;
+                }
+            }
+        }
+        .right {
+            width: 250px;
+            height: 250px;
+            .playingCover {
+                border-radius: 50%;
+                width: 100%;
+            }
+        }
+    }
+}
