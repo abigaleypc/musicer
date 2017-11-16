@@ -59,7 +59,7 @@ class Home extends React.Component {
     let self = this;
     this.initSong();
 
-    fetch(`http://localhost:8083/nextSong?sid=${self.state.songInfo.sid}`)
+    fetch(`http://localhost:8082/nextSong?sid=${self.state.songInfo.sid}`)
       .then(res => res.json())
       .then(function (data) {
         if (data.song[0]) {
@@ -129,10 +129,10 @@ class Home extends React.Component {
   }
   componentWillMount() {
     let self = this;
-    fetch('http://localhost:8082/playlist')
+    fetch('http://localhost:8082/nextSong')
       .then(res => res.json())
       .then(function (data) {
-        if (data.song[0]) {
+        if (data.song.length > 0) {
           self.setState({
             songInfo: data.song[0],
             totalTime: data.song[0].length,

@@ -1,7 +1,9 @@
+import { parse } from 'url';
+
 const express = require('express');
 const request = require('request');
 const LKV = require('./utils/lkv');
-const {userInfo} = require('./src/routes');
+const { userInfo } = require('./src/routes');
 
 const {
   httpHeader,
@@ -95,16 +97,6 @@ function getBasic(username, password, Authorization) {
   })
 }
 
-// channel:-10
-// kbps:192
-// client:s:mainsite|y:3.0
-// app_name:radio_website
-// version:100
-// type:s
-// sid:1485165
-// pt:5755.539
-// pb:128
-// apikey:
 app.get('/playlist', function (req, res) {
   let Authorization;
   access_token && (Authorization = 'Bearer ' + access_token);
@@ -140,8 +132,18 @@ app.get('/playlist', function (req, res) {
 });
 
 app.get('/nextSong', function (req, res) {
-  let Authorization;
+  console.log('------------------------------------');
+  console.log("ss``");
+  console.log('------------------------------------');
+
+  let Authorization, sid;
   access_token && (Authorization = 'Bearer ' + access_token);
+
+  if (!res.query.sid) {
+    sid = parseInt(Math.random() * 1000000 + 1000000);
+  } else {
+    sid = req.query.sid;
+  }
   request.get('https://douban.fm/j/v2/playlist', {
     json: true,
     headers: Object.assign({}, httpHeader, {
@@ -154,7 +156,7 @@ app.get('/nextSong', function (req, res) {
       'app_name': 'radio_website',
       'version': 100,
       'type': 's',
-      'sid': req.query.sid,
+      'sid': sid,
       'pt': '',
       'pb': 128,
       'apikey': ''
