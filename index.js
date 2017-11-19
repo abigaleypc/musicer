@@ -176,7 +176,6 @@ app.get('/like', function (req, res) {
 })
 
 app.get('/lyric', function (req, res) {
-  console.log(req.query)
   if (!req.query || !req.query.sid || !req.query.ssid) {
     res.send({
       code: 0,

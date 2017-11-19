@@ -25,19 +25,21 @@ function mapDispatchToProps(dispatch) {
 
 }
 
-
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      songInfo: '',
+      songInfo: {},
       isBegining: false,
       isPause: false,
       totalTime: 0,
       remainTime: 0,
       isLike: false,
-      isOpenLyric: false
+      isOpenLyric: false,
+      lyricList: [],
+      lyricTimeList: []
     };
+
     this.nextSong = this.nextSong.bind(this)
     this.initSong = this.initSong.bind(this)
     this.onPlay = this.onPlay.bind(this)
@@ -48,6 +50,25 @@ class Home extends React.Component {
     this.toggleType = this.toggleType.bind(this);
   }
 
+  componentWillMount() {
+    let self = this;
+    fetch('http://localhost:8082/nextSong')
+      .then(res => res.json())
+      .then(data => {
+        if (data.song.length > 0) {
+          self.setState({
+            songInfo: data.song[0],
+            totalTime: data.song[0].length,
+            remainTime: data.song[0].length,
+            second: 0,
+            minute: 0,
+          });
+
+          this.getLyric();
+        }
+      });
+  }
+
   initSong() {
     this.setState({
       totalTime: 0,
@@ -55,6 +76,7 @@ class Home extends React.Component {
     })
 
   }
+
   nextSong() {
     let self = this;
     this.initSong();
@@ -70,7 +92,9 @@ class Home extends React.Component {
             currentTime: 0,
             second: 0,
             minute: 0,
-          })
+          });
+
+          this.getLyric();
         }
       });
   }
@@ -90,8 +114,8 @@ class Home extends React.Component {
     self.setState({
       isBegining: true
     })
-
   }
+
   onPause() {
     let self = this;
     self.setState({
@@ -103,6 +127,7 @@ class Home extends React.Component {
       this._video.pause();
     }
   }
+
   onTimeUpdate(data) {
     this.setState({
       currentTime: data.target.currentTime
@@ -119,40 +144,55 @@ class Home extends React.Component {
       })
     }
   }
+
   toggleType(type) {
     if (type == 'lyric') {
       this.setState({
         isOpenLyric: !this.state.isOpenLyric
       })
-
     } else if (type == 'share') {
 
     } else {
 
     }
   }
-  componentWillMount() {
-    let self = this;
-    fetch('http://localhost:8082/nextSong')
-      .then(res => res.json())
-      .then(function (data) {
-        if (data.song.length > 0) {
-          self.setState({
-            songInfo: data.song[0],
-            totalTime: data.song[0].length,
-            remainTime: data.song[0].length,
-            second: 0,
-            minute: 0,
-          })
-        }
-      });
+
+  getLyric() {
+    let {sid, ssid} = this.state.songInfo;
+
+    if (sid && ssid) {
+      fetch(`http://localhost:8082/lyric?sid=${sid}&ssid=${ssid}`)
+        .then(res => res.json())
+        .then(data => {
+          let lyricSplit = data.lyric.split('\r\n'), lyricList = [], timeList = [], time = 0, timeSplit = []
+          lyricSplit.forEach(it => {
+            it.replace(/(\[(.+?)\])?(.*)/, (str, $1, $2, $3) => {
+              timeSplit = $2.split(':');
+              time = Number(timeSplit[0] * 60 + Number(timeSplit[1])).toFixed(2);
+              timeList.push(Number(time));
+              lyricList.push({
+                'time': $1,
+                'content': $3
+              })
+            })
+          });
+
+          if (lyricSplit.length == lyricList.length) {
+            this.setState({
+              lyricList: lyricList,
+              lyricTimeList: timeList
+            })
+          }
+        })
+    }
   }
+
   render() {
     return (
       <section>
         <div className="warpper">
           <div className="left">
-            <Lyric sid={this.state.songInfo.sid} ssid={this.state.songInfo.ssid} currentTime={this.state.currentTime} />
+            <Lyric {...this.state} />
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
