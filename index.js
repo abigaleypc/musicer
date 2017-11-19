@@ -1,9 +1,9 @@
-import { parse } from 'url';
-
 const express = require('express');
 const request = require('request');
 const LKV = require('./utils/lkv');
 const { userInfo } = require('./src/routes');
+
+const { lyric, nextSong } = require('./mocks/index');
 
 const {
   httpHeader,
@@ -132,14 +132,10 @@ app.get('/playlist', function (req, res) {
 });
 
 app.get('/nextSong', function (req, res) {
-  console.log('------------------------------------');
-  console.log("ss``");
-  console.log('------------------------------------');
-
   let Authorization, sid;
   access_token && (Authorization = 'Bearer ' + access_token);
 
-  if (!res.query.sid) {
+  if (!(res.query && res.query.sid)) {
     sid = parseInt(Math.random() * 1000000 + 1000000);
   } else {
     sid = req.query.sid;
@@ -169,7 +165,8 @@ app.get('/nextSong', function (req, res) {
     } catch (err) {
 
     }
-    res.json(data)
+    // res.json(data)
+    res.json(nextSong)
   })
 
 
@@ -194,7 +191,8 @@ app.get('/lyric', function (req, res) {
         ssid: req.query.ssid
       }
     }).on('data', (data) => {
-      res.json(JSON.parse(data))
+      // res.json(JSON.parse(data))
+      res.json(lyric)
     })
   }
 })

@@ -67,6 +67,7 @@ class Home extends React.Component {
             songInfo: data.song[0],
             totalTime: data.song[0].length,
             remainTime: data.song[0].length,
+            currentTime: 0,
             second: 0,
             minute: 0,
           })
@@ -103,6 +104,9 @@ class Home extends React.Component {
     }
   }
   onTimeUpdate(data) {
+    this.setState({
+      currentTime: data.target.currentTime
+    })
     let _remainSecond = Math.floor(this.state.remainTime % 60) > 0 ? Math.floor(this.state.remainTime % 60) : 0,
       _remainMinute = Math.floor(this.state.remainTime / 60) > 0 ? Math.floor(this.state.remainTime / 60) : 0
     if (_remainMinute == 0 && _remainSecond == 0) {
@@ -148,7 +152,7 @@ class Home extends React.Component {
       <section>
         <div className="warpper">
           <div className="left">
-            <Lyric sid={this.state.songInfo.sid} ssid={this.state.songInfo.ssid} />
+            <Lyric sid={this.state.songInfo.sid} ssid={this.state.songInfo.ssid} currentTime={this.state.currentTime} />
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
