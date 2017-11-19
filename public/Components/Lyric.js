@@ -9,11 +9,11 @@ class Lyric extends React.Component {
     this.lyricListElement = this.lyricListElement.bind(this);
   }
 
-  componentDidMount() {
-    let {lyricList, timeList} = this.props;
+  componentWillReceiveProps() {
+    let {lyricList, timeList, currentTime} = this.props;
 
     if (lyricList && lyricList.length > 0) {
-      let curTime = Number(this.props.currentTime).toFixed(2);
+      let curTime = Number(currentTime).toFixed(2);
 
       for (let i = 0; i < timeList.length; i++) {
         if (timeList[i] < curTime && timeList[i + 1] > curTime) {
@@ -34,8 +34,9 @@ class Lyric extends React.Component {
         _lyricList.push(
           <div key={index}
             style={
-              this.state.currentLyricIndex == index ? { color: "#eee" } : null
-            }>{it.content}
+              this.state.currentLyricIndex == index ? { color: "green" } : null
+            }>
+            {it.content}
           </div>
         )
       })

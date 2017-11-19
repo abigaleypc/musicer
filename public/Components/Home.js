@@ -37,7 +37,8 @@ class Home extends React.Component {
       isLike: false,
       isOpenLyric: false,
       lyricList: [],
-      lyricTimeList: []
+      lyricTimeList: [],
+      currentTime: 0
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -129,9 +130,16 @@ class Home extends React.Component {
   }
 
   onTimeUpdate(data) {
+    let {currentTime} = this.state;
+
+    if (data.target.currentTime - currentTime < 1) {
+      return;
+    }
+
     this.setState({
       currentTime: data.target.currentTime
-    })
+    });
+
     let _remainSecond = Math.floor(this.state.remainTime % 60) > 0 ? Math.floor(this.state.remainTime % 60) : 0,
       _remainMinute = Math.floor(this.state.remainTime / 60) > 0 ? Math.floor(this.state.remainTime / 60) : 0
     if (_remainMinute == 0 && _remainSecond == 0) {
@@ -192,7 +200,9 @@ class Home extends React.Component {
       <section>
         <div className="warpper">
           <div className="left">
-            <Lyric {...this.state} />
+            <Lyric lyricList={this.state.lyricList}
+              timeList={this.state.lyricTimeList}
+              currentTime={this.state.currentTime} />
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
