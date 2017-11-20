@@ -37,6 +37,7 @@ class Home extends React.Component {
       isLike: false,
       isOpenLyric: false,
       lyricList: [],
+      lyricType: null,
       lyricTimeList: [],
       currentTime: 0
     };
@@ -79,14 +80,12 @@ class Home extends React.Component {
   }
 
   nextSong() {
-    let self = this;
     this.initSong();
-
-    fetch(`http://localhost:8082/nextSong?sid=${self.state.songInfo.sid}`)
+    fetch(`http://localhost:8082/nextSong?sid=${this.state.songInfo.sid}`)
       .then(res => res.json())
-      .then(function (data) {
-        if (data.song[0]) {
-          self.setState({
+      .then((data) => {
+        if (data.song.length > 0) {
+          this.setState({
             songInfo: data.song[0],
             totalTime: data.song[0].length,
             remainTime: data.song[0].length,
@@ -94,9 +93,11 @@ class Home extends React.Component {
             second: 0,
             minute: 0,
           });
-
-          this.getLyric();
         }
+        this._video.src = this.state.songInfo.url
+      })
+      .then(() => {
+        this.getLyric();
       });
   }
 
@@ -130,7 +131,7 @@ class Home extends React.Component {
   }
 
   onTimeUpdate(data) {
-    let {currentTime} = this.state;
+    let { currentTime } = this.state;
 
     // if (data.target.currentTime - currentTime < 1) {
     //   return;
@@ -141,9 +142,9 @@ class Home extends React.Component {
     });
 
     let _remainSecond = Math.floor(this.state.remainTime % 60) > 0 ? Math.floor(this.state.remainTime % 60) : 0,
-      _remainMinute = Math.floor(this.state.remainTime / 60) > 0 ? Math.floor(this.state.remainTime / 60) : 0
-    if (_remainMinute == 0 && _remainSecond == 0) {
-      this.nextSong()
+      _remainMinute = Math.floor(this.state.remainTime / 60) > 0 ? Math.floor(this.state.remainTime / 60) : 0;
+    if (this.state.remainTime < 0) {
+      this.nextSong();
     } else {
       this.setState({
         remainTime: this.state.totalTime - data.target.currentTime,
@@ -166,31 +167,16 @@ class Home extends React.Component {
   }
 
   getLyric() {
-    let {sid, ssid} = this.state.songInfo;
-
+    let { sid, ssid } = this.state.songInfo;
     if (sid && ssid) {
       fetch(`http://localhost:8082/lyric?sid=${sid}&ssid=${ssid}`)
         .then(res => res.json())
         .then(data => {
-          let lyricSplit = data.lyric.split('\r\n'), lyricList = [], timeList = [], time = 0, timeSplit = []
-          lyricSplit.forEach(it => {
-            it.replace(/(\[(.+?)\])?(.*)/, (str, $1, $2, $3) => {
-              timeSplit = $2.split(':');
-              time = Number(timeSplit[0] * 60 + Number(timeSplit[1])).toFixed(2);
-              timeList.push(Number(time));
-              lyricList.push({
-                'time': $1,
-                'content': $3
-              })
-            })
-          });
-
-          if (lyricSplit.length == lyricList.length) {
-            this.setState({
-              lyricList: lyricList,
-              lyricTimeList: timeList
-            })
-          }
+          this.setState({
+            lyricList: data.lyricList,
+            lyricTimeList: data.timeList,
+            lyricType: data.type
+          })
         })
     }
   }
@@ -202,7 +188,9 @@ class Home extends React.Component {
           <div className="left">
             <Lyric lyricList={this.state.lyricList}
               timeList={this.state.lyricTimeList}
-              currentTime={this.state.currentTime} />
+              currentTime={this.state.currentTime}
+              lyricType={this.state.lyricType} />
+              {this.state.lyricType}
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
@@ -212,7 +200,7 @@ class Home extends React.Component {
             <div className="songAuthor">{this.state.songInfo.artist}</div>
             <div className="volumeAnLyricGroup">
               <div className="volumeAndTime">
-                <span>-{this.state.minute}:{this.state.second}</span>
+                <span className="time">-{this.state.minute}:{this.state.second}</span>
                 <VolumeSlider setVolume={num => { this._video.volume = num }} />
                 {this.props.isOpenLyric}
               </div>
@@ -232,7 +220,7 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} autoPlay onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate}></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r}  onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
           </div>
 
           <div className="right">

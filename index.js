@@ -162,15 +162,15 @@ app.get('/nextSong', function (req, res) {
   }).on('data', data => {
     try {
       data = JSON.parse(data);
+      res.json(data)
+      
     } catch (err) {
 
     }
-    // res.json(data)
-    res.json(nextSong)
   })
-
-
 })
+
+
 app.get('/like', function (req, res) {
 
 })
@@ -190,8 +190,45 @@ app.get('/lyric', function (req, res) {
         ssid: req.query.ssid
       }
     }).on('data', (data) => {
-      // res.json(JSON.parse(data))
-      res.json(lyric)
+      // data = JSON.parse(data);
+      // res.json(data)
+      data = JSON.parse(data);
+      let result = {}
+
+      if (data.lyric == '暂无歌词') {
+        result.type = null;
+      } else {
+        let lyricSplit = data.lyric.split('\r\n'), lyricList = [], timeList = [], time = 0, timeSplit = []
+        lyricSplit.forEach(it => {
+          it.replace(/(\[(.+?)\])?(.*)/, (str, $1, $2, $3) => {
+            if ($2) {
+              timeSplit = $2.split(':');
+              time = Number(timeSplit[0] * 60 + Number(timeSplit[1])).toFixed(2);
+              timeList.push(Number(time));
+              lyricList.push({
+                'time': $1,
+                'content': $3
+              })
+            }
+            else {
+              lyricList.push({
+                'time': null,
+                'content': $3
+              })
+            }
+          })
+        })
+        if (lyricList[0].time) {
+          result.type = 'normal'
+        } else {
+          result.type = 'noTime'
+        }
+        result.lyricList = lyricList;
+        result.name = data.name;
+        result.sid = data.sid;
+        result.timeList = timeList;
+      }
+      res.json(result)
     })
   }
 })

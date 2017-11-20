@@ -1,17 +1,24 @@
-.volumeClickModule {
-    display: flex;
-    height: 10px;
-    align-items: center;
+.volume-module {
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    overflow: hidden;
+    display: inline-block;
+    transition: .4s width ease-in-out;
 }
-.volunmeBack{
-    display: block;
-    width: 100px;
-    height: 2px;
-    background-color: rgb(229, 229, 232)
+.volume-module:hover {
+    width: 170px;
 }
 .trumpet{
-    width: 20px;
+    width: 30px;
     height: 20px;
-    vertical-align: middle;
-    padding: 0 15px;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
+.volume-slider {
+    position: absolute;
+    left: 30px;
+    top: 0;
+}
+

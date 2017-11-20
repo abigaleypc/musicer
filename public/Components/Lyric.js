@@ -6,16 +6,26 @@ class Lyric extends React.Component {
     super(props);
     this.state = {
       currentLyricIndex: 0,
-      offsetHeight: 0
+      offsetHeight: 0,
+      lyricType: {} //null:暂无歌词， noTime:不支持滚动   normal
     }
     this.lyricListElement = this.lyricListElement.bind(this);
   }
 
   componentWillReceiveProps() {
-    let { lyricList, timeList, currentTime } = this.props, offsetHeight = 0;
-
-    if (lyricList && lyricList.length > 0) {
-      console.log(currentTime);
+    let { lyricList, timeList, currentTime, lyricType } = this.props, offsetHeight = 0, text = null;
+    if (!lyricType) {
+      text = '暂无歌词'
+    } else if (lyricType == 'noTime') {
+      text = '本歌词暂不支持滚动'
+    }
+    this.setState({
+      lyricType: {
+        type: lyricType,
+        text: text
+      }
+    })
+    if (lyricList && lyricList.length > 0 && lyricType == 'normal') {
       for (let i = 0; i < timeList.length; i++) {
         if (timeList[i] < currentTime && timeList[i + 1] > currentTime) {
           if (this.state.currentLyricIndex != i) {
@@ -45,7 +55,7 @@ class Lyric extends React.Component {
           <div key={index}
             className="lyric-item"
             style={
-              this.state.currentLyricIndex == index ? { color: "green" } : null
+              (this.state.currentLyricIndex == index && this.state.lyricType.type == 'normal') ? { color: "green" } : null
             }>
             {it.content}
           </div>
@@ -61,6 +71,7 @@ class Lyric extends React.Component {
         className="lyric-content"
         style={{ top: this.state.offsetHeight }}
         ref={(input) => { this.lyricElement = input; }}>
+        <div>{this.state.lyricType.text}</div>
         {this.lyricListElement()}
       </div>
     )
