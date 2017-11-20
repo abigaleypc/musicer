@@ -132,9 +132,9 @@ class Home extends React.Component {
   onTimeUpdate(data) {
     let {currentTime} = this.state;
 
-    if (data.target.currentTime - currentTime < 1) {
-      return;
-    }
+    // if (data.target.currentTime - currentTime < 1) {
+    //   return;
+    // }
 
     this.setState({
       currentTime: data.target.currentTime
