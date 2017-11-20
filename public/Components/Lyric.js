@@ -12,7 +12,7 @@ class Lyric extends React.Component {
   }
 
   componentWillReceiveProps() {
-    let { lyricList, timeList, currentTime } = this.props, offsetHeight;
+    let { lyricList, timeList, currentTime } = this.props, offsetHeight = 0;
 
     if (lyricList && lyricList.length > 0) {
       console.log(currentTime);
@@ -22,12 +22,13 @@ class Lyric extends React.Component {
             this.setState({
               currentLyricIndex: i
             })
-            if (i > 6) {
-              offsetHeight = (this.lyricElement.childNodes)[i].offsetHeight;
-              this.setState({
-                offsetHeight: this.state.offsetHeight - offsetHeight
-              })
+            // 计算该句歌词之前所有歌词高度
+            for (let j = 7; j < i; j++) {
+              offsetHeight -= (this.lyricElement.childNodes)[j].offsetHeight
             }
+            this.setState({
+              offsetHeight
+            })
           }
         }
       }
