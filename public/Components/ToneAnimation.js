@@ -10,8 +10,8 @@ class ToneAnimation extends React.Component {
       <div className="tone-section">
           <div className="tone-item tone-item-1"></div>
           <div className="tone-item tone-item-2"></div>
-          <div className="tone-item tone-item-3"></div>
-          <div className="tone-item tone-item-4"></div>
+          <div className="tone-item tone-item-3"> </div>
+          <div className="tone-item tone-item-4"> </div>
       </div>
     )
   }
