@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { tologinAction, userInfoAction } from '../store/actions';
-import Login from './Login';
 import { MainColor, GrayColor } from '../Theme'
 
 const { ipcRenderer } = window.require('electron');

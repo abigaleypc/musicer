@@ -10,8 +10,10 @@ import Trash from './Trash'
 import PlayAndPause from './PlayAndPause'
 import Next from './Next'
 import VolumeSlider from './VolumeSlider'
-import LyricBtn from './LyricBtn'
+import LyricDownloadShareBtn from './LyricDownloadShareBtn'
 import Lyric from './Lyric'
+import Share from './Share'
+import ToneAnimation from './ToneAnimation'
 
 import '../style/Home.less'
 
@@ -35,12 +37,13 @@ class Home extends React.Component {
       totalTime: 0,
       remainTime: 0,
       isLike: false,
-      isOpenLyric: false,
+      isShowLyric: false,
       lyricList: [],
       lyricType: null,
       lyricTimeList: [],
       currentTime: 0,
-      isNextSong: false
+      isNextSong: false,
+      isShowShare: false
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -162,12 +165,11 @@ class Home extends React.Component {
 
   toggleType(type) {
     if (type == 'lyric') {
-      this.setState({
-        isOpenLyric: !this.state.isOpenLyric
-      })
-    } else if (type == 'share') {
-
+    } else if (type == 'download') {
     } else {
+      this.setState({
+        isShowShare: !this.state.isShowShare
+      })
 
     }
   }
@@ -195,23 +197,23 @@ class Home extends React.Component {
             <Lyric lyricList={this.state.lyricList}
               timeList={this.state.lyricTimeList}
               currentTime={this.state.currentTime}
-              lyricType={this.state.lyricType} 
-              isNextSong={this.state.isNextSong}/>
-            {this.state.lyricType}
+              lyricType={this.state.lyricType}
+              isNextSong={this.state.isNextSong} />
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
           <div className="middle">
-            <div className="songType">豆瓣精选MHz</div>
+
+            <div className="songType"><ToneAnimation />豆瓣精选MHz</div>
             <div className="songTitle">{this.state.songInfo.title}</div>
             <div className="songAuthor">{this.state.songInfo.artist}</div>
             <div className="volumeAnLyricGroup">
               <div className="volumeAndTime">
                 <span className="time">-{this.state.minute}:{this.state.second}</span>
                 <VolumeSlider setVolume={num => { this._video.volume = num }} />
-                {this.props.isOpenLyric}
+                {this.props.isShowLyric}
               </div>
-              <LyricBtn toggleType={type => this.toggleType(type)} />
+              <LyricDownloadShareBtn toggleType={type => this.toggleType(type)} />
             </div>
             <div className="progress">
               <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div>
@@ -227,12 +229,20 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
           </div>
 
           <div className="right">
             <img src={this.state.songInfo.picture} className="playingCover" />
           </div>
+          {this.state.isShowShare &&
+            <Share 
+              sid={this.state.songInfo.sid} 
+              ssid={this.state.songInfo.ssid} 
+              picture={this.state.songInfo.picture} 
+              title={this.state.songInfo.title}
+              closePopup={()=>{this.setState({isShowShare:false})}}/>
+          }
         </div>
       </section>
     )
