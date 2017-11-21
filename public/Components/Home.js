@@ -39,7 +39,8 @@ class Home extends React.Component {
       lyricList: [],
       lyricType: null,
       lyricTimeList: [],
-      currentTime: 0
+      currentTime: 0,
+      isNextSong: false
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -80,7 +81,11 @@ class Home extends React.Component {
   }
 
   nextSong() {
+
     this.initSong();
+    this.setState({
+      isNextSong: true
+    })
     fetch(`http://localhost:8082/nextSong?sid=${this.state.songInfo.sid}`)
       .then(res => res.json())
       .then((data) => {
@@ -92,6 +97,7 @@ class Home extends React.Component {
             currentTime: 0,
             second: 0,
             minute: 0,
+            isNextSong: false
           });
         }
         this._video.src = this.state.songInfo.url
@@ -189,8 +195,9 @@ class Home extends React.Component {
             <Lyric lyricList={this.state.lyricList}
               timeList={this.state.lyricTimeList}
               currentTime={this.state.currentTime}
-              lyricType={this.state.lyricType} />
-              {this.state.lyricType}
+              lyricType={this.state.lyricType} 
+              isNextSong={this.state.isNextSong}/>
+            {this.state.lyricType}
             {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
           </div>
 
@@ -220,7 +227,7 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r}  onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
           </div>
 
           <div className="right">

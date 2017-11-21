@@ -13,7 +13,10 @@ class Lyric extends React.Component {
   }
 
   componentWillReceiveProps() {
-    let { lyricList, timeList, currentTime, lyricType } = this.props, offsetHeight = 0, text = null;
+    let { lyricList, timeList, currentTime, lyricType, isNextSong } = this.props, offsetHeight = 0, text = null;
+    if (isNextSong) {
+      this.lyrics.scrollTop = 0;
+    }
     if (!lyricType) {
       text = '暂无歌词'
     } else if (lyricType == 'noTime') {
@@ -34,8 +37,9 @@ class Lyric extends React.Component {
             })
             // 计算该句歌词之前所有歌词高度
             for (let j = 7; j < i; j++) {
-              offsetHeight -= (this.lyricElement.childNodes)[j].offsetHeight
+              offsetHeight += (this.lyrics.childNodes)[j].offsetHeight
             }
+            this.lyrics.scrollTop = offsetHeight;
             this.setState({
               offsetHeight
             })
@@ -69,8 +73,8 @@ class Lyric extends React.Component {
     return (
       <div
         className="lyric-content"
-        style={{ top: this.state.offsetHeight }}
-        ref={(input) => { this.lyricElement = input; }}>
+        // style={{ top: this.state.offsetHeight }}
+        ref={(input) => { this.lyrics = input; }}>
         <div>{this.state.lyricType.text}</div>
         {this.lyricListElement()}
       </div>
