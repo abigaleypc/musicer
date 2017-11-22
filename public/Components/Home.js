@@ -165,6 +165,10 @@ class Home extends React.Component {
 
   toggleType(type) {
     if (type == 'lyric') {
+      this.setState({
+        isShowLyric: !this.state.isShowLyric
+      })
+
     } else if (type == 'download') {
     } else {
       this.setState({
@@ -194,12 +198,22 @@ class Home extends React.Component {
       <section>
         <div className="warpper">
           <div className="left">
-            <Lyric lyricList={this.state.lyricList}
-              timeList={this.state.lyricTimeList}
-              currentTime={this.state.currentTime}
-              lyricType={this.state.lyricType}
-              isNextSong={this.state.isNextSong} />
-            {/* <img src={this.state.songInfo.picture} style={{ width: '100%' }} /> */}
+            {this.state.isShowLyric &&
+              <div>
+                <Lyric
+                  lyricList={this.state.lyricList}
+                  timeList={this.state.lyricTimeList}
+                  currentTime={this.state.currentTime}
+                  lyricType={this.state.lyricType}
+                  isNextSong={this.state.isNextSong} />
+              </div>
+            }
+            {!this.state.isShowLyric &&
+              <div >
+                <img width="90" height="90" src="https://img3.doubanio.com/f/fm/1e89298732fbf090aea0812f7fb2af30ad82ab61/pics/fm/landingpage/qr_2@2x.png" alt="FM APP" />
+                <div>下载豆瓣FM APP  让好音乐继续</div>
+              </div>
+            }
           </div>
 
           <div className="middle">
@@ -236,12 +250,12 @@ class Home extends React.Component {
             <img src={this.state.songInfo.picture} className="playingCover" />
           </div>
           {this.state.isShowShare &&
-            <Share 
-              sid={this.state.songInfo.sid} 
-              ssid={this.state.songInfo.ssid} 
-              picture={this.state.songInfo.picture} 
+            <Share
+              sid={this.state.songInfo.sid}
+              ssid={this.state.songInfo.ssid}
+              picture={this.state.songInfo.picture}
               title={this.state.songInfo.title}
-              closePopup={()=>{this.setState({isShowShare:false})}}/>
+              closePopup={() => { this.setState({ isShowShare: false }) }} />
           }
         </div>
       </section>

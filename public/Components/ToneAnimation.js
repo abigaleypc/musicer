@@ -7,12 +7,12 @@ class ToneAnimation extends React.Component {
   }
   render() {
     return (
-      <div className="tone-section">
+      <span className="tone-section">
           <div className="tone-item tone-item-1"></div>
           <div className="tone-item tone-item-2"></div>
           <div className="tone-item tone-item-3"> </div>
           <div className="tone-item tone-item-4"> </div>
-      </div>
+      </span>
     )
   }
 }

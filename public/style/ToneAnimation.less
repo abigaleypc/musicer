@@ -1,16 +1,44 @@
 .tone-section {
+    position: relative;
     width: 12px;
-    height: 30px;
+    height: 10px;
+    overflow: hidden;
+    margin-right: 5px;
+    display: inline-block;
 }
 .tone-item {
     position: absolute;
     background: rgb(92, 188, 125);
     height: 12px;
-    left: 1px;
     width: 2px;
     border-radius: 25%;
 }
 
-// .tone-item-${index} {
+.tone-item-1 {
+    left: 1px;
+    animation: TONEITEM 3S infinite;
+}
+.tone-item-2 {
+    left: 4px;
+    animation: TONEITEM 2S infinite;
+}
+.tone-item-3 {
+    left: 7px;
+    animation: TONEITEM 1S infinite;
+}
+.tone-item-4 {
+    left: 10px;
+    animation: TONEITEM 4S infinite;
+}
 
-// }
+@keyframes TONEITEM {
+    0% {
+        top: 0
+    }
+    40% {
+        top: 10px;
+    }
+    100% {
+        top: 0px;
+    }
+}
