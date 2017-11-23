@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
+import {api} from './config/const';
 import Header from './Components/Header';
 import Home from './Components/Home';
 import reducers from './store/reducers'
@@ -29,7 +30,7 @@ class Root extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://localhost:8082/userInfo').then(res => res.json()).then(data => {
+    fetch(`${api}/user/info`).then(res => res.json()).then(data => {
       if (Object.keys(data).length > 0) {
         for (let key in data) {
           const userInfo = data[key].data;

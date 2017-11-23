@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import request from 'request'
+import api from './config/const';
 
 const { ipcRenderer } = window.require('electron');
 const BrowserWindow = window.require('electron').remote.BrowserWindow
-
 
 class Login extends React.Component {
   constructor(props) {
@@ -38,7 +37,7 @@ class Login extends React.Component {
 
   loginServer(username, password) {
     return new Promise((resolve, reject) => {
-      var url = 'http://localhost:8082/login';
+      var url = `${api}/user/login`;
       request.post(url, {
         json: true,
         qs: {

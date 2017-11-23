@@ -2,6 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
+import {api} from '../config/const';
 import { userInfoAction } from '../store/actions'
 import { MainColor, GrayColor } from '../Theme'
 
@@ -57,25 +58,7 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-    let self = this;
     this.nextSong();
-    // fetch('http://localhost:8082/nextSong')
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     if (data.song.length > 0) {
-    //       self.setState({
-    //         songInfo: data.song[0],
-    //         totalTime: data.song[0].length,
-    //         remainTime: data.song[0].length,
-    //         second: 0,
-    //         minute: 0,
-    //       });
-
-    //       this.getLyric();
-    //     }else {
-
-    //     }
-    //   });
   }
 
   initSong() {
@@ -91,7 +74,7 @@ class Home extends React.Component {
     this.setState({
       isNextSong: true
     })
-    fetch(`http://localhost:8082/nextSong?sid=${this.state.songInfo.sid}`)
+    fetch(`${api}/song/next?sid=${this.state.songInfo.sid}`)
       .then(res => res.json())
       .then((data) => {
         if (data.song.length > 0) {
@@ -187,7 +170,7 @@ class Home extends React.Component {
   getLyric() {
     let { sid, ssid } = this.state.songInfo;
     if (sid && ssid) {
-      fetch(`http://localhost:8082/lyric?sid=${sid}&ssid=${ssid}`)
+      fetch(`${api}/song/lyric?sid=${sid}&ssid=${ssid}`)
         .then(res => res.json())
         .then(data => {
           this.setState({
