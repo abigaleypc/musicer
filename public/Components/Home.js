@@ -58,21 +58,24 @@ class Home extends React.Component {
 
   componentWillMount() {
     let self = this;
-    fetch('http://localhost:8082/nextSong')
-      .then(res => res.json())
-      .then(data => {
-        if (data.song.length > 0) {
-          self.setState({
-            songInfo: data.song[0],
-            totalTime: data.song[0].length,
-            remainTime: data.song[0].length,
-            second: 0,
-            minute: 0,
-          });
+    this.nextSong();
+    // fetch('http://localhost:8082/nextSong')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     if (data.song.length > 0) {
+    //       self.setState({
+    //         songInfo: data.song[0],
+    //         totalTime: data.song[0].length,
+    //         remainTime: data.song[0].length,
+    //         second: 0,
+    //         minute: 0,
+    //       });
 
-          this.getLyric();
-        }
-      });
+    //       this.getLyric();
+    //     }else {
+
+    //     }
+    //   });
   }
 
   initSong() {
@@ -84,7 +87,6 @@ class Home extends React.Component {
   }
 
   nextSong() {
-
     this.initSong();
     this.setState({
       isNextSong: true
@@ -102,11 +104,15 @@ class Home extends React.Component {
             minute: 0,
             isNextSong: false
           });
+          this._video.src = this.state.songInfo.url
         }
-        this._video.src = this.state.songInfo.url
+        else {
+          this.nextSong();
+        }
       })
       .then(() => {
-        this.getLyric();
+        if (this.state.songInfo)
+          this.getLyric();
       });
   }
 
@@ -243,7 +249,7 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
           </div>
 
           <div className="right">
