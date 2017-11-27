@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'request'
-import api from './config/const';
+import { api } from './config/const';
 
 const { ipcRenderer } = window.require('electron');
 const BrowserWindow = window.require('electron').remote.BrowserWindow

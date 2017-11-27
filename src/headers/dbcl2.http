@@ -1,0 +1,17 @@
+POST /j/popup/login/basic HTTP/1.1
+Host: accounts.douban.com
+Connection: keep-alive
+Content-Length: 118
+Pragma: no-cache
+Cache-Control: no-cache
+Accept: application/json, text/javascript, */*; q=0.01
+Origin: https://accounts.douban.com
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referer: https://accounts.douban.com/popup/login?source=fm&use_post_message
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
+Cookie: bid=R5umfL3ETNI
+
+source=fm&referer=https%3A%2F%2Fdouban.fm%2F&ck=&name=13798994068&password=1234567890ypc&captcha_solution=&captcha_id=

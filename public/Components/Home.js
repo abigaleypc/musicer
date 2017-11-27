@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
-import {api} from '../config/const';
+import { api } from '../config/const';
 import { userInfoAction } from '../store/actions'
 import { MainColor, GrayColor } from '../Theme'
 
@@ -100,12 +100,36 @@ class Home extends React.Component {
   }
 
   like() {
+    fetch(`${api}/song/like?sid=${this.state.songInfo.sid}&isLike=${!this.state.isLike}`)
     this.setState({
       isLike: !this.state.isLike
     })
   }
 
   delete() {
+    fetch(`${api}/song/delete?sid=${this.state.songInfo.sid}`)
+      .then(res => res.json())
+      .then((data) => {
+        if (data.song.length > 0) {
+          this.setState({
+            songInfo: data.song[0],
+            totalTime: data.song[0].length,
+            remainTime: data.song[0].length,
+            currentTime: 0,
+            second: 0,
+            minute: 0,
+            isNextSong: false
+          });
+          this._video.src = this.state.songInfo.url
+        }
+        else {
+          this.nextSong();
+        }
+      })
+      .then(() => {
+        if (this.state.songInfo)
+          this.getLyric();
+      });
 
   }
 

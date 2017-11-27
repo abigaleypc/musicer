@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { tologinAction, userInfoAction } from '../store/actions';
-import { MainColor, GrayColor } from '../Theme'
+
+import { api } from '../config/const';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -34,6 +35,31 @@ class Header extends React.Component {
       userName: '',
       avatar: ''
     }
+  }
+  componentDidMount() {
+    fetch(`${api}/user/info`).then(res => res.json()).then(data => {
+      console.log('------------------------------------');
+      console.log(data);
+      console.log('------------------------------------');
+      if (data && data.basic && data.basic.data) {
+        let account_info = data.basic.data.account_info;
+        this.props.tologinAction({ isLogin: true });
+        this.props.userInfoAction({ userInfo: account_info });
+        this.setState({
+          userName: account_info.name,
+          avatar: account_info.avatar.icon
+        })
+      }
+    }).catch(error => {
+      alert(error.errMsg);
+    })
+
+  }
+  componentWillReceiveProps() {
+
+    // console.log('------------------------------------');
+    // console.log(this.props);
+    // console.log('------------------------------------');
   }
   login() {
     const modalPath = `file://${window.__dirname}/login.html`;

@@ -1,6 +1,8 @@
 const express = require('express');
 const request = require('request');
 
+const LKV = require('../utils/lkv');
+
 const {
   httpHeader,
   AuthKey,
@@ -86,7 +88,101 @@ app.get('/next', function (req, res) {
 
 
 app.get('/like', function (req, res) {
+  let isLike = req.query.isLike === 'true' ? 'r' : 'u';
+  LKV.get('username').then(username => {
+    LKV.get(username).then(obj => {
+      return obj
+    }).then((obj) => {
+      let Authorization;
+      access_token && (Authorization = 'Bearer ' + access_token);
+      request.get('https://douban.fm/j/v2/playlist', {
+        json: true,
+        headers: Object.assign({}, httpHeader, {
+          Authorization
+        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+        qs: {
+          channel: -10,
+          kbps: 192,
+          client: 's:mainsite|y:3.0',
+          app_name: 'radio_website',
+          version: 100,
+          type: isLike,
+          sid: req.query.sid,
+          pt: 949.3770000000001,
+          pb: 128,
+          apikey: ''
+        }
+      }).on('data', (data) => {
+        data = JSON.parse(data)
+        res.json(data)
+      })
+    })
+  })
+})
 
+app.get('/delete', function (req, res) {
+  LKV.get('username').then(username => {
+    LKV.get(username).then(obj => {
+      return obj
+    }).then((obj) => {
+      let Authorization;
+      access_token && (Authorization = 'Bearer ' + access_token);
+      request.get('https://douban.fm/j/v2/playlist', {
+        json: true,
+        headers: Object.assign({}, httpHeader, {
+          Authorization
+        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+        qs: {
+          channel: -10,
+          kbps: 192,
+          client: 's:mainsite|y:3.0',
+          app_name: 'radio_website',
+          version: 100,
+          type: 'b',
+          sid: req.query.sid,
+          pt: 949.3770000000001,
+          pb: 128,
+          apikey: ''
+        }
+      }).on('data', (data) => {
+        data = JSON.parse(data)
+        res.json(data)
+      })
+    })
+  })
+})
+
+app.get('/playlist', function (req, res) {
+  let isLike = req.query.isLike === 'true' ? 'r' : 'u';
+  LKV.get('username').then(username => {
+    LKV.get(username).then(obj => {
+      return obj
+    }).then((obj) => {
+      let Authorization;
+      access_token && (Authorization = 'Bearer ' + access_token);
+      request.get('https://douban.fm/j/v2/playlist', {
+        json: true,
+        headers: Object.assign({}, httpHeader, {
+          Authorization
+        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+        qs: {
+          channel: -10,
+          kbps: 192,
+          client: 's:mainsite|y:3.0',
+          app_name: 'radio_website',
+          version: 100,
+          type: req.query.type,
+          sid: req.query.sid,
+          pt: 949.3770000000001,
+          pb: 128,
+          apikey: ''
+        }
+      }).on('data', (data) => {
+        data = JSON.parse(data)
+        res.json(data)
+      })
+    })
+  })
 })
 
 app.get('/lyric', function (req, res) {

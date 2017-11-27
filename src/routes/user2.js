@@ -43,8 +43,8 @@ user.post('/login', function (req, res) {
     try {
       data = JSON.parse(data);
       if (data.access_token) {
-        LKV.set('username', params.username)
-        LKV.set(params.username, data);
+        LKV.set('username', params.username);
+        LKV.set('token', data)
         getBasic(params.username, params.password, Authorization).then(result => {
           if (result.status == 'failed') {
             res.json({
@@ -53,7 +53,6 @@ user.post('/login', function (req, res) {
               payload: result.payload
             })
           } else {
-            LKV.set('basic', result.payload)
             res.json({
               code: 1,
               msg: 'success',
@@ -99,9 +98,10 @@ function getBasic(username, password, Authorization) {
       // get dbcl2
       let headers = response.headers['set-cookie'];
       let value = getValueByKey(headers, 'dbcl2');
-      LKV.get(username).then(obj => {
-        LKV.set(username, Object.assign({}, obj, { dbcl2: value }))
-      })
+      // LKV.get(username).then(obj => {
+      //   LKV.set(username, Object.assign({}, obj, { dbcl2: value }))
+      // })
+      LKV.set('dbcl2', value)
     }).on('error', err => {
       reject(err);
     }).on('data', data => {
@@ -122,43 +122,60 @@ function getUserBid(username) {
     let headers = response.headers['set-cookie'];
     let value = getValueByKey(headers, 'bid');
 
-    getUserCk(username, value);
-    LKV.get(username).then(obj => {
-      LKV.set(username, Object.assign({}, obj, { bid: value }))
-    })
+    // LKV.get(username).then(obj => {
+    //   LKV.set(username, Object.assign({}, obj, { bid: value }))
+    // })
+    LKV.set('bid', value)
+
+    getUserCk(username);
   })
 }
 
 
-function getUserCk(username, bid) {
-  let user;
-  LKV.get(username).then(res => {
-    user = res;
+function getUserCk(username) {
+  let ac, bid, dbcl2;
+
+  LKV.get('ac').then(res => {
+    ac = res;
   }).then(() => {
-    request.get('https://douban.fm/j/check_loggedin?san=1', {
-      json: true,
-      headers: {
-        'Host': 'douban.fm',
-        'Connection': 'keep-alive',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-        'Accept': 'text/javascript, text/html, application/xml, text/xml, */*',
-        'X-Requested-With': 'XMLHttpRequest',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': 'https://douban.fm/',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'Cookie': `flag="ok"; bid=${bid}; ac=${user.ac}; dbcl2=${user.dbcl2}`
-      }
-    }).on('response', function (response) {
-      let headers = response.headers['set-cookie']
-      let ck = getValueByKey(headers, 'ck');
-      console.log('------------------------------------');
-      console.log(ck);
-      console.log('------------------------------------');
+    LKV.get('bid').then(res => {
+      bid = res
+    }).then(() => {
+      LKV.get('dbcl2').then(res => {
+        dbcl2 = res;
+      })
+    }).then(() => {
+      request.get('https://douban.fm/j/check_loggedin?san=1', {
+        json: true,
+        headers: {
+          'Host': 'douban.fm',
+          'Connection': 'keep-alive',
+          'Pragma': 'no-cache',
+          'Cache-Control': 'no-cache',
+          'Accept': 'text/javascript, text/html, application/xml, text/xml, */*',
+          'X-Requested-With': 'XMLHttpRequest',
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Referer': 'https://douban.fm/',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+          'Cookie': `flag="ok"; bid=${bid}; ac=${ac}; dbcl2=${dbcl2}`
+        }
+      }).on('response', function (response) {
+        console.log('------------------------------------');
+        console.log(bid);
+        console.log(ac);
+        console.log(dbcl2);
+        console.log('------------------------------------');
+        let headers = response.headers['set-cookie']
+        let ck = getValueByKey(headers, 'ck');
+        console.log('------------------------------------');
+        console.log(ck);
+        console.log('------------------------------------');
+      })
     })
   })
+
 
 }
 function getUserAc(username) {
@@ -225,11 +242,12 @@ function goDouBanFm(url, bid, username) {
   }).on('response', function (response) {
     let headers = response.headers['set-cookie'];
     let value = getValueByKey(headers, 'ac');
-    LKV.get(username).then(obj => {
-      LKV.set(username, Object.assign({}, obj, { ac: value }))
-    }).then(() => {
-      getUserBid(username);
-    })
+    // LKV.get(username).then(obj => {
+    //   LKV.set(username, Object.assign({}, obj, { ac: value }))
+    // }).then(() => {
+    LKV.set('ac', value);
+    getUserBid(username);
+    // })
   })
 }
 

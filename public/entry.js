@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
-import {api} from './config/const';
+import { api } from './config/const';
 import Header from './Components/Header';
 import Home from './Components/Home';
 import reducers from './store/reducers'
@@ -27,6 +27,9 @@ const store = createStore(
 class Root extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      basic: null
+    }
   }
 
   componentDidMount() {
@@ -45,8 +48,8 @@ class Root extends React.Component {
   render() {
     return (
       <div style={styles.content}>
-          <Header />
-          <Home />
+        <Header />
+        <Home />
       </div>
     );
   }
@@ -54,7 +57,7 @@ class Root extends React.Component {
 
 
 const styles = {
-  content:{
+  content: {
     fontFamily: '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,PingFang SC,Source Han Sans CN,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif'
   }
 }
