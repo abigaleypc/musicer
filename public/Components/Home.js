@@ -41,13 +41,14 @@ class Home extends React.Component {
       totalTime: 0,
       remainTime: 0,
       isLike: false,
-      isShowLyric: false,
       lyricList: [],
       lyricType: null,
       lyricTimeList: [],
       currentTime: 0,
+      isShowLyric: false,
       isNextSong: false,
-      isShowShare: false
+      isShowShare: false,
+      isShowDisk: false
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -58,6 +59,8 @@ class Home extends React.Component {
     this.like = this.like.bind(this)
     this.delete = this.delete.bind(this)
     this.toggleType = this.toggleType.bind(this);
+    this.lyricModule = this.lyricModule.bind(this);
+    this.diskModule = this.diskModule.bind(this);
   }
 
   componentWillMount() {
@@ -79,8 +82,7 @@ class Home extends React.Component {
     })
     fetch(`${api}/song/next?sid=${this.state.songInfo.sid}`)
       .then((res) => {
-        res.json();
-
+       return res.json();
       })
       .then((data) => {
         if (data.song.length > 0) {
@@ -184,15 +186,35 @@ class Home extends React.Component {
 
   toggleType(type) {
     if (type == 'lyric') {
-      ipcRenderer.send('window-layout', {
-        width: 200,
-        height: 400
-      })
+
       this.setState({
         isShowLyric: !this.state.isShowLyric
       })
+      if (this.state.isShowLyric) {
+        ipcRenderer.send('window-layout', {
+          width: -220
+        })
+      } else {
+        ipcRenderer.send('window-layout', {
+          width: 220
+        })
+
+      }
 
     } else if (type == 'download') {
+      this.setState({
+        isShowDisk: !this.state.isShowDisk
+      })
+      if (this.state.isShowDisk) {
+        ipcRenderer.send('window-layout', {
+          width: -220
+        })
+      } else {
+        ipcRenderer.send('window-layout', {
+          width: 220
+        })
+
+      }
     } else {
       this.setState({
         isShowShare: !this.state.isShowShare
@@ -216,28 +238,46 @@ class Home extends React.Component {
     }
   }
 
+  lyricModule() {
+    if (this.state.isShowLyric) {
+      return (
+        <div className="left" >
+          {this.state.isShowLyric &&
+            <div>
+              <Lyric
+                lyricList={this.state.lyricList}
+                timeList={this.state.lyricTimeList}
+                currentTime={this.state.currentTime}
+                lyricType={this.state.lyricType}
+                isNextSong={this.state.isNextSong} />
+            </div>
+          }
+          {!this.state.isShowLyric &&
+            <div >
+              <img width="90" height="90" src="https://img3.doubanio.com/f/fm/1e89298732fbf090aea0812f7fb2af30ad82ab61/pics/fm/landingpage/qr_2@2x.png" alt="FM APP" />
+              <div>下载豆瓣FM APP  让好音乐继续</div>
+            </div>
+          }
+        </div>
+      )
+    }
+    return;
+  }
+
+  diskModule() {
+    if (this.state.isShowDisk) {
+      return (<div className="right">
+        <img src={this.state.songInfo.picture} className="playingCover" />
+      </div>)
+    }
+    return;
+  }
   render() {
     return (
       <section>
         <div className="warpper">
-          <div className="left">
-            {this.state.isShowLyric &&
-              <div>
-                <Lyric
-                  lyricList={this.state.lyricList}
-                  timeList={this.state.lyricTimeList}
-                  currentTime={this.state.currentTime}
-                  lyricType={this.state.lyricType}
-                  isNextSong={this.state.isNextSong} />
-              </div>
-            }
-            {!this.state.isShowLyric &&
-              <div >
-                <img width="90" height="90" src="https://img3.doubanio.com/f/fm/1e89298732fbf090aea0812f7fb2af30ad82ab61/pics/fm/landingpage/qr_2@2x.png" alt="FM APP" />
-                <div>下载豆瓣FM APP  让好音乐继续</div>
-              </div>
-            }
-          </div>
+          {this.lyricModule()}
+
 
           <div className="middle">
 
@@ -266,12 +306,12 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
           </div>
+          {this.diskModule()}
 
-          <div className="right">
-            <img src={this.state.songInfo.picture} className="playingCover" />
-          </div>
+
+
           {this.state.isShowShare &&
             <Share
               sid={this.state.songInfo.sid}

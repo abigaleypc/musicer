@@ -12,7 +12,7 @@ const url = require('url')
 let mainWindow, onlineStatusWindow
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 })
+  mainWindow = new BrowserWindow({ width: 430, height: 360 })
 
   // and load the index.html of the app;
   mainWindow.loadURL(url.format({
@@ -22,6 +22,11 @@ function createWindow() {
   }))
 
 
+  mainWindow.on('resize', function () {
+    console.log('------------------------------------');
+    console.log(mainWindow.getSize());
+    console.log('------------------------------------');
+  })
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -65,9 +70,6 @@ ipcMain.on('login-event', (event, arg) => {
   mainWindow.webContents.send('login-event', arg);
 })
 ipcMain.on('window-layout', (event, arg) => {
-  console.log('------------------------------------');
-  console.log(event);
-  console.log(arg);
-  console.log('------------------------------------');
-  mainWindow.setSize(1000,200)
+  let window = mainWindow.getSize();
+  mainWindow.setSize(window[0] + arg.width, window[1], true)
 })
