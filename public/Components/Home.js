@@ -16,7 +16,10 @@ import Lyric from './Lyric'
 import Share from './Share'
 import ToneAnimation from './ToneAnimation'
 
+
 import '../style/Home.less'
+import { request } from 'https';
+import { ipcRenderer } from 'electron';
 
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
@@ -75,7 +78,10 @@ class Home extends React.Component {
       isNextSong: true
     })
     fetch(`${api}/song/next?sid=${this.state.songInfo.sid}`)
-      .then(res => res.json())
+      .then((res) => {
+        res.json();
+
+      })
       .then((data) => {
         if (data.song.length > 0) {
           this.setState({
@@ -178,6 +184,10 @@ class Home extends React.Component {
 
   toggleType(type) {
     if (type == 'lyric') {
+      ipcRenderer.send('window-layout', {
+        width: 200,
+        height: 400
+      })
       this.setState({
         isShowLyric: !this.state.isShowLyric
       })
@@ -256,7 +266,7 @@ class Home extends React.Component {
                 <a onClick={this.nextSong}><Next /></a>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
+            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
           </div>
 
           <div className="right">

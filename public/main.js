@@ -64,3 +64,10 @@ const { ipcMain } = require('electron')
 ipcMain.on('login-event', (event, arg) => {
   mainWindow.webContents.send('login-event', arg);
 })
+ipcMain.on('window-layout', (event, arg) => {
+  console.log('------------------------------------');
+  console.log(event);
+  console.log(arg);
+  console.log('------------------------------------');
+  mainWindow.setSize(1000,200)
+})

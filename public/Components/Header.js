@@ -38,9 +38,6 @@ class Header extends React.Component {
   }
   componentDidMount() {
     fetch(`${api}/user/info`).then(res => res.json()).then(data => {
-      console.log('------------------------------------');
-      console.log(data);
-      console.log('------------------------------------');
       if (data && data.basic && data.basic.data) {
         let account_info = data.basic.data.account_info;
         this.props.tologinAction({ isLogin: true });

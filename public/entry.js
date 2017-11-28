@@ -37,7 +37,7 @@ class Root extends React.Component {
       if (Object.keys(data).length > 0) {
         for (let key in data) {
           const userInfo = data[key].data;
-          console.log(userInfo);
+          // console.log(userInfo);
         }
       }
     }).catch(error => {

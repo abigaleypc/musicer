@@ -27,7 +27,6 @@ user.get('/info', (req, res) => {
 
 user.post('/login', function (req, res) {
   let Authorization;
-  access_token && (Authorization = 'Bearer ' + access_token);
 
   var params = Object.assign({}, AuthKey, {
     username: req.query.username,
@@ -45,6 +44,7 @@ user.post('/login', function (req, res) {
       if (data.access_token) {
         LKV.set('username', params.username)
         LKV.set(params.username, data);
+        Authorization = 'Bearer ' + access_token
         getBasic(params.username, params.password, Authorization).then(result => {
           if (result.status == 'failed') {
             res.json({
@@ -59,7 +59,6 @@ user.post('/login', function (req, res) {
               msg: 'success',
               payload: result.payload
             })
-
             getUserAc(params.username);
           }
         });

@@ -78,6 +78,7 @@ app.get('/next', function (req, res) {
   }).on('data', data => {
     try {
       data = JSON.parse(data);
+      res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
       res.json(data)
 
     } catch (err) {
@@ -152,30 +153,21 @@ app.get('/delete', function (req, res) {
   })
 })
 
-app.get('/playlist', function (req, res) {
-  let isLike = req.query.isLike === 'true' ? 'r' : 'u';
+app.get('/recent_played',function (req,res) {
   LKV.get('username').then(username => {
     LKV.get(username).then(obj => {
       return obj
     }).then((obj) => {
       let Authorization;
       access_token && (Authorization = 'Bearer ' + access_token);
-      request.get('https://douban.fm/j/v2/playlist', {
+      request.get('https://douban.fm/j/v2/recent_played_songs', {
         json: true,
         headers: Object.assign({}, httpHeader, {
           Authorization
         }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
         qs: {
-          channel: -10,
-          kbps: 192,
-          client: 's:mainsite|y:3.0',
-          app_name: 'radio_website',
-          version: 100,
-          type: req.query.type,
-          sid: req.query.sid,
-          pt: 949.3770000000001,
-          pb: 128,
-          apikey: ''
+          start:0,
+          limit:100
         }
       }).on('data', (data) => {
         data = JSON.parse(data)
