@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import { api } from '../config/const';
 import { userInfoAction } from '../store/actions'
-import { MainColor, GrayColor } from '../Theme'
 
 import RedHeart from './RedHeart'
 import Trash from './Trash'
@@ -16,6 +15,7 @@ import Lyric from './Lyric'
 import Share from './Share'
 import ToneAnimation from './ToneAnimation'
 
+const getColors = require('get-image-colors')
 
 import '../style/Home.less'
 import { request } from 'https';
@@ -38,13 +38,16 @@ class Home extends React.Component {
       songInfo: {},
       isBegining: false,
       isPause: false,
+      currentTime: 0,
       totalTime: 0,
-      remainTime: 0,
+      currentMinute: 0,
+      currentSecond: 0,
+      totalMinute: 0,
+      totalSecond: 0,
       isLike: false,
       lyricList: [],
       lyricType: null,
       lyricTimeList: [],
-      currentTime: 0,
       isShowLyric: false,
       isNextSong: false,
       isShowShare: false,
@@ -61,6 +64,7 @@ class Home extends React.Component {
     this.toggleType = this.toggleType.bind(this);
     this.lyricModule = this.lyricModule.bind(this);
     this.diskModule = this.diskModule.bind(this);
+    this.mainModule = this.mainModule.bind(this);
   }
 
   componentWillMount() {
@@ -70,7 +74,7 @@ class Home extends React.Component {
   initSong() {
     this.setState({
       totalTime: 0,
-      remainTime: 0
+      currentTime: 0
     })
 
   }
@@ -82,17 +86,25 @@ class Home extends React.Component {
     })
     fetch(`${api}/song/next?sid=${this.state.songInfo.sid}`)
       .then((res) => {
-       return res.json();
+        return res.json();
       })
       .then((data) => {
         if (data.song.length > 0) {
+          getColors(data.song[0].picture).then(colors => {
+            console.log('------------------------------------');
+            console.log(colors);
+            console.log('------------------------------------');
+            // `colors` is an array of color objects
+          })
+
           this.setState({
             songInfo: data.song[0],
-            totalTime: data.song[0].length,
-            remainTime: data.song[0].length,
             currentTime: 0,
-            second: 0,
-            minute: 0,
+            currentSecond: 0,
+            currentMinute: 0,
+            totalTime: data.song[0].length,
+            totalSecond: this.dateFormat(data.song[0].length).second,
+            totalMinute: this.dateFormat(data.song[0].length).minute.toString(),
             isNextSong: false
           });
           this._video.src = this.state.songInfo.url
@@ -122,10 +134,12 @@ class Home extends React.Component {
           this.setState({
             songInfo: data.song[0],
             totalTime: data.song[0].length,
-            remainTime: data.song[0].length,
             currentTime: 0,
-            second: 0,
-            minute: 0,
+            currentSecond: 0,
+            currentMinute: 0,
+            totalTime: data.song[0].length,
+            totalSecond: this.dateFormat(data.song[0].length).second,
+            totalMinute: this.dateFormat(data.song[0].length).minute,
             isNextSong: false
           });
           this._video.src = this.state.songInfo.url
@@ -161,25 +175,17 @@ class Home extends React.Component {
   }
 
   onTimeUpdate(data) {
-    let { currentTime } = this.state;
-
-    // if (data.target.currentTime - currentTime < 1) {
-    //   return;
-    // }
-
     this.setState({
       currentTime: data.target.currentTime
     });
+    let { second, minute } = this.dateFormat(this.state.currentTime)
 
-    let _remainSecond = Math.floor(this.state.remainTime % 60) > 0 ? Math.floor(this.state.remainTime % 60) : 0,
-      _remainMinute = Math.floor(this.state.remainTime / 60) > 0 ? Math.floor(this.state.remainTime / 60) : 0;
-    if (this.state.remainTime < 0) {
+    if (this.state.currentTime > this.state.totalTime) {
       this.nextSong();
     } else {
       this.setState({
-        remainTime: this.state.totalTime - data.target.currentTime,
-        second: _remainSecond < 10 ? ('0' + _remainSecond) : _remainSecond,
-        minute: _remainMinute
+        currentSecond: second,
+        currentMinute: minute
       })
     }
   }
@@ -238,6 +244,24 @@ class Home extends React.Component {
     }
   }
 
+  dateFormat(date) {
+    let _second = Math.floor(date % 60) > 0 ? Math.floor(date % 60) : 0,
+      minute = Math.floor(date / 60) > 0 ? Math.floor(date / 60) : 0;
+
+    let second = _second < 10 ? ('0' + _second) : _second;
+    return {
+      second, minute
+    }
+    // if (this.state.currentTime > this.state.totalTime) {
+    //   this.nextSong();
+    // } else {
+    //   this.setState({
+    //     second: _currentSecond < 10 ? ('0' + _currentSecond) : _currentSecond,
+    //     minute: _currentMinute
+    //   })
+    // }
+  }
+
   lyricModule() {
     if (this.state.isShowLyric) {
       return (
@@ -272,43 +296,77 @@ class Home extends React.Component {
     }
     return;
   }
+  mainModule() {
+    return (<div className="middle">
+      <div className="songType"><ToneAnimation />豆瓣精选MHz</div>
+      <div className="songTitle">{this.state.songInfo.title}</div>
+      <div className="songAuthor">{this.state.songInfo.artist}</div>
+      <div className="volumeAnLyricGroup">
+        <div className="volumeAndTime">
+          <span className="time">-{this.state.minute}:{this.state.second}</span>
+          <VolumeSlider setVolume={num => { this._video.volume = 0 }} />
+          {this.props.isShowLyric}
+        </div>
+        <LyricDownloadShareBtn toggleType={type => this.toggleType(type)} />
+      </div>
+      <div className="progress">
+        {/* <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div> */}
+      </div>
+
+      <div className="btnGroup">
+        <div className="supBtnGroup">
+          <a onClick={this.like}><RedHeart isLike={this.state.isLike} /></a>
+          <a onClick={this.delete}><Trash /></a>
+        </div>
+        <div className="supBtnGroup">
+          <a onClick={this.onPause}><PlayAndPause isPause={this.state.isPause} /></a>
+          <a onClick={this.nextSong}><Next /></a>
+        </div>
+      </div>
+      {/* <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video> */}
+    </div>)
+  }
   render() {
     return (
       <section>
+        {/* <a className="close_btn" href='javascript:window.close()'>✘</a> */}
         <div className="warpper">
-          {this.lyricModule()}
+          {/* {this.lyricModule()} */}
 
+          {/* {this.mainModule()} */}
 
-          <div className="middle">
-
-            <div className="songType"><ToneAnimation />豆瓣精选MHz</div>
-            <div className="songTitle">{this.state.songInfo.title}</div>
-            <div className="songAuthor">{this.state.songInfo.artist}</div>
-            <div className="volumeAnLyricGroup">
-              <div className="volumeAndTime">
-                <span className="time">-{this.state.minute}:{this.state.second}</span>
-                <VolumeSlider setVolume={num => { this._video.volume = num }} />
-                {this.props.isShowLyric}
+          {/* {this.diskModule()} */}
+          <div className="playing_info">
+            <img src={this.state.songInfo.picture} />
+            <div className="text_info center layout_row">
+              <div className="left">ew</div>
+              <div className="middle">
+                <div><strong>{this.state.songInfo.title}</strong></div>
+                <div className="artist">{this.state.songInfo.artist}</div>
               </div>
-              <LyricDownloadShareBtn toggleType={type => this.toggleType(type)} />
-            </div>
-            <div className="progress">
-              <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div>
-            </div>
-
-            <div className="btnGroup">
-              <div className="supBtnGroup">
-                <a onClick={this.like}><RedHeart isLike={this.state.isLike} /></a>
-                <a onClick={this.delete}><Trash /></a>
-              </div>
-              <div className="supBtnGroup">
-                <a onClick={this.onPause}><PlayAndPause isPause={this.state.isPause} /></a>
-                <a onClick={this.nextSong}><Next /></a>
+              <div className="right">
+                <i className="fa fa-share-alt" aria-hidden="true"></i>
               </div>
             </div>
-            <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
           </div>
-          {this.diskModule()}
+
+          <div className="progress">
+            <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
+            <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
+            <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
+          </div>
+          <div className="btn_group layout_row">
+            <div className="btn_item layout_row">
+              <i className="fa fa-heart fa-lg" aria-hidden="true"></i>
+            </div>
+            <div className="btn_item layout_row btn_item_middle">
+              <i className="fa fa-pause fa-lg" aria-hidden="true"></i>
+            </div>
+            <div className="btn_item layout_row">
+              <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
+            </div>
+          </div>
+
 
 
 

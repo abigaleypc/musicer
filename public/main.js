@@ -12,7 +12,7 @@ const url = require('url')
 let mainWindow, onlineStatusWindow
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 430, height: 360 })
+  mainWindow = new BrowserWindow({ width: 250, height: 290 })
 
   // and load the index.html of the app;
   mainWindow.loadURL(url.format({

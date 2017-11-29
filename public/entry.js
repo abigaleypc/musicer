@@ -48,7 +48,7 @@ class Root extends React.Component {
   render() {
     return (
       <div style={styles.content}>
-        <Header />
+        {/* <Header /> */}
         <Home />
       </div>
     );

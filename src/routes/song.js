@@ -79,9 +79,6 @@ app.get('/next', function (req, res) {
     try {
       data = JSON.parse(data);
       res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
-      console.log('------------------------------------');
-      console.log(data);
-      console.log('------------------------------------');
       res.json(data)
 
     } catch (err) {
