@@ -5,56 +5,81 @@ section {
     .playing_info {
         position: relative;
         width: 100%;
-        height: 170px;
+        height: 270px;
+        -webkit-app-region: drag;
         img {
             width: 100%;
             height: 100%;
         }
-        .text_info {
+        .btnAndInfo {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 55px;
-            background: rgba(0, 0, 0, 0.4);
-            .artist {
-                font-size: 12px;
-                color: rgba(255, 255, 255, .7);
+            .text_info {
+                position: absolute;
+                bottom: 85px;
+                width: 100%;
+                height: 55px;
+                background: rgba(0, 0, 0, 0.3);
+                .middle {
+                    width: 125px;
+                }
+                .artist {
+                    font-size: 12px;
+                    color: rgb(121, 121, 121);
+                }
             }
-        }
-    }
-    .progress {
-        position: relative;
-        width: 100%;
-        height: 14px;
-        background: @lightgray;
-        font-size: 14px;
-        line-height: 14px;
-        .red_progress {
-            position: absolute;
-            background: @red;
-            height: 14px;
-            z-index: 0;
-        }
-        .left {
-            position: absolute;
-            left: 0;
-            z-index: 1;
-        }
-        .right {
-            position: absolute ;
-            right: 0;
-            z-index: 1;
-        }
-    }
-    .btn_group {
-        height: 80px;
-        .btn_item {
-            width: 33.33%;
-            height: 100%;
-            background: @middlegray + #003300;
-        }
-        .btn_item_middle {
-            background: @middlegray;
+            .progress {
+                display: block;
+                position: relative;
+                width: 100%;
+                height: 10px;
+                -webkit-app-region: drag;
+                background: rgba(210, 215, 219, .4);
+                .red_progress {
+                    position: absolute;
+                    background: @red;
+                    height: 10px;
+                    z-index: 0;
+                }
+                .left,
+                .right {
+                    display: none;
+                }
+                &:hover {
+                    height: 12px;
+                    background: rgba(210, 215, 219, .7);
+                    font-size: 12px;
+                    line-height: 12px;
+                    .red_progress {
+                        height: 14px;
+                    }
+                    .left {
+                        display: block;
+                        position: absolute;
+                        left: 0;
+                        z-index: 1;
+                    }
+                    .right {
+                        display: block;
+                        position: absolute;
+                        right: 0;
+                        z-index: 1;
+                    }
+                }
+            }
+            .btn_group {
+                -webkit-app-region: no-drag;
+                height: 75px;
+                .btn_item {
+                    width: 33.33%;
+                    height: 100%;
+                    background: rgba(83, 98, 112, 0.8);
+                }
+                .btn_item_middle {
+                    background: rgba(74, 85, 97, 0.95);
+                }
+            }
         }
     }
 }

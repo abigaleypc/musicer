@@ -15,8 +15,6 @@ import Lyric from './Lyric'
 import Share from './Share'
 import ToneAnimation from './ToneAnimation'
 
-const getColors = require('get-image-colors')
-
 import '../style/Home.less'
 import { request } from 'https';
 import { ipcRenderer } from 'electron';
@@ -90,12 +88,6 @@ class Home extends React.Component {
       })
       .then((data) => {
         if (data.song.length > 0) {
-          getColors(data.song[0].picture).then(colors => {
-            console.log('------------------------------------');
-            console.log(colors);
-            console.log('------------------------------------');
-            // `colors` is an array of color objects
-          })
 
           this.setState({
             songInfo: data.song[0],
@@ -338,8 +330,9 @@ class Home extends React.Component {
           {/* {this.diskModule()} */}
           <div className="playing_info">
             <img src={this.state.songInfo.picture} />
+            <div className="btnAndInfo">
             <div className="text_info center layout_row">
-              <div className="left">ew</div>
+              <div className="left"><a>詞</a></div>
               <div className="middle">
                 <div><strong>{this.state.songInfo.title}</strong></div>
                 <div className="artist">{this.state.songInfo.artist}</div>
@@ -348,22 +341,24 @@ class Home extends React.Component {
                 <i className="fa fa-share-alt" aria-hidden="true"></i>
               </div>
             </div>
-          </div>
 
-          <div className="progress">
-            <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
-            <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
-            <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
-          </div>
-          <div className="btn_group layout_row">
-            <div className="btn_item layout_row">
-              <i className="fa fa-heart fa-lg" aria-hidden="true"></i>
+
+            <a className="progress">
+              <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
+              <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
+              <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
+            </a>
+            <div className="btn_group layout_row">
+              <div className="btn_item layout_row">
+                <i className="fa fa-heart fa-lg" aria-hidden="true"></i>
+              </div>
+              <div className="btn_item layout_row btn_item_middle">
+                <i className="fa fa-pause fa-lg" aria-hidden="true"></i>
+              </div>
+              <div className="btn_item layout_row">
+                <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
+              </div>
             </div>
-            <div className="btn_item layout_row btn_item_middle">
-              <i className="fa fa-pause fa-lg" aria-hidden="true"></i>
-            </div>
-            <div className="btn_item layout_row">
-              <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
             </div>
           </div>
 
