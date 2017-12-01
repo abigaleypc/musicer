@@ -15,9 +15,10 @@ section {
             position: absolute;
             bottom: 0;
             width: 100%;
+            transition: all .5s ease-in-out;
             .text_info {
                 position: absolute;
-                bottom: 85px;
+                bottom: 80px;
                 width: 100%;
                 height: 55px;
                 background: rgba(0, 0, 0, 0.3);
@@ -33,26 +34,34 @@ section {
                 display: block;
                 position: relative;
                 width: 100%;
-                height: 10px;
+                height: 5px;
+                font-size: 5px;
+                line-height: 5px;
+                transition: all .3s ease;
                 -webkit-app-region: drag;
                 background: rgba(210, 215, 219, .4);
                 .red_progress {
                     position: absolute;
+                    transition: all .3s ease;
                     background: @red;
-                    height: 10px;
+                    height: 5px;
                     z-index: 0;
+                    opacity: .7;
                 }
                 .left,
                 .right {
                     display: none;
                 }
                 &:hover {
+                    transition: all .3s ease;
                     height: 12px;
-                    background: rgba(210, 215, 219, .7);
+                    background: rgb(105, 105, 105);
                     font-size: 12px;
                     line-height: 12px;
                     .red_progress {
+                        transition: all .3s ease;
                         height: 14px;
+                        opacity: 1;
                     }
                     .left {
                         display: block;
@@ -72,14 +81,25 @@ section {
                 -webkit-app-region: no-drag;
                 height: 75px;
                 .btn_item {
-                    width: 33.33%;
+                    width: 83.33px;
                     height: 100%;
                     background: rgba(83, 98, 112, 0.8);
+                    transition: width .6s ease-in-out;
+                    &:hover {
+                        width: 126px;
+                    }
                 }
                 .btn_item_middle {
                     background: rgba(74, 85, 97, 0.95);
                 }
             }
+        }
+        .lyric {
+            position: absolute;
+            transition: all .5s ease-in-out;
+            top: 0;
+            width: 90%;
+            left: 5%;
         }
     }
 }
