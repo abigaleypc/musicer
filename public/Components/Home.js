@@ -341,51 +341,58 @@ class Home extends React.Component {
           {/* {this.mainModule()} */}
 
           {/* {this.diskModule()} */}
-          <div className="playing_info">
-            {/* 右上角按钮 */}
-            <a style={{ display: 'block' ,position:'absolute',zIndex:100}} onClick={this.goBack}>点击</a>
-            <img src={this.state.songInfo.picture} className={this.state.isShowLyric ? 'img_blur_10' : 'img_filter_normal'} />
+          {/* 主面板 */}
+          <div className={this.state.isShowLyric ? 'opacity_0' : 'opacity_1'}>
+            <a className="interface_control_btn"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+            <div className="playing_info">
+              {/* 右上角按钮 */}
+              <img src={this.state.songInfo.picture} className='img_filter_normal' />
 
 
-            {/* 主面板 */}
-            <div className={this.state.isShowLyric ? 'opacity_0' : 'btnAndInfo opacity_1'}>
-              <div className="text_info center layout_row">
-                <div className="left"><a onClick={this.showLyric}>詞</a></div>
-                <div className="middle">
-                  <div><strong>{this.state.songInfo.title}</strong></div>
-                  <div className="artist">{this.state.songInfo.artist}</div>
+
+              <div className='btnAndInfo'>
+                <div className="text_info center layout_row">
+                  <div className="left"><a onClick={this.showLyric}>詞</a></div>
+                  <div className="middle">
+                    <div><strong>{this.state.songInfo.title}</strong></div>
+                    <div className="artist">{this.state.songInfo.artist}</div>
+                  </div>
+                  <div className="right">
+                    <i className="fa fa-share-alt" aria-hidden="true"></i>
+                  </div>
                 </div>
-                <div className="right">
-                  <i className="fa fa-share-alt" aria-hidden="true"></i>
+
+                {/* 进度条 */}
+                <a className="progress">
+                  <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
+                  <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
+                  <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
+                </a>
+
+                {/* 按钮组 */}
+                <div className="btn_group layout_row">
+                  <a className="btn_item layout_row red_heart" onClick={this.like}>
+                    <i className="fa fa-heart fa-lg"
+                      aria-hidden="true"
+                      style={this.state.isLike ? { color: '#ed5153' } : null}></i>
+                  </a>
+                  <a className="btn_item layout_row btn_item_middle" onClick={this.onPause}>
+                    {!this.state.isPause && (<i className="fa fa-pause fa-lg" aria-hidden="true"></i>)}
+                    {this.state.isPause && (<i className="fa fa-play fa-lg" aria-hidden="true"></i>)}
+                  </a>
+                  <a className="btn_item layout_row" onClick={this.nextSong}>
+                    <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
+                  </a>
                 </div>
-              </div>
-
-              {/* 进度条 */}
-              <a className="progress">
-                <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
-                <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
-                <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
-              </a>
-
-              {/* 按钮组 */}
-              <div className="btn_group layout_row">
-                <a className="btn_item layout_row red_heart" onClick={this.like}>
-                  <i className="fa fa-heart fa-lg"
-                    aria-hidden="true"
-                    style={this.state.isLike ? { color: '#ed5153' } : null}></i>
-                </a>
-                <a className="btn_item layout_row btn_item_middle" onClick={this.onPause}>
-                  {!this.state.isPause && (<i className="fa fa-pause fa-lg" aria-hidden="true"></i>)}
-                  {this.state.isPause && (<i className="fa fa-play fa-lg" aria-hidden="true"></i>)}
-                </a>
-                <a className="btn_item layout_row" onClick={this.nextSong}>
-                  <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
-                </a>
               </div>
             </div>
+          </div>
+          {/* 歌词面板 */}
+          <div className={this.state.isShowLyric ? 'opacity_1' : 'opacity_0'}>
+            <a className="interface_control_btn" onClick={this.goBack}><i class="fa fa-reply" aria-hidden="true"></i></a>
+            <img src={this.state.songInfo.picture} className='img_blur_10' />
 
-            {/* 歌词面板 */}
-            <div className={this.state.isShowLyric ? 'lyric opacity_1' : 'opacity_0'}>
+            <div className='lyric'>
               <Lyric
                 lyricList={this.state.lyricList}
                 timeList={this.state.lyricTimeList}
@@ -393,9 +400,10 @@ class Home extends React.Component {
                 lyricType={this.state.lyricType}
                 isNextSong={this.state.isNextSong} />
             </div>
+
           </div>
 
-          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} autoPlay></video>
+          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
 
 
 

@@ -36,7 +36,7 @@ class Lyric extends React.Component {
               currentLyricIndex: i
             })
             // 计算该句歌词之前所有歌词高度
-            for (let j = 7; j < i; j++) {
+            for (let j = 3; j < i; j++) {
               offsetHeight += (this.lyrics.childNodes)[j].offsetHeight
             }
             this.lyrics.scrollTop = offsetHeight;
