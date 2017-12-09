@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api } from '../config/const';
-import { userInfoAction } from '../store/actions'
+import { userInfoAction, currentPanelAction } from '../store/actions'
 
 import RedHeart from './RedHeart'
 import Trash from './Trash'
@@ -16,16 +16,16 @@ import Share from './Share'
 import ToneAnimation from './ToneAnimation'
 
 import '../style/Home.less'
-import { request } from 'https';
 import { ipcRenderer } from 'electron';
 
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
-  return { userInfo };
+  const { currentPanel } = state.currentPanelReducer;
+  return { userInfo, currentPanel };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ userInfoAction }, dispatch)
+  return bindActionCreators({ userInfoAction, currentPanelAction }, dispatch)
 
 }
 
@@ -49,7 +49,9 @@ class Home extends React.Component {
       isShowLyric: false,
       isNextSong: false,
       isShowShare: false,
-      isShowDisk: false
+      isShowDisk: false,
+      currentModule: 'main', // lyric  share
+      forwardModule: ''
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -185,8 +187,11 @@ class Home extends React.Component {
   }
 
   showLyric() {
+    let currentModule = 'lyric';
+    let forwardModule = this.state.currentModule;
     this.setState({
-      isShowLyric: !this.state.isShowLyric
+      currentModule,
+      forwardModule
     })
   }
 
@@ -263,6 +268,13 @@ class Home extends React.Component {
   }
 
   goBack() {
+    let currentModule = this.state.forwardModule;
+    let forwardModule = this.state.currentModule;
+    this.setState({
+      currentModule,
+      forwardModule
+    })
+
     this.setState({
       isShowLyric: false
     })
@@ -342,8 +354,8 @@ class Home extends React.Component {
 
           {/* {this.diskModule()} */}
           {/* 主面板 */}
-          <div className={this.state.isShowLyric ? 'opacity_0' : 'opacity_1'}>
-            <a className="interface_control_btn"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+          <div className={this.state.currentModule == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
+            <a className="interface_control_btn"><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
               {/* 右上角按钮 */}
               <img src={this.state.songInfo.picture} className='img_filter_normal' />
@@ -388,8 +400,8 @@ class Home extends React.Component {
             </div>
           </div>
           {/* 歌词面板 */}
-          <div className={this.state.isShowLyric ? 'opacity_1' : 'opacity_0'}>
-            <a className="interface_control_btn" onClick={this.goBack}><i class="fa fa-reply" aria-hidden="true"></i></a>
+          <div className={this.state.currentModule == 'lyric' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
+            <a className="interface_control_btn" onClick={this.goBack}><i className="fa fa-reply" aria-hidden="true"></i></a>
             <img src={this.state.songInfo.picture} className='img_blur_10' />
 
             <div className='lyric'>
@@ -403,7 +415,7 @@ class Home extends React.Component {
 
           </div>
 
-          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} ></video>
+          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0"></video>
 
 
 

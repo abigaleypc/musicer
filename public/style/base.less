@@ -10,14 +10,27 @@
     align-items: center;
 }
 
-.opacity_0 {
+.rotate_wrapper{
+    position: absolute;
+    transform:rotate3d(0, 1, 0, 180deg);
+    transition: all 1s ease;
+    width: 100%;
+    height: 100%;
 
-    display: none;
+}
+
+.opacity_0 {
+    z-index: -1;
+    // display: none;
     opacity: 0;
 }
 
 .opacity_1 {
-    display: block;
+    position: absolute;
+    z-index: 1;
+    transform:rotate3d(0, 1, 0, 0deg);
+    transition: all 1s ease;
+    // display: block;
     opacity: 1;
 }
 

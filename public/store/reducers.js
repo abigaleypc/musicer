@@ -1,5 +1,5 @@
 import { combineReducers, createRenderer } from 'redux'
-import { LOGIN, USER_INFO } from './actions'
+import { LOGIN, USER_INFO, CURRENT_PANEL } from './actions'
 
 
 function toLoginReducer(state = { isLogin: false }, action) {
@@ -21,9 +21,18 @@ function userInfoReducer(state = { userInfo: {} }, action) {
   return nextState;
 }
 
+function currentPanelReaducer(state = { currentPanel: 'main' }, action) {
+  const { type, payload } = action;
+  let nextState = state;
+  if (type == CURRENT_PANEL) {
+    nextState.currentPanel = payload.currentPanel;
+  }
+}
+
 const doubanFmReducers = combineReducers({
   toLoginReducer,
-  userInfoReducer
+  userInfoReducer,
+  currentPanelReaducer
 })
 
 
