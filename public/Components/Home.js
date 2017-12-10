@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api } from '../config/const';
-import { userInfoAction, currentPanelAction } from '../store/actions'
+import { userInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 
 import RedHeart from './RedHeart'
 import Trash from './Trash'
@@ -21,11 +21,20 @@ import { ipcRenderer } from 'electron';
 function mapStateToProps(state) {
   const { userInfo } = state.userInfoReducer;
   const { currentPanel } = state.currentPanelReducer;
-  return { userInfo, currentPanel };
+  const { forwardPanel } = state.forwardPanelReducer;
+  const { isPlay } = state.isPlayReducer;
+  const { isLike } = state.isLikeReducer;
+  const { lyricType } = state.lyricTypeReducer;
+  const { lyricList } = state.lyricListReducer;
+  const { lyricTimeList } = state.lyricTimeListReducer;
+  const { currentTime } = state.currentTimeReducer;
+  return { userInfo, currentPanel, forwardPanel, isPlay, isLike, lyricType, lyricList, lyricTimeList, currentTime };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ userInfoAction, currentPanelAction }, dispatch)
+  return bindActionCreators({
+    userInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction
+  }, dispatch)
 
 }
 
@@ -35,23 +44,19 @@ class Home extends React.Component {
     this.state = {
       songInfo: {},
       isBegining: false,
-      isPause: false,
       currentTime: 0,
       totalTime: 0,
       currentMinute: 0,
       currentSecond: 0,
       totalMinute: 0,
       totalSecond: 0,
-      isLike: false,
       lyricList: [],
-      lyricType: null,
       lyricTimeList: [],
-      isShowLyric: false,
       isNextSong: false,
       isShowShare: false,
       isShowDisk: false,
-      currentModule: 'main', // lyric  share
-      forwardModule: ''
+      forwardModule: '',
+      lyricPanel: null
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -62,9 +67,6 @@ class Home extends React.Component {
     this.like = this.like.bind(this)
     this.delete = this.delete.bind(this)
     this.toggleType = this.toggleType.bind(this);
-    this.lyricModule = this.lyricModule.bind(this);
-    this.diskModule = this.diskModule.bind(this);
-    this.mainModule = this.mainModule.bind(this);
     this.showLyric = this.showLyric.bind(this);
     this.goBack = this.goBack.bind(this);
   }
@@ -75,9 +77,9 @@ class Home extends React.Component {
 
   initSong() {
     this.setState({
-      totalTime: 0,
-      currentTime: 0
+      totalTime: 0
     })
+    this.props.currentTimeAction({ currentTime: 0 })
 
   }
 
@@ -92,10 +94,8 @@ class Home extends React.Component {
       })
       .then((data) => {
         if (data.song.length > 0) {
-
           this.setState({
             songInfo: data.song[0],
-            currentTime: 0,
             currentSecond: 0,
             currentMinute: 0,
             totalTime: data.song[0].length,
@@ -103,7 +103,8 @@ class Home extends React.Component {
             totalMinute: this.dateFormat(data.song[0].length).minute.toString(),
             isNextSong: false
           });
-          this._video.src = this.state.songInfo.url
+          this._video.src = this.state.songInfo.url;
+          this.props.currentTimeAction({ currentTime: 0 })
         }
         else {
           this.nextSong();
@@ -116,10 +117,11 @@ class Home extends React.Component {
   }
 
   like() {
-    fetch(`${api}/song/like?sid=${this.state.songInfo.sid}&isLike=${!this.state.isLike}`)
-    this.setState({
-      isLike: !this.state.isLike
-    })
+    fetch(`${api}/song/like?sid=${this.state.songInfo.sid}&isLike=${!this.props.isLike}`);
+    this.props.isLikeAction({ isLike: !this.props.isLike })
+    // this.setState({
+    //   isLike: !this.state.isLike
+    // })
   }
 
   delete() {
@@ -130,7 +132,6 @@ class Home extends React.Component {
           this.setState({
             songInfo: data.song[0],
             totalTime: data.song[0].length,
-            currentTime: 0,
             currentSecond: 0,
             currentMinute: 0,
             totalTime: data.song[0].length,
@@ -138,7 +139,8 @@ class Home extends React.Component {
             totalMinute: this.dateFormat(data.song[0].length).minute,
             isNextSong: false
           });
-          this._video.src = this.state.songInfo.url
+          this._video.src = this.state.songInfo.url;
+          this.props.currentTimeAction({ currentTime: 0 })
         }
         else {
           this.nextSong();
@@ -151,7 +153,7 @@ class Home extends React.Component {
 
   }
 
-  onPlay(e) {
+  onPlay() {
     let self = this;
     self.setState({
       isBegining: true
@@ -159,24 +161,20 @@ class Home extends React.Component {
   }
 
   onPause() {
-    let self = this;
-    self.setState({
-      isPause: !self.state.isPause
-    })
-    if (self.state.isPause) {
-      this._video.play();
-    } else {
+    this.props.isPlayAction({ isPlay: !this.props.isPlay })
+    if (this.props.isPlay) {
       this._video.pause();
+    } else {
+      this._video.play();
     }
   }
 
   onTimeUpdate(data) {
-    this.setState({
-      currentTime: data.target.currentTime
-    });
-    let { second, minute } = this.dateFormat(this.state.currentTime)
+    let _currentTime = data.target.currentTime;
+    this.props.currentTimeAction({ currentTime: _currentTime })
+    let { second, minute } = this.dateFormat(_currentTime)
 
-    if (this.state.currentTime > this.state.totalTime) {
+    if (_currentTime > this.state.totalTime) {
       this.nextSong();
     } else {
       this.setState({
@@ -187,30 +185,16 @@ class Home extends React.Component {
   }
 
   showLyric() {
-    let currentModule = 'lyric';
-    let forwardModule = this.state.currentModule;
-    this.setState({
-      currentModule,
-      forwardModule
-    })
+    let currentPanel = 'lyric';
+    let forwardPanel = this.props.currentPanel;
+    this.props.currentPanelAction({ currentPanel })
+    this.props.forwardPanelAction({ forwardPanel })
+
   }
 
   toggleType(type) {
     if (type == 'lyric') {
 
-      this.setState({
-        isShowLyric: !this.state.isShowLyric
-      })
-      if (this.state.isShowLyric) {
-        ipcRenderer.send('window-layout', {
-          width: -220
-        })
-      } else {
-        ipcRenderer.send('window-layout', {
-          width: 220
-        })
-
-      }
 
     } else if (type == 'download') {
       this.setState({
@@ -240,11 +224,9 @@ class Home extends React.Component {
       fetch(`${api}/song/lyric?sid=${sid}&ssid=${ssid}`)
         .then(res => res.json())
         .then(data => {
-          this.setState({
-            lyricList: data.lyricList,
-            lyricTimeList: data.timeList,
-            lyricType: data.type
-          })
+          this.props.lyricTypeAction({ lyricType: data.type })
+          this.props.lyricListAction({ lyricList: data.lyricList })
+          this.props.lyricTimeListAction({ lyricTimeType: data.timeList })
         })
     }
   }
@@ -268,81 +250,14 @@ class Home extends React.Component {
   }
 
   goBack() {
-    let currentModule = this.state.forwardModule;
-    let forwardModule = this.state.currentModule;
-    this.setState({
-      currentModule,
-      forwardModule
-    })
+    let currentPanel = this.props.forwardPanel;
+    let forwardPanel = this.props.currentPanel;
+    this.props.currentPanelAction({ currentPanel })
+    this.props.forwardPanelAction({ forwardPanel })
 
-    this.setState({
-      isShowLyric: false
-    })
+
   }
 
-  lyricModule() {
-    if (this.state.isShowLyric) {
-      return (
-        <div className="left" >
-          {this.state.isShowLyric &&
-            <div>
-              <Lyric
-                lyricList={this.state.lyricList}
-                timeList={this.state.lyricTimeList}
-                currentTime={this.state.currentTime}
-                lyricType={this.state.lyricType}
-                isNextSong={this.state.isNextSong} />
-            </div>
-          }
-          {!this.state.isShowLyric &&
-            <div >
-              <img width="90" height="90" src="https://img3.doubanio.com/f/fm/1e89298732fbf090aea0812f7fb2af30ad82ab61/pics/fm/landingpage/qr_2@2x.png" alt="FM APP" />
-              <div>下载豆瓣FM APP  让好音乐继续</div>
-            </div>
-          }
-        </div>
-      )
-    }
-    return;
-  }
-
-  diskModule() {
-    if (this.state.isShowDisk) {
-      return (<div className="right">
-        <img src={this.state.songInfo.picture} className="playingCover" />
-      </div>)
-    }
-    return;
-  }
-  mainModule() {
-    return (<div className="middle">
-      <div className="songType"><ToneAnimation />豆瓣精选MHz</div>
-      <div className="songTitle">{this.state.songInfo.title}</div>
-      <div className="songAuthor">{this.state.songInfo.artist}</div>
-      <div className="volumeAnLyricGroup">
-        <div className="volumeAndTime">
-          <span className="time">-{this.state.minute}:{this.state.second}</span>
-          <VolumeSlider setVolume={num => { this._video.volume = 0 }} />
-          {this.props.isShowLyric}
-        </div>
-        <LyricDownloadShareBtn toggleType={type => this.toggleType(type)} />
-      </div>
-      <div className="progress">
-        {/* <div style={{ position: 'absolute', width: '100%', height: '3px', background: MainColor, left: (-this.state.remainTime / this.state.totalTime * 100) + '%' }}></div> */}
-      </div>
-
-      <div className="btnGroup">
-        <div className="supBtnGroup">
-          <a onClick={this.like}><RedHeart isLike={this.state.isLike} /></a>
-          <a onClick={this.delete}><Trash /></a>
-        </div>
-        <div className="supBtnGroup">
-          <a onClick={this.onPause}><PlayAndPause isPause={this.state.isPause} /></a>
-          <a onClick={this.nextSong}><Next /></a>
-        </div>
-      </div>
-    </div>)
-  }
   render() {
     return (
       <section>
@@ -354,7 +269,7 @@ class Home extends React.Component {
 
           {/* {this.diskModule()} */}
           {/* 主面板 */}
-          <div className={this.state.currentModule == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
+          <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <a className="interface_control_btn"><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
               {/* 右上角按钮 */}
@@ -376,7 +291,7 @@ class Home extends React.Component {
 
                 {/* 进度条 */}
                 <a className="progress">
-                  <div className="red_progress" style={{ width: (this.state.currentTime / this.state.totalTime * 100) + '%' }}></div>
+                  <div className="red_progress" style={{ width: (this.props.currentTime / this.state.totalTime * 100) + '%' }}></div>
                   <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
                   <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
                 </a>
@@ -386,11 +301,11 @@ class Home extends React.Component {
                   <a className="btn_item layout_row red_heart" onClick={this.like}>
                     <i className="fa fa-heart fa-lg"
                       aria-hidden="true"
-                      style={this.state.isLike ? { color: '#ed5153' } : null}></i>
+                      style={this.props.isLike ? { color: '#ed5153' } : null}></i>
                   </a>
                   <a className="btn_item layout_row btn_item_middle" onClick={this.onPause}>
-                    {!this.state.isPause && (<i className="fa fa-pause fa-lg" aria-hidden="true"></i>)}
-                    {this.state.isPause && (<i className="fa fa-play fa-lg" aria-hidden="true"></i>)}
+                    {this.props.isPlay && (<i className="fa fa-pause fa-lg" aria-hidden="true"></i>)}
+                    {!this.props.isPlay && (<i className="fa fa-play fa-lg" aria-hidden="true"></i>)}
                   </a>
                   <a className="btn_item layout_row" onClick={this.nextSong}>
                     <i className="fa fa-forward fa-lg" aria-hidden="true"></i>
@@ -400,22 +315,17 @@ class Home extends React.Component {
             </div>
           </div>
           {/* 歌词面板 */}
-          <div className={this.state.currentModule == 'lyric' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
+          <div className={this.props.currentPanel == 'lyric' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <a className="interface_control_btn" onClick={this.goBack}><i className="fa fa-reply" aria-hidden="true"></i></a>
             <img src={this.state.songInfo.picture} className='img_blur_10' />
 
             <div className='lyric'>
-              <Lyric
-                lyricList={this.state.lyricList}
-                timeList={this.state.lyricTimeList}
-                currentTime={this.state.currentTime}
-                lyricType={this.state.lyricType}
-                isNextSong={this.state.isNextSong} />
+              <Lyric />
             </div>
 
           </div>
 
-          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0"></video>
+          <video src={this.state.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0" autoPlay></video>
 
 
 

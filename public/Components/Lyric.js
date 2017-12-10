@@ -1,5 +1,26 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import { lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 import '../style/Lyric.less'
+
+function mapStateToProps(state) {
+  const { lyricType } = state.lyricTypeReducer;
+  const { lyricList } = state.lyricListReducer;
+  const { lyricTimeList } = state.lyricTimeListReducer;
+  const { currentTime } = state.currentTimeReducer;
+  return { lyricType, lyricList, lyricTimeList, currentTime };
+}
+
+
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction
+  }, dispatch)
+
+}
 
 class Lyric extends React.Component {
   constructor(props) {
@@ -7,30 +28,32 @@ class Lyric extends React.Component {
     this.state = {
       currentLyricIndex: 0,
       offsetHeight: 0,
-      lyricType: {} //null:暂无歌词， noTime:不支持滚动   normal
+      lyricTip: null
     }
     this.lyricListElement = this.lyricListElement.bind(this);
   }
 
-  componentWillReceiveProps() {
-    let { lyricList, timeList, currentTime, lyricType, isNextSong } = this.props, offsetHeight = 0, text = null;
-    if (isNextSong) {
+  componentWillReceiveProps(nextProps) {
+    let { lyricList, lyricTimeList, currentTime, lyricType } = nextProps, offsetHeight = 0;
+    if (currentTime == 0) {
       this.lyrics.scrollTop = 0;
     }
     if (!lyricType) {
-      text = '暂无歌词'
+      this.setState({
+        lyricTip: '暂无歌词'
+      })
     } else if (lyricType == 'noTime') {
-      text = '本歌词暂不支持滚动'
+      this.setState({
+        lyricTip: '本歌词暂不支持滚动'
+      })
     }
-    this.setState({
-      lyricType: {
-        type: lyricType,
-        text: text
-      }
-    })
+    // this.props.lyricTypeAction({ lyricType })
     if (lyricList && lyricList.length > 0 && lyricType == 'normal') {
-      for (let i = 0; i < timeList.length; i++) {
-        if (timeList[i] < currentTime && timeList[i + 1] > currentTime) {
+      this.setState({
+        lyricTip: null
+      })
+      for (let i = 0; i < lyricTimeList.length; i++) {
+        if (lyricTimeList[i] < currentTime && lyricTimeList[i + 1] > currentTime) {
           if (this.state.currentLyricIndex != i) {
             this.setState({
               currentLyricIndex: i
@@ -59,7 +82,7 @@ class Lyric extends React.Component {
           <div key={index}
             className="lyric-item"
             style={
-              (this.state.currentLyricIndex == index && this.state.lyricType.type == 'normal') ? { color: "green" } : null
+              (this.state.currentLyricIndex == index && this.props.lyricType == 'normal') ? { color: "green" } : null
             }>
             {it.content}
           </div>
@@ -75,10 +98,16 @@ class Lyric extends React.Component {
         className="lyric-content"
         // style={{ top: this.state.offsetHeight }}
         ref={(input) => { this.lyrics = input; }}>
-        <div>{this.state.lyricType.text}</div>
+        <div>{this.state.lyricTip}</div>
         {this.lyricListElement()}
       </div>
     )
   }
 }
-export default Lyric;
+
+const connectLyric = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Lyric);
+
+export default connectLyric;

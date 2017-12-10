@@ -12,7 +12,7 @@ const url = require('url')
 let mainWindow
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 195, height: 230, frame: false,transparent: true})
+  mainWindow = new BrowserWindow({ width: 195, height: 230, frame: true,transparent: true})
 
   // and load the index.html of the app;
   mainWindow.loadURL(url.format({
@@ -68,8 +68,4 @@ global.sharedObject = {
 const { ipcMain } = require('electron')
 ipcMain.on('login-event', (event, arg) => {
   mainWindow.webContents.send('login-event', arg);
-})
-ipcMain.on('window-layout', (event, arg) => {
-  let window = mainWindow.getSize();
-  mainWindow.setSize(window[0] + arg.width, window[1], true)
 })
