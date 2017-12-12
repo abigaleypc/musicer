@@ -2,7 +2,6 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 import '../style/Lyric.less'
 
 function mapStateToProps(state) {
@@ -17,7 +16,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction
+  
   }, dispatch)
 
 }
@@ -33,8 +32,8 @@ class Lyric extends React.Component {
     this.lyricListElement = this.lyricListElement.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    let { lyricList, lyricTimeList, currentTime, lyricType } = nextProps, offsetHeight = 0;
+  componentWillReceiveProps() {
+    let { lyricList, lyricTimeList, currentTime, lyricType } = this.props, offsetHeight = 0;
     if (currentTime == 0) {
       this.lyrics.scrollTop = 0;
     }
@@ -47,7 +46,6 @@ class Lyric extends React.Component {
         lyricTip: '本歌词暂不支持滚动'
       })
     }
-    // this.props.lyricTypeAction({ lyricType })
     if (lyricList && lyricList.length > 0 && lyricType == 'normal') {
       this.setState({
         lyricTip: null
@@ -82,7 +80,7 @@ class Lyric extends React.Component {
           <div key={index}
             className="lyric-item"
             style={
-              (this.state.currentLyricIndex == index && this.props.lyricType == 'normal') ? { color: "green" } : null
+              (this.state.currentLyricIndex == index && this.props.lyricType == 'normal') ? { color: "#ed5153" } : null
             }>
             {it.content}
           </div>
@@ -96,7 +94,6 @@ class Lyric extends React.Component {
     return (
       <div
         className="lyric-content"
-        // style={{ top: this.state.offsetHeight }}
         ref={(input) => { this.lyrics = input; }}>
         <div>{this.state.lyricTip}</div>
         {this.lyricListElement()}

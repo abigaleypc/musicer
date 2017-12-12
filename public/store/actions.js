@@ -4,6 +4,7 @@
 
 export const LOGIN = 'LOGIN';
 export const USER_INFO = 'USER_INFO';
+export const SONG_INFO = 'SONG_INFO';
 export const CURRENT_PANEL = 'CURRENT_PANEL';
 export const FORWARD_PANEL = 'FORWARD_PANEL';
 export const IS_PLAY = 'IS_PLAY';
@@ -23,6 +24,10 @@ export function tologinAction(payload) {
 
 export function userInfoAction(payload) {
   return { type: USER_INFO, payload }
+}
+
+export function songInfoAction(payload) {
+  return { type: SONG_INFO, payload }
 }
 
 export function currentPanelAction(payload) {

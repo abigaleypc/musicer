@@ -1,5 +1,5 @@
 import { combineReducers, createRenderer } from 'redux'
-import { LOGIN, USER_INFO, CURRENT_PANEL, FORWARD_PANEL, IS_PLAY, IS_LIKE, LYRIC_TYPE, LYRIC_LIST, LYRIC_TIME_LIST, CURRENT_TIME } from './actions'
+import { LOGIN, USER_INFO, SONG_INFO, CURRENT_PANEL, FORWARD_PANEL, IS_PLAY, IS_LIKE, LYRIC_TYPE, LYRIC_LIST, LYRIC_TIME_LIST, CURRENT_TIME } from './actions'
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
@@ -18,6 +18,15 @@ function userInfoReducer(state = { userInfo: {} }, action) {
   let nextState = Object.assign({}, state);
   if (type == USER_INFO) {
     nextState.userInfo = payload.userInfo;
+  }
+  return nextState;
+}
+
+function songInfoReducer(state = { songInfo: {} }, action) {
+  const { type, payload } = action;
+  let nextState = Object.assign({}, state);
+  if (type == SONG_INFO) {
+    nextState.songInfo = payload.songInfo;
   }
   return nextState;
 }
@@ -85,7 +94,7 @@ function lyricTimeListReducer(state = { lyricTimeList: [] }, action) {
   const { type, payload } = action;
   let nextState = Object.assign({}, state);
   if (type == LYRIC_TIME_LIST) {
-    nextState.lyricTimeType = payload.lyricTimeType;
+    nextState.lyricTimeList = payload.lyricTimeList;
   }
   return nextState;
 }
@@ -102,6 +111,7 @@ function currentTimeReducer(state = { currentTime: 0 }, action) {
 const doubanFmReducers = combineReducers({
   toLoginReducer,
   userInfoReducer,
+  songInfoReducer,
   currentPanelReducer,
   forwardPanelReducer,
   forwardPanelReducer,

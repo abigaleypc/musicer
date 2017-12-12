@@ -12,7 +12,7 @@ const url = require('url')
 let mainWindow
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 195, height: 230, frame: true,transparent: true})
+  mainWindow = new BrowserWindow({ width: 195, height: 230, frame: false,transparent: true})
 
   // and load the index.html of the app;
   mainWindow.loadURL(url.format({

@@ -2,16 +2,8 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgba(1, 1, 1, 0.1);
     cursor: auto !important;
     .modal {
-        width: 250px;
-        height: 340px;
-        margin: 0 auto;
-        margin-top: 70px;
-        background: #fff;
-        border: 1px solid #e1e1e1;
-        padding: 30px;
         .share-header {
             display: flex;
             flex-direction: row;
@@ -23,17 +15,33 @@
                 }
             }
             .share-title {
-                padding-left: 20px;
+                word-break: keep-all;
+                text-overflow: ellipsis;
+                width: 150px;
+                overflow: hidden;
+                white-space: nowrap;
+                padding-left: 5px;
                 line-height: 50px;
             }
         }
         .share-body {
-            margin-top: 20px;
+            margin-top: 10px;
             border-top: 1px solid #eee;
             text-align: center;
-            padding: 15px;
+            padding: 10px 0;
+
             .QRCode {
-                width: 220px;
+                width: 60%;
+                overflow: hidden;
+                img {
+                    width: 100%;
+                    transform: scale(1.15);
+                    height: 100%;
+                    opacity: 0.6;
+                }
+            }
+            .scan-tip {
+                margin-top: 10px;
             }
         }
     }

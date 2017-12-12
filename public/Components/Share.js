@@ -1,6 +1,19 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import {  } from '../store/actions'
+
 import '../style/Share.less';
 const QRCode = require('qrcode');
+
+function mapStateToProps(state) {
+  const { sid, ssid, picture, title } = state.songInfoReducer.songInfo;
+  return { sid, ssid, picture, title };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({}, dispatch)
+}
 
 class Share extends React.Component {
   constructor(props) {
@@ -8,7 +21,6 @@ class Share extends React.Component {
     this.state = {
       qrcode: null
     }
-    this.closePopup =this.closePopup.bind(this)
   }
 
   componentWillReceiveProps() {
@@ -19,16 +31,10 @@ class Share extends React.Component {
       })
     })
   }
-  closePopup(e) {
-    if(e.target.querySelector('.modal')) {
-      this.props.closePopup()
-    }
-  }
 
   render() {
 
     return (
-
       <a className="pupop" onClick={this.closePopup} ref={(pupop) => { this.pupop = pupop }}>
         <div className="modal" ref={(modal) => { this.pupop = modal }}>
           <div className="share-header">
@@ -36,12 +42,21 @@ class Share extends React.Component {
             <div className="share-title">{this.props.title}</div>
           </div>
           <div className="share-body">
-            <img src={this.state.qrcode} className="QRCode" />
-            <div>扫码分享到微信</div>
+          <div className="QRCode center" >
+            <img src={this.state.qrcode}/>
+            {/* <img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAYAAAAZtYVBAAAAAklEQ…sih7UucljrIoe1LnJY6yKHtS5yWOsih7UucljrIoe1LvJ/sccSWjaw5OAAAAAASUVORK5CYII='  className="QRCode"/> */}
+            </div>
+            <div className="scan-tip">扫码分享到微信</div>
           </div>
         </div>
       </a>
     )
   }
 }
-export default Share;
+
+const connectShare = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Share);
+
+export default connectShare;
