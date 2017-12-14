@@ -8,8 +8,11 @@
     "electron": "electron ./public/main.js",
     "webpack": "webpack",
     "webpack:watch": "npm run webpack -- --watch",
-    "test": "mocha -R nyan"
+    "test": "mocha -R nyan",
+    "package": "electron-packager ./ douban.fm --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules",
+    "package:win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --out=out --icon=public/assets/music.ico"
   },
+  "main":"./public/main.js",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
