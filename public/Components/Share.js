@@ -23,8 +23,8 @@ class Share extends React.Component {
     }
   }
 
-  componentWillReceiveProps() {
-    let url = `https://douban.fm/song/${this.props.sid}g${this.props.ssid}?from_=qrcode`;
+  componentWillReceiveProps(nextProps) {
+    let url = `https://douban.fm/song/${nextProps.sid}g${nextProps.ssid}?from_=qrcode`;
     QRCode.toDataURL(url, (err, url) => {
       this.setState({
         qrcode: url

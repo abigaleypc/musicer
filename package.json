@@ -9,8 +9,8 @@
     "webpack": "webpack",
     "webpack:watch": "npm run webpack -- --watch",
     "test": "mocha -R nyan",
-    "package": "electron-packager ./ douban.fm --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules",
-    "package:win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --out=out --icon=public/assets/music.ico"
+    "package": "electron-packager ./ musicer --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules --icon=public/assets/musicer.icns",
+    "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --out=out --icon=public/assets/musicer.ico"
   },
   "main":"./public/main.js",
   "devDependencies": {
