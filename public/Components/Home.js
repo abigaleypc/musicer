@@ -101,6 +101,7 @@ class Home extends React.Component {
           this._video.src = songInfo.url;
           this.props.currentTimeAction({ currentTime: 0 })
           this.props.isPlayAction({ isPlay: true })
+          this.props.isLikeAction({ isLike: false })
         }
         else {
           this.nextSong();
@@ -252,7 +253,7 @@ class Home extends React.Component {
           {/* 主面板 */}
           <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <div className="tone-animation"><ToneAnimation /></div>
-            <a className="interface_control_btn"><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
+            {/* <a className="interface_control_btn"><i className="fa fa-user-circle-o" aria-hidden="true"></i></a> */}
             <div className="playing_info">
 
               {/* 右上角按钮 */}
@@ -273,11 +274,11 @@ class Home extends React.Component {
                 </div>
 
                 {/* 进度条 */}
-                <a className="progress">
+                <div className="progress">
                   <div className="red_progress" style={{ width: (this.props.currentTime / this.state.totalTime * 100) + '%' }}></div>
                   <div className="left">{this.state.currentMinute}:{this.state.currentSecond}</div>
                   <div className="right">{this.state.totalMinute}:{this.state.totalSecond}</div>
-                </a>
+                </div>
 
                 {/* 按钮组 */}
                 <div className="btn_group layout_row">
