@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm-run-all --parallel serve electron webpack:watch",
+    "start": "npm-run-all --parallel electron webpack:watch",
     "serve": "nodemon index.js",
     "electron": "electron ./public/main.js",
     "webpack": "webpack",
