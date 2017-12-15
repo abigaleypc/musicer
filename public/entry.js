@@ -6,7 +6,6 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import { api } from './config/const';
-import Header from './Components/Header';
 import Home from './Components/Home';
 import reducers from './store/reducers'
 
@@ -48,7 +47,6 @@ class Root extends React.Component {
   render() {
     return (
       <div style={styles.content}>
-        {/* <Header /> */}
         <Home />
       </div>
     );
