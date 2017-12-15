@@ -1,0 +1,35 @@
+// @import '../../node_modules/bootstrap/less/bootstrap.less'
+a {
+    &:hover {
+        cursor: pointer;
+        text-decoration: none;
+    }
+}
+
+.silder {
+    width: 60px;
+}
+
+// silder panel
+.musicer-list-group {
+    border-right: 1px solid #ccc;
+    height: 428px;
+    .musicer-list-group-item {
+        display: block;
+        height: 40px;
+        line-height: 40px;
+        border-bottom: 1px solid #ccc;
+        text-align: center;
+        &:hover{
+            background: #337ab7;
+            border-color: #337ab7;
+            color: #fff;
+
+        }
+    }
+    .active {
+        background: #4589c0;
+        border-color: #4589c0;
+        color: #fff;
+    }
+}

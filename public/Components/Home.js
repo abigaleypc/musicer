@@ -39,7 +39,7 @@ class Home extends React.Component {
   renderPanel() {
     let { url, params, method } = this.state.data[this.props.currentPanel.str];
 
-    // this.getData(url, params, method)
+    this.getData(url, params, method)
 
     return (
       <div>
@@ -65,22 +65,22 @@ class Home extends React.Component {
   }
 
   getData(uri,params,method){
-    // let _method = method.toLowerCase();
-    // request[_method](uri, {
-    //   json: true,
-    //   qs: params
-    // }).on('error', err => {
-    //   // res.status(500).end(err);
-    // }).on('data', data => {
-    //   try {
-    //     // data = JSON.parse(data);
-    //     // res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
-    //     // res.json(data)
+    let _method = method.toLowerCase();
+    request[_method](uri, {
+      json: true,
+      qs: params
+    }).on('error', err => {
+      // res.status(500).end(err);
+    }).on('data', data => {
+      try {
+        // data = JSON.parse(data);
+        // res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
+        // res.json(data)
   
-    //   } catch (err) {
+      } catch (err) {
   
-    //   }
-    // })
+      }
+    })
   }
 
 
