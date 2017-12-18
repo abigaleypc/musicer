@@ -40,6 +40,7 @@ user.post('/login', function (req, res) {
   }).on('data', data => {
     try {
       data = JSON.parse(data);
+      console.log(data)
       if (data.access_token) {
         LKV.set('username', params.username)
         LKV.set(params.username, data);
@@ -56,7 +57,9 @@ user.post('/login', function (req, res) {
             res.json({
               code: 1,
               msg: 'success',
-              account_info: result.payload.account_info
+              account_info: result.payload.account_info,
+              expires_in: data.expires_in,
+              token: data.access_token
             })
             getUserAc(params.username);
           }
@@ -152,9 +155,6 @@ function getUserCk(username, bid) {
     }).on('response', function (response) {
       let headers = response.headers['set-cookie']
       let ck = getValueByKey(headers, 'ck');
-      console.log('------------------------------------');
-      console.log(ck);
-      console.log('------------------------------------');
     })
   })
 
@@ -173,7 +173,6 @@ function getUserAc(username) {
     }
   }).on('response', function (response) {
     let headers = response.headers['set-cookie']
-    console.log(headers)
     serviceAcount(response.request.uri.href, username)
   })
 }

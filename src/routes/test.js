@@ -21,8 +21,6 @@ app.get('/', function (req, res) {
     const uri = new URL(response.request.uri.href);
 
     let headers = response.headers['set-cookie']
-    // console.log(uri.searchParams.get('sig'))
-    console.log(headers)
     serviceAcount(response.request.uri.href)
   })
     .on('data', data => {
@@ -54,11 +52,8 @@ function serviceAcount(url) {
     const uri = new URL(response.request.uri.href);
 
     let headers = response.headers['set-cookie'];
-    console.log('----------serviceAcount-----------');
-    console.log(headers);
     // [ 'll="118282"; path=/; domain=.douban.com; expires=Sat, 24-Nov-2018 02:30:22 GMT',
     // 'bid=9rFLgcajAtE; Expires=Sat, 24-Nov-18 02:30:22 GMT; Domain=.douban.com; Path=/' ]
-    console.log('----------------------------------');
     let obj = {}
     let headers2 = (headers[1].split(';'))
     headers2.forEach(str => {
@@ -99,9 +94,6 @@ function goDouBanFm(url, bid) {
   }).on('response', function (response) {
     // const uri = new URL(response.request.uri.href);
     let headers = response.headers['set-cookie'];
-    console.log('-------------goDouBanFm-------------');
-    console.log(headers);
-    console.log('------------------------------------');
   })
 }
 
