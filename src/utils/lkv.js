@@ -13,7 +13,7 @@ function encrypt(data) {
 
 function decrypt(data) {
     const secret = 'lkv';
-    // return JSON.parse(Crypto.AES.decrypt(data, secret).toString(Crypto.enc.Utf8));
+    return JSON.parse(Crypto.AES.decrypt(data, secret).toString(Crypto.enc.Utf8));
 }
 
 /**

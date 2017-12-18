@@ -27,7 +27,6 @@ user.get('/info', (req, res) => {
 
 user.post('/login', function (req, res) {
   let Authorization;
-
   var params = Object.assign({}, AuthKey, {
     username: req.query.username,
     password: req.query.password
@@ -53,11 +52,11 @@ user.post('/login', function (req, res) {
               payload: result.payload
             })
           } else {
-            LKV.set('basic', result.payload)
+            LKV.set('basic', result.payload.account_info)
             res.json({
               code: 1,
               msg: 'success',
-              payload: result.payload
+              account_info: result.payload.account_info
             })
             getUserAc(params.username);
           }
@@ -66,7 +65,7 @@ user.post('/login', function (req, res) {
       } else {
         res.json({
           code: 0,
-          msg: 'failed'
+          msg: '缺乏有效token',
         })
       }
     } catch (err) {
