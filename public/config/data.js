@@ -18,3 +18,4 @@ export const REQUEST_CONTENT = {
     method: 'GET'
   }
 }
+

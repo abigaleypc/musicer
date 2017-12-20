@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
-import { api } from '../config/const';
+import { api, MUSICER } from '../config/const';
 import { userInfoAction } from '../store/actions'
 
 import Sidebar from './Sidebar'
@@ -40,9 +40,10 @@ class Login extends React.Component {
     this.urlChange = this.urlChange.bind(this);
     this.methodChange = this.methodChange.bind(this);
     this.paramsChange = this.paramsChange.bind(this);
-    this.isFirstLogin = this.isFirstLogin.bind(this);
+    this.getCookie = this.getCookie.bind(this);
     this.login = this.login.bind(this);
     this.firstLogin = this.firstLogin.bind(this);
+    this.loginByToken = this.loginByToken.bind(this);
   }
 
   componentWillMount() {
@@ -99,53 +100,68 @@ class Login extends React.Component {
     )
   }
 
-  isFirstLogin() {
-    let musicer = localStorage.getItem('musicer');
+  getCookie() {
+    let musicer = localStorage.getItem(MUSICER);
     if (musicer) {
       this.setState({
         tips: '非初次登录'
       })
-      return false;
+      return musicer;
     } else {
-
       this.setState({
         tips: '初次登录'
       })
-      return true;
+      return false;
     }
   }
   login(uri, params, method) {
-    let isFirstLogin = this.isFirstLogin();
-    // if()
+    let cookie = this.getCookie();
+    // 第一次登录：无token
+    if (!cookie) {
+      let _method = method.toLowerCase();
+      request[_method](uri, {
+        json: true,
+        qs: params
+      }).on('error', err => {
+        // res.status(500).end(err);
+      }).on('data', data => {
+        try {
+          data = JSON.parse(data);
+          this.setState({
+            result: JSON.stringify(data, undefined, '\t')
+          })
+          if (data.code == 1) {
+            localStorage.setItem('musicer', JSON.stringify({
+              id: data.account_info.id,
+              expires_in: moment().add(data.expires_in, 's'),
+              token: data.token
+            }));
+            // console.log(moment(curtime).isBefore(time));
+          }
 
-    // let _method = method.toLowerCase();
-    // request[_method](uri, {
-    //   json: true,
-    //   qs: params
-    // }).on('error', err => {
-    //   // res.status(500).end(err);
-    // }).on('data', data => {
-    //   try {
-    //     data = JSON.parse(data);
-    //     this.setState({
-    //       result: JSON.stringify(data, undefined, '\t')
-    //     })
-    //     if (data.code == 1) {
-    //       localStorage.setItem('musicer', JSON.stringify({
-    //         id: data.account_info.id,
-    //         expires_in: moment().add(data.expires_in, 's'),
-    //         token: data.token
-    //       }));
-    //       // console.log(moment(curtime).isBefore(time));
-    //     }
+        } catch (err) {
+          this.setState({
+            result: err
+          })
 
-    //   } catch (err) {
-    //     this.setState({
-    //       result: err
-    //     })
+        }
+      })
+    }else {
+      
+      let currentDate = moment(),
+      expiresDate = JSON.parse(cookie).expires_in
+      // cookie未过期
+      if(moment(currentDate).isBefore(expiresDate)){
 
-    //   }
-    // })
+      }else {
+        // 过期
+        
+      }
+    }
+  }
+
+  loginByToken(){
+
   }
 
   firstLogin(uri, params, method) {
@@ -162,7 +178,7 @@ class Login extends React.Component {
           result: JSON.stringify(data, undefined, '\t')
         })
         if (data.code == 1) {
-          localStorage.setItem('musicer', JSON.stringify({
+          localStorage.setItem(MUSICER, JSON.stringify({
             id: data.account_info.id,
             expires_in: moment().add(data.expires_in, 's'),
             token: data.token
@@ -182,8 +198,10 @@ class Login extends React.Component {
 
 
   clearCookie() {
-    localStorage.removeItem('musicer');
-    console.log('成功清理musicer');
+    localStorage.removeItem(MUSICER);
+    if (!localStorage.getItem(MUSICER)) {
+      console.log('成功清理musicer');
+    }
   }
 
 
