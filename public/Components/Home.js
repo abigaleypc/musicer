@@ -44,8 +44,8 @@ class Home extends React.Component {
             <Sidebar />
           </div>
           <div className="col-xs-9 col-md-9">
-          {this.props.currentPanel.str=='LOGIN'&&<Login />}
-          {/* {this.state.currentPanel=='LOGIN'&&<Login />} */}
+            {(this.props.currentPanel.str == 'LOGIN' || this.props.currentPanel.str == 'LOGINBYTOKEN') && <Login />}
+            {/* {this.state.currentPanel=='LOGIN'&&<Login />} */}
           </div>
         </div>
       </section>

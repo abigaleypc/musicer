@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api, MUSICER } from '../config/const';
-import { userInfoAction } from '../store/actions'
+import { userInfoAction, currentPanelAction } from '../store/actions'
 
 import Sidebar from './Sidebar'
 import request from 'request'
@@ -22,7 +22,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    userInfoAction
+    userInfoAction, currentPanelAction
   }, dispatch)
 
 }
@@ -35,7 +35,10 @@ class Login extends React.Component {
       url: null,
       method: null,
       params: null,
-      tips: null
+      captcha: null,
+      tips: null,
+      captchaRequire: false,
+      captchaImageUrl: null
     };
     this.urlChange = this.urlChange.bind(this);
     this.methodChange = this.methodChange.bind(this);
@@ -44,6 +47,7 @@ class Login extends React.Component {
     this.login = this.login.bind(this);
     this.firstLogin = this.firstLogin.bind(this);
     this.loginByToken = this.loginByToken.bind(this);
+    this.captchaChange = this.captchaChange.bind(this);
   }
 
   componentWillMount() {
@@ -71,11 +75,14 @@ class Login extends React.Component {
     })
   }
 
+  captchaChange(e) {
+    this.setState({
+      captcha: e.target.value
+    })
+  }
+
   renderPanel() {
-    let { url, params, method } = this.state;
-
-
-    return (
+    let { url, params, method } = this.state; return (
       <div>
         <h3>🌸 {this.props.currentPanel.title}</h3>
         <div className="form-group">
@@ -94,8 +101,16 @@ class Login extends React.Component {
           <textarea className="form-control" defaultValue={JSON.stringify(params)} onChange={this.paramsChange} />
         </div>
 
+        {this.state.captchaRequire && <div className="form-group">
+          <label>验证码</label>
+          <input className="form-control" onChange={this.captchaChange} />
+        </div>}
+
         <button className="btn btn-primary" onClick={this.login.bind(this, this.state.url, this.state.params, this.state.method)}>请求</button>
         <button className="btn btn-primary" onClick={this.clearCookie.bind(this)}>清理登录信息</button>
+
+
+        {this.state.captchaRequire && <img src={this.state.captchaImageUrl} />}
       </div>
     )
   }
@@ -119,7 +134,7 @@ class Login extends React.Component {
     // 第一次登录：无token
     if (!cookie) {
       let _method = method.toLowerCase();
-      request[_method](uri, {
+      request.post(uri, {
         json: true,
         qs: params
       }).on('error', err => {
@@ -146,22 +161,37 @@ class Login extends React.Component {
 
         }
       })
-    }else {
-      
-      let currentDate = moment(),
-      expiresDate = JSON.parse(cookie).expires_in
+    } else {
+      let _cookie = JSON.parse(cookie);
+      let currentDate = moment();
+      let expiresDate = _cookie.expires_in;
       // cookie未过期
-      if(moment(currentDate).isBefore(expiresDate)){
-
-      }else {
+      if (moment(currentDate).isBefore(expiresDate)) {
+        this.loginByToken(_cookie.id, _cookie.token)
+      } else {
         // 过期
-        
+
       }
     }
   }
 
-  loginByToken(){
-
+  loginByToken(id, token) {
+    let { url } = this.state.data['LOGINBYTOKEN'];
+    request.get(url, {
+      json: true,
+      qs: {
+        id,
+        token
+      }
+    }).on('data', data => {
+      this.setState({
+        tips: '采用token登录'
+      })
+      let _data = JSON.parse(data);
+      this.setState({
+        result: JSON.stringify(_data, undefined, '\t')
+      })
+    })
   }
 
   firstLogin(uri, params, method) {
@@ -177,13 +207,28 @@ class Login extends React.Component {
         this.setState({
           result: JSON.stringify(data, undefined, '\t')
         })
-        if (data.code == 1) {
+        if (data.code === 1) {
           localStorage.setItem(MUSICER, JSON.stringify({
             id: data.account_info.id,
             expires_in: moment().add(data.expires_in, 's'),
             token: data.token
           }));
           // console.log(moment(curtime).isBefore(time));
+        } else {
+          if (data.code === -2) {
+            debugger
+            let _params = Object.assign({}, params, {
+              captcha_id: data.payload.captcha_id,
+              captcha_solution: this.state.captcha
+            })
+            this.firstLogin(uri, _params, method)
+
+            //验证码
+            this.setState({
+              captchaRequire: true,
+              captchaImageUrl: data.payload.captcha_image_url
+            })
+          }
         }
 
       } catch (err) {
@@ -198,18 +243,15 @@ class Login extends React.Component {
 
 
   clearCookie() {
+    this.setState({
+      captchaRequire: false
+    })
     localStorage.removeItem(MUSICER);
     if (!localStorage.getItem(MUSICER)) {
       console.log('成功清理musicer');
     }
   }
-
-
-
-
-
-
-
+  
   render() {
     return (
       <div>
