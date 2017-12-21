@@ -100,7 +100,7 @@ user.post('/login', function (req, res) {
       } else {
         res.json({
           code: 0,
-          msg: '缺乏有效token',
+          msg: data.msg,
         })
       }
     } catch (err) {

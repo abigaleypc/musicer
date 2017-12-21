@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { api, MUSICER } from '../config/const';
 import { userInfoAction, currentPanelAction } from '../store/actions'
 
-import Sidebar from './Sidebar'
 import request from 'request'
 import { REQUEST_CONTENT } from '../config/data'
 
@@ -38,25 +37,26 @@ class Login extends React.Component {
       captcha: null,
       tips: null,
       captchaRequire: false,
-      captchaImageUrl: null
+      captchaImageUrl: null,
+      captchaId: null
     };
     this.urlChange = this.urlChange.bind(this);
     this.methodChange = this.methodChange.bind(this);
     this.paramsChange = this.paramsChange.bind(this);
     this.getCookie = this.getCookie.bind(this);
     this.login = this.login.bind(this);
-    this.firstLogin = this.firstLogin.bind(this);
     this.loginByToken = this.loginByToken.bind(this);
     this.captchaChange = this.captchaChange.bind(this);
+    this.loginWithCaptcha = this.loginWithCaptcha.bind(this);
   }
 
   componentWillMount() {
-
     let { url, params, method } = this.state.data[this.props.currentPanel.str];
+    this.clearCookie()
     this.setState({
       params, url, method
     })
-    this.firstLogin(url, params, method)
+    this.login(url, params, method)
   }
 
   urlChange(e) {
@@ -82,7 +82,8 @@ class Login extends React.Component {
   }
 
   renderPanel() {
-    let { url, params, method } = this.state; return (
+    let { url, params, method } = this.state;
+    return (
       <div>
         <h3>🌸 {this.props.currentPanel.title}</h3>
         <div className="form-group">
@@ -129,14 +130,96 @@ class Login extends React.Component {
       return false;
     }
   }
+  // login(uri, params, method) {
+  //   let cookie = this.getCookie();
+  //   params = JSON.parse(params);
+  //   // 第一次登录：无token
+  //   if (!cookie) {
+  //     request.post(uri, {
+  //       json: true,
+  //       qs: params
+  //     }).on('error', err => {
+  //       // res.status(500).end(err);
+  //     }).on('data', data => {
+  //       try {
+  //         data = JSON.parse(data);
+  //         this.setState({
+  //           result: JSON.stringify(data, undefined, '\t')
+  //         })
+  //         if (data.code == 1) {
+  //           localStorage.setItem('musicer', JSON.stringify({
+  //             id: data.account_info.id,
+  //             expires_in: moment().add(data.expires_in, 's'),
+  //             token: data.token
+  //           }));
+  //           // console.log(moment(curtime).isBefore(time));
+  //         } 
+
+  //       } catch (err) {
+  //         this.setState({
+  //           result: err
+  //         })
+
+  //       }
+  //     })
+  //   } else {
+  //     let _cookie = JSON.parse(cookie);
+  //     let currentDate = moment();
+  //     let expiresDate = _cookie.expires_in;
+  //     // cookie未过期
+  //     if (moment(currentDate).isBefore(expiresDate)) {
+  //       this.loginByToken(_cookie.id, _cookie.token)
+  //     } else {
+  //       // 过期
+
+  //     }
+  //   }
+  // }
+
+  loginByToken(id) {
+    let cookie = JSON.parse(this.getCookie());
+    let { url } = this.state.data['LOGINBYTOKEN'];
+    request.get(url, {
+      json: true,
+      qs: {
+        id,
+        token: cookie.token
+      }
+    }).on('data', data => {
+      let _data = JSON.parse(data);
+      if (data.code == 0) {
+        this.setState({
+          result: JSON.stringify(_data, undefined, '\t')
+        })
+      } else {
+        this.setState({
+          tips: '采用token登录失败，清楚缓存，重新登录'
+        })
+        this.clearCookie();
+        this.login(this.state.uri, this.state.params, this.state.method);
+
+
+      }
+    })
+  }
+
   login(uri, params, method) {
+    this.setState({
+      captchaRequire: false
+    })
+    let _params = Object.assign({}, params, {
+      captcha_id: this.state.captcha_id,
+      captcha_solution: this.state.captcha
+    })
+    let _method = method.toLowerCase();
     let cookie = this.getCookie();
-    // 第一次登录：无token
     if (!cookie) {
-      let _method = method.toLowerCase();
-      request.post(uri, {
+      this.setState({
+        tips: '首次登录'
+      })
+      request[_method](uri, {
         json: true,
-        qs: params
+        qs: _params
       }).on('error', err => {
         // res.status(500).end(err);
       }).on('data', data => {
@@ -145,13 +228,34 @@ class Login extends React.Component {
           this.setState({
             result: JSON.stringify(data, undefined, '\t')
           })
-          if (data.code == 1) {
-            localStorage.setItem('musicer', JSON.stringify({
+          // 请求成功时localStorage存下信息
+          if (data.code === 1) {
+            localStorage.setItem(MUSICER, JSON.stringify({
               id: data.account_info.id,
               expires_in: moment().add(data.expires_in, 's'),
               token: data.token
             }));
-            // console.log(moment(curtime).isBefore(time));
+            // 根据token登录获取基本信息
+            this.loginByToken(data.account_info.id);
+
+            this.setState({
+              captchaRequire: false,
+              captchaImageUrl: null,
+              captcha: null,
+              captchaId: null
+            })
+          } else {
+            // 当需要验证码时
+            if (data.code === -2) {
+              // this.login(uri, _params, method)
+              // this.loginWithCaptcha(uri, _params, method)
+              //验证码
+              this.setState({
+                captchaRequire: true,
+                captchaImageUrl: data.payload.captcha_image_url,
+                captchaId: data.payload.captcha_id
+              })
+            }
           }
 
         } catch (err) {
@@ -167,77 +271,25 @@ class Login extends React.Component {
       let expiresDate = _cookie.expires_in;
       // cookie未过期
       if (moment(currentDate).isBefore(expiresDate)) {
-        this.loginByToken(_cookie.id, _cookie.token)
+        this.setState({
+          tips: '采用token登录：cookie未过期'
+        })
+        this.loginByToken(_cookie.id);
+
       } else {
+        this.setState({
+          tips: '采用token登录：cookie过期,重新登录'
+        })
         // 过期
+        this.clearCookie();
+        this.login(uri, params, method);
 
       }
     }
   }
 
-  loginByToken(id, token) {
-    let { url } = this.state.data['LOGINBYTOKEN'];
-    request.get(url, {
-      json: true,
-      qs: {
-        id,
-        token
-      }
-    }).on('data', data => {
-      this.setState({
-        tips: '采用token登录'
-      })
-      let _data = JSON.parse(data);
-      this.setState({
-        result: JSON.stringify(_data, undefined, '\t')
-      })
-    })
-  }
+  loginWithCaptcha() {
 
-  firstLogin(uri, params, method) {
-    let _method = method.toLowerCase();
-    request[_method](uri, {
-      json: true,
-      qs: params
-    }).on('error', err => {
-      // res.status(500).end(err);
-    }).on('data', data => {
-      try {
-        data = JSON.parse(data);
-        this.setState({
-          result: JSON.stringify(data, undefined, '\t')
-        })
-        if (data.code === 1) {
-          localStorage.setItem(MUSICER, JSON.stringify({
-            id: data.account_info.id,
-            expires_in: moment().add(data.expires_in, 's'),
-            token: data.token
-          }));
-          // console.log(moment(curtime).isBefore(time));
-        } else {
-          if (data.code === -2) {
-            debugger
-            let _params = Object.assign({}, params, {
-              captcha_id: data.payload.captcha_id,
-              captcha_solution: this.state.captcha
-            })
-            this.firstLogin(uri, _params, method)
-
-            //验证码
-            this.setState({
-              captchaRequire: true,
-              captchaImageUrl: data.payload.captcha_image_url
-            })
-          }
-        }
-
-      } catch (err) {
-        this.setState({
-          result: err
-        })
-
-      }
-    })
   }
 
 
@@ -251,7 +303,7 @@ class Login extends React.Component {
       console.log('成功清理musicer');
     }
   }
-  
+
   render() {
     return (
       <div>
@@ -262,6 +314,13 @@ class Login extends React.Component {
         <h6>{this.state.tips}</h6>
 
         <div>{this.state.result}</div>
+        <hr />
+        <h4>备注</h4>
+        <ul>
+          <li>第一次登录需要用户名密码</li>
+          <li>第一次登录之后需要拿到token去验证获取基本信息</li>
+          <li>拿到的token需要做一次有效期的验证</li>
+        </ul>
       </div>
     )
   }
