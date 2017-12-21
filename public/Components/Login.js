@@ -247,8 +247,6 @@ class Login extends React.Component {
           } else {
             // 当需要验证码时
             if (data.code === -2) {
-              // this.login(uri, _params, method)
-              // this.loginWithCaptcha(uri, _params, method)
               //验证码
               this.setState({
                 captchaRequire: true,
