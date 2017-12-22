@@ -40,14 +40,13 @@ user.get('/loginByToken', (req, res) => {
       })
     } else {
       res.json({
-        code: -1,
-        msg: '无效token'
+        code: 0,
+        msg: '无效token，请重新登录'
       })
     }
   })
 })
 user.post('/login', function (req, res) {
-  let Authorization;
   var params = Object.assign({}, AuthKey, {
     username: req.query.username,
     password: req.query.password
@@ -61,42 +60,13 @@ user.post('/login', function (req, res) {
   }).on('data', data => {
     try {
       data = JSON.parse(data);
-      console.log('------------------------------------');
-      console.log(data);
-      console.log('------------------------------------');
       if (data.access_token) {
-        LKV.set('username', params.username)
         LKV.set(data.douban_user_id, data); //用于根据ID匹配token
-        Authorization = 'Bearer ' + access_token
-        getBasic(params.username, params.password, Authorization, params.captcha_id, params.captcha_solution).then(result => {
-          if (result.status == 'failed') {
-            if (result.message == 'captcha_required') {
-              res.json({
-                code: -2,
-                msg: 'captcha_required',
-                payload: result.payload
-              })
-            } else {
-              res.json({
-                code: -1,
-                msg: 'failed',
-                payload: result.payload
-              })
-            }
-
-          } else {
-            LKV.set(data.access_token, result.payload.account_info)
-            res.json({
-              code: 1,
-              msg: 'success',
-              account_info: result.payload.account_info,
-              expires_in: data.expires_in,
-              token: data.access_token
-            })
-            getUserAc(params.username);
-          }
-        });
-
+        res.json({
+          code: 1,
+          msg: 'success',
+          data
+        })
       } else {
         res.json({
           code: 0,
@@ -111,6 +81,70 @@ user.post('/login', function (req, res) {
     }
   });
 });
+
+user.get('/basic', function (req, res) {
+  let user_id = req.query.user_id;
+  let Authorization;
+  let username = req.query.username;
+  let password = req.query.password;
+  let captcha_solution = req.query.captcha_solution ? req.query.captcha_solution : null;
+  let captcha_id = req.query.captcha_id ? req.query.captcha_id : null;
+  LKV.get(user_id).then(data => {
+    Authorization = 'Bearer ' + data.access_token
+  })
+  console.log('------------------------------------');
+  console.log(req.query);
+  console.log('------------------------------------');
+  request.post('https://accounts.douban.com/j/popup/login/basic', {
+    json: true,
+    headers: Object.assign({}, httpHeader, {
+      Authorization
+    }),
+    qs: {
+      name: username,
+      password: password,
+      captcha_solution,
+      captcha_id
+    }
+  }).on('error', err => {
+    res.json(err)
+  }).on('data', data => {
+    data = JSON.parse(data);
+    try {
+      if (data.message == 'success') {
+        let result = {
+          code: 1,
+          msg: 'success',
+          data: data.payload.account_info
+        }
+        LKV.set(`${user_id}basic`, data.payload.account_info)
+        res.json(result);
+      } else if (data.message == 'captcha_required') {
+        let result = {
+          code: -1,
+          msg: 'captcha_required',
+          data: data.payload
+        }
+        res.json(result);
+      } else {
+        let result = {
+          code: 0,
+          msg: 'get basic failed',
+          data: data.payload
+        }
+        res.json(result);
+      }
+    } catch (err) {
+      let result = {
+        code: 0,
+        msg: 'get basic failed',
+        data: err
+      }
+      res.json(result);
+    }
+  })
+})
+
 
 function getBasic(username, password, Authorization, id, solution) {
   return new Promise((resolve, reject) => {

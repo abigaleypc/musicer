@@ -48,6 +48,7 @@ class Login extends React.Component {
     this.loginByToken = this.loginByToken.bind(this);
     this.captchaChange = this.captchaChange.bind(this);
     this.loginWithCaptcha = this.loginWithCaptcha.bind(this);
+    this.getBasic = this.getBasic.bind(this);
   }
 
   componentWillMount() {
@@ -196,17 +197,13 @@ class Login extends React.Component {
           tips: '采用token登录失败，清楚缓存，重新登录'
         })
         this.clearCookie();
-        this.login(this.state.uri, this.state.params, this.state.method);
+        this.login(this.state.url, this.state.params, this.state.method);
 
 
       }
     })
   }
-
   login(uri, params, method) {
-    this.setState({
-      captchaRequire: false
-    })
     let _params = Object.assign({}, params, {
       captcha_id: this.state.captcha_id,
       captcha_solution: this.state.captcha
@@ -236,31 +233,34 @@ class Login extends React.Component {
               token: data.token
             }));
             // 根据token登录获取基本信息
-            this.loginByToken(data.account_info.id);
-
+            // this.loginByToken(data.account_info.id);
+            this.getBasic()
+            // 请求完成后清楚验证码
             this.setState({
               captchaRequire: false,
               captchaImageUrl: null,
               captcha: null,
               captchaId: null
             })
+          }
+          // 当需要验证码时
+          if (data.code === -2) {
+            //验证码
+            this.setState({
+              captchaRequire: true,
+              captchaImageUrl: data.payload.captcha_image_url,
+              captchaId: data.payload.captcha_id
+            })
           } else {
-            // 当需要验证码时
-            if (data.code === -2) {
-              //验证码
-              this.setState({
-                captchaRequire: true,
-                captchaImageUrl: data.payload.captcha_image_url,
-                captchaId: data.payload.captcha_id
-              })
-            }
+            console.log('------------------------------------');
+            console.log(data);
+            console.log('------------------------------------');
           }
 
         } catch (err) {
           this.setState({
             result: err
           })
-
         }
       })
     } else {
@@ -290,6 +290,9 @@ class Login extends React.Component {
 
   }
 
+  getBasic() {
+    // request.get('')
+  }
 
 
   clearCookie() {

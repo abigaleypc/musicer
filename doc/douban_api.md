@@ -59,19 +59,3 @@
         "captcha_image_url": "https://accounts.douban.com/j/captcha/show?vid=login:captcha:uCvABcP9I6TVVJ959yJAzYCf&size=small"
     }
   }
-
-# 应用API
-
-## 登录
-
-- url:  http://localhost:8082/login
-- param: {
-  username:'xx',
-  password:'xx'
-}
-- method: post
-- return: {
-    "code": 1, // 失败：0  成功：1
-    "msg": "success",
-    douban_user_name:"xx" // 若请求成功，返回douban_user_name
-	}
