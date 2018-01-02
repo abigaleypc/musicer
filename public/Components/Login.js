@@ -53,7 +53,7 @@ class Login extends React.Component {
 
   componentWillMount() {
     let { url, params, method } = this.state.data[this.props.currentPanel.str];
-    this.clearCookie()
+    // this.clearCookie()
     this.setState({
       params, url, method
     })
@@ -109,7 +109,7 @@ class Login extends React.Component {
         </div>}
 
         <button className="btn btn-primary" onClick={this.login.bind(this, this.state.url, this.state.params, this.state.method)}>请求</button>
-        <button className="btn btn-primary" onClick={this.clearCookie.bind(this)}>清理登录信息</button>
+        <button className="btn btn-primary" onClick={this.clearCookie.bind(this, 'btn')}>清理登录信息</button>
 
 
         {this.state.captchaRequire && <img src={this.state.captchaImageUrl} />}
@@ -196,7 +196,7 @@ class Login extends React.Component {
         this.setState({
           tips: '采用token登录失败，清楚缓存，重新登录'
         })
-        this.clearCookie();
+        this.clearCookie('loginByToken event');
         this.login(this.state.url, this.state.params, this.state.method);
 
 
@@ -227,15 +227,17 @@ class Login extends React.Component {
           })
           // 请求成功时localStorage存下信息
           if (data.code === 1) {
-            localStorage.setItem(MUSICER, JSON.stringify({
-              id: data.account_info.id,
-              expires_in: moment().add(data.expires_in, 's'),
-              token: data.token
-            }));
+            let res = data.data
+            let _musicer = JSON.stringify({
+              id: res.douban_user_id,//data.account_info.id,
+              expires_in: moment().add(res.expires_in, 's'),
+              token: res.refresh_token//data.token
+            })
+            localStorage.setItem(MUSICER, _musicer);
             // 根据token登录获取基本信息
-            // this.loginByToken(data.account_info.id);
+            // this.loginByToken(res.douban_user_id);
             this.getBasic()
-            // 请求完成后清楚验证码
+            // 请求完成后清除验证码
             this.setState({
               captchaRequire: false,
               captchaImageUrl: null,
@@ -259,7 +261,7 @@ class Login extends React.Component {
 
         } catch (err) {
           this.setState({
-            result: err
+            result: err.toString()
           })
         }
       })
@@ -268,6 +270,8 @@ class Login extends React.Component {
       let currentDate = moment();
       let expiresDate = _cookie.expires_in;
       // cookie未过期
+
+
       if (moment(currentDate).isBefore(expiresDate)) {
         this.setState({
           tips: '采用token登录：cookie未过期'
@@ -279,7 +283,7 @@ class Login extends React.Component {
           tips: '采用token登录：cookie过期,重新登录'
         })
         // 过期
-        this.clearCookie();
+        this.clearCookie('login event');
         this.login(uri, params, method);
 
       }
@@ -295,13 +299,13 @@ class Login extends React.Component {
   }
 
 
-  clearCookie() {
+  clearCookie(type) {
     this.setState({
       captchaRequire: false
     })
     localStorage.removeItem(MUSICER);
     if (!localStorage.getItem(MUSICER)) {
-      console.log('成功清理musicer');
+      console.log(type + '  成功清理musicer');
     }
   }
 
