@@ -318,7 +318,7 @@ class Login extends React.Component {
         <h4>请求结果</h4>
         <h6>{this.state.tips}</h6>
 
-        <div>{this.state.result}</div>
+        <pre>{this.state.result}</pre>
         <hr />
         <h4>备注</h4>
         <ul>
