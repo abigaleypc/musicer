@@ -3,7 +3,7 @@ const request = require('request')
 const { URL } = require('url')
 const LKV = require('../utils/lkv')
 
-const {httpHeader, AuthKey, loginUrl, access_token} = require('../config/config')
+const {httpHeader, AuthKey, loginUrl, doubanFmHeader,doubanComHeader} = require('../config/config')
 
 const user = express()
 
@@ -76,64 +76,6 @@ user.post('/login', function (req, res) {
   })
 })
 
-user.get('/basic_temp', function (req, res) {
-  let user_id = req.query.user_id
-  let Authorization
-  let username = req.query.username
-  let password = req.query.password
-  let captcha_solution = req.query.captcha_solution ? req.query.captcha_solution : null
-  let captcha_id = req.query.captcha_id ? req.query.captcha_id : null
-  LKV.get(user_id).then(data => {
-    Authorization = 'Bearer ' + data.access_token
-  })
-  request.post('https://accounts.douban.com/j/popup/login/basic', {
-    json: true,
-    headers: Object.assign({}, httpHeader, {
-    Authorization}),
-    qs: {
-      name: username,
-      password: password,
-      captcha_solution,
-    captcha_id}
-  }).on('error', err => {
-    res.json(err)
-  }).on('data', data => {
-    data = JSON.parse(data)
-    try {
-      if (data.message == 'success') {
-        let result = {
-          code: 1,
-          msg: 'success',
-          data: data.payload.account_info
-        }
-        LKV.set(`${user_id}basic`, data.payload.account_info)
-        res.json(result)
-      } else if (data.message == 'captcha_required') {
-        let result = {
-          code: -1,
-          msg: 'captcha_required',
-          data: data.payload
-        }
-        res.json(result)
-      } else {
-        let result = {
-          code: 0,
-          msg: 'get basic failed',
-          data: data.payload
-        }
-        res.json(result)
-      }
-    } catch (err) {
-      let result = {
-        code: 0,
-        msg: 'get basic failed',
-        data: err
-      }
-      res.json(result)
-    }
-  })
-})
-
 user.get('/basic', function (req, res) {
   let {username, password, solution, id} = req.query
   let Authorization = 'Bearer ' + req.query.token
@@ -153,55 +95,15 @@ user.get('/basic', function (req, res) {
   }).on('response', function (response) {
     // get dbcl2
     let headers = response.headers['set-cookie']
-    console.log('------------------------------------');
-    console.log(headers);
-    console.log('------------------------------------');
     let value = getValueByKey(headers, 'dbcl2')
-    LKV.get(username).then(obj => {
-      LKV.set(username, Object.assign({}, obj, { dbcl2: value }))
-    })
+    let obj = {}
+    LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { dbcl2: value }))
+    getUserAc(username)
   }).on('error', err => {
-    // reject(err)
   }).on('data', data => {
-    
     res.send(data)
-   
   })
 })
-
-function getBasic (username, password, Authorization, id, solution) {
-  return new Promise((resolve, reject) => {
-    request.post('https://accounts.douban.com/j/popup/login/basic', {
-      json: true,
-      headers: Object.assign({}, httpHeader, {
-      Authorization}),
-      qs: {
-        source: 'fm',
-        referer: 'https://douban.fm/',
-        ck: 'L-UM',
-        name: username,
-        password: password,
-        captcha_solution: solution ? solution : null,
-        captcha_id: id ? id : null
-      }
-    }).on('response', function (response) {
-      // get dbcl2
-      let headers = response.headers['set-cookie']
-      let value = getValueByKey(headers, 'dbcl2')
-      LKV.get(username).then(obj => {
-        LKV.set(username, Object.assign({}, obj, { dbcl2: value }))
-      })
-    }).on('error', err => {
-      reject(err)
-    }).on('data', data => {
-      try {
-        resolve(JSON.parse(data))
-      } catch (err) {
-        reject(err)
-      }
-    })
-  })
-}
 
 function getUserBid (username) {
   request.get('https://douban.fm', {
@@ -211,20 +113,22 @@ function getUserBid (username) {
     let headers = response.headers['set-cookie']
     let value = getValueByKey(headers, 'bid')
 
-    getUserCk(username, value)
-    LKV.get(username).then(obj => {
-      LKV.set(username, Object.assign({}, obj, { bid: value }))
+    LKV.get(`${username}_sensitive_info`).then(obj => {
+      LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { bid: value }))
+    }).then(() => {
+      getUserCk(username, value)
     })
   })
 }
 
 function getUserCk (username, bid) {
   let user
-  LKV.get(username).then(res => {
+  LKV.get(`${username}_sensitive_info`).then(res => {
     user = res
   }).then(() => {
     request.get('https://douban.fm/j/check_loggedin?san=1', {
       json: true,
+      // headers:Object.assign({},doubanFmHeader,{'Cookie': `flag="ok"; bid=${bid}; ac=${user.ac}; dbcl2=${user.dbcl2}`}),
       headers: {
         'Host': 'douban.fm',
         'Connection': 'keep-alive',
@@ -237,14 +141,23 @@ function getUserCk (username, bid) {
         'Referer': 'https://douban.fm/',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'Cookie': `flag="ok"; bid=${bid}; ac=${user.ac}; dbcl2=${user.dbcl2}`
+        
       }
     }).on('response', function (response) {
       let headers = response.headers['set-cookie']
-      let ck = getValueByKey(headers, 'ck')
+      let value = getValueByKey(headers, 'ck')
+      LKV.get(`${username}_sensitive_info`).then(obj => {
+        LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ck: value }))
+        return obj
+      }).then((data) => {
+        console.log('------------------------------------')
+        console.log(data)
+        console.log('------------------------------------')
+      })
     })
   })
 }
+
 function getUserAc (username) {
   request.get('https://douban.fm', {
     json: true,
@@ -258,7 +171,6 @@ function getUserAc (username) {
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
     }
   }).on('response', function (response) {
-    let headers = response.headers['set-cookie']
     serviceAcount(response.request.uri.href, username)
   })
 }
@@ -308,8 +220,8 @@ function goDouBanFm (url, bid, username) {
   }).on('response', function (response) {
     let headers = response.headers['set-cookie']
     let value = getValueByKey(headers, 'ac')
-    LKV.get(username).then(obj => {
-      LKV.set(username, Object.assign({}, obj, { ac: value }))
+    LKV.get(`${username}_sensitive_info`).then(obj => {
+      LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ac: value }))
     }).then(() => {
       getUserBid(username)
     })
