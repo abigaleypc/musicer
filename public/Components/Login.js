@@ -172,7 +172,6 @@ class Login extends React.Component {
   //       this.loginByToken(_cookie.id, _cookie.token)
   //     } else {
   //       // 过期
-
   //     }
   //   }
   // }
@@ -180,6 +179,7 @@ class Login extends React.Component {
   loginByToken(id) {
     let cookie = JSON.parse(this.getCookie());
     let { url } = this.state.data['LOGINBYTOKEN'];
+    debugger
     request.get(url, {
       json: true,
       qs: {
@@ -230,7 +230,7 @@ class Login extends React.Component {
             localStorage.setItem(MUSICER, JSON.stringify({
               id: data.account_info.id,
               expires_in: moment().add(data.expires_in, 's'),
-              token: data.token
+              token: data.access_token
             }));
             // 根据token登录获取基本信息
             // this.loginByToken(data.account_info.id);
