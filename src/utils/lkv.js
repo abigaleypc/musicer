@@ -20,46 +20,26 @@ function decrypt(data) {
  * save to local key value
  * @param key
  * @param value
- * @param overwrite overwrite if the key has exist
  * @param expireTime never expire if not set (unit: second)
  * @returns {Promise}
  */
-function set(key, data, overwrite = true, expireTime) {
+function set(key, data, expireTime) {
     !fs.existsSync(lkvDir) && fs.mkdirSync(lkvDir);
-    !fs.existsSync(lkvPath) && fs.writeFileSync(lkvPath, encrypt({}));
+    !fs.existsSync(lkvPath) && fs.writeFileSync(lkvPath, `{}`);
 
-    return new Promise((resolve, reject) => {
-        getAll().then(kvs => {
-            if (kvs[key] && !overwrite) {
-                reject({
-                    errCode: 1000,
-                    msg: `${key} has exist`
-                });
-            }
+    let kvs = fs.readFileSync(lkvPath);
+    kvs = JSON.parse(kvs.toString());
 
-            let storedData = {
-                data,
-                createTime: (+new Date() / 1000).toFixed(), // use second as unit
-                expireTime
-            };
-            kvs[key] = storedData;
+    let storedData = {
+        data,
+        createTime: (+new Date() / 1000).toFixed(), // use second as unit
+        expireTime
+    };
+    kvs[key] = storedData;
 
-            fs.writeFile(lkvPath, encrypt(kvs), err => {
-                if (err) {
-                    reject({
-                        errCode: -2,
-                        msg: err
-                    });
-                }
-                resolve(storedData);
-            });
-        }).catch(err => {
-            reject({
-                errCode: -1,
-                msg: err
-            });
-        });
-    });
+    fs.writeFileSync(lkvPath, JSON.stringify(kvs));
+
+    return storedData;
 }
 
 /**
@@ -70,11 +50,34 @@ function getAll() {
     return new Promise((resolve, reject) => {
         fs.readFile(lkvPath, (err, kvs) => {
             if (err) {
-                reject(err);
+                console.error(err)
+                return reject(err);
             }
-            resolve(decrypt(kvs.toString()));
+
+            try {
+              kvs = JSON.parse(kvs.toString());
+            } catch (error) {
+              console.error(error);
+            }
+
+            resolve(kvs);
         });
     });
+}
+
+/**
+ * get all data sync
+ */
+function getAllSync() {
+    let kvs = fs.readFileSync(lkvPath)
+
+    try {
+        kvs = JSON.parse(kvs.toString());
+    } catch (error) {
+        console.error(error);
+    }
+
+    return kvs;
 }
 
 /**
@@ -105,12 +108,41 @@ function get(key) {
 }
 
 /**
+ * delete specified value by key
+ * 
+ * @param {any} params 
+ */
+function deleteByKey(key) {
+    let data = getAll();
+    delete data[key]
+}
+
+
+/**
+ * get specified value by key sync
+ * @param {string} key
+ */
+function getSync(key) {
+    let value = getAllSync()[key];
+
+    if (_isValid(value)) {
+        return value.data;
+    } else {
+        return null;
+    }
+}
+
+
+
+/**
  * check the data is valid or not
  * @param data
  * @returns {boolean}
  * @private
  */
 function _isValid(data) {
+    if (!data) return false;
+
     let {
         createTime,
         expireTime
@@ -128,3 +160,6 @@ function _isValid(data) {
 exports.set = set;
 exports.getAll = getAll;
 exports.get = get;
+exports.getAllSync = getAllSync;
+exports.getSync = getSync;
+exports.deleteByKey = deleteByKey;
