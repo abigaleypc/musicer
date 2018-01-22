@@ -227,11 +227,11 @@ class Login extends React.Component {
           })
           // 请求成功时localStorage存下信息
           if (data.code === 1) {
-            localStorage.setItem(MUSICER, JSON.stringify({
-              id: data.account_info.id,
-              expires_in: moment().add(data.expires_in, 's'),
-              token: data.access_token
-            }));
+            // localStorage.setItem(MUSICER, JSON.stringify({
+            //   id: data.account_info.id,
+            //   expires_in: moment().add(data.expires_in, 's'),
+            //   token: data.access_token
+            // }));
             // 根据token登录获取基本信息
             // this.loginByToken(data.account_info.id);
             this.getBasic()
@@ -314,7 +314,7 @@ class Login extends React.Component {
         <h4>请求结果</h4>
         <h6>{this.state.tips}</h6>
 
-        <div>{this.state.result}</div>
+        <pre>{this.state.result}</pre>
         <hr />
         <h4>备注</h4>
         <ul>

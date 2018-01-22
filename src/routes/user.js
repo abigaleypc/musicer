@@ -21,17 +21,8 @@ user.get('/info', (req, res) => {
 })
 
 user.get('/loginByToken', (req, res) => {
-console.log('------------------------------------');
-console.log(req.query);
-console.log('------------------------------------');
   LKV.get(`${req.query.username}_token_info`).then(result => {
-    console.log('------------------------------------');
-    console.log(result);
-    console.log('------------------------------------');
     if (result.access_token == req.query.token) {
-      // LKV.get(req.query.token).then(basic => {
-      //   res.json(basic)
-      // })
       res.json({
         code: 1,
         msg: 'success',
@@ -65,19 +56,6 @@ user.post('/login', function (req, res) {
     try {
       data = JSON.parse(data)
       if (data.access_token) {
-        LKV.set(data.douban_user_id, data); // 用于根据ID匹配token
-        // 存储为 
-        // abigaleyu_token_in : {
-        //     "access_token": "d3c91d3b5xxxxxxx117d4e",
-        //     "douban_user_name": "abigaleyu",
-        //     "douban_user_id": "1688842",
-        //     "expires_in": 7775999,
-        //     "refresh_token": "aa89058fxxxxxxxb9a3c78"
-        // }
-        console.log('------------------------------------');
-        console.log(`${req.query.username}_token_info`);
-        console.log(data);
-        console.log('------------------------------------');
         LKV.set(`${req.query.username}_token_info`, data)
         res.json({
           code: 1,
@@ -156,8 +134,39 @@ user.get('/basic_temp', function (req, res) {
   })
 })
 
-user.get('/basic',function (req, res) {
-  
+user.get('/basic', function (req, res) {
+  let {username, password, solution, id} = req.query
+  let Authorization = 'Bearer ' + req.query.token
+  request.post('https://accounts.douban.com/j/popup/login/basic', {
+    json: true,
+    headers: Object.assign({}, httpHeader, {
+    Authorization}),
+    qs: {
+      source: 'fm',
+      referer: 'https://douban.fm/',
+      ck: 'L-UM',
+      name: username,
+      password: password,
+      captcha_solution: solution ? solution : null,
+      captcha_id: id ? id : null
+    }
+  }).on('response', function (response) {
+    // get dbcl2
+    let headers = response.headers['set-cookie']
+    console.log('------------------------------------');
+    console.log(headers);
+    console.log('------------------------------------');
+    let value = getValueByKey(headers, 'dbcl2')
+    LKV.get(username).then(obj => {
+      LKV.set(username, Object.assign({}, obj, { dbcl2: value }))
+    })
+  }).on('error', err => {
+    // reject(err)
+  }).on('data', data => {
+    
+    res.send(data)
+   
+  })
 })
 
 function getBasic (username, password, Authorization, id, solution) {
