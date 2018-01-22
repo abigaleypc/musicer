@@ -49,6 +49,7 @@ class Login extends React.Component {
     this.captchaChange = this.captchaChange.bind(this);
     this.loginWithCaptcha = this.loginWithCaptcha.bind(this);
     this.getBasic = this.getBasic.bind(this);
+    this.initLogin = this.initLogin.bind(this);
   }
 
   componentWillMount() {
@@ -57,7 +58,8 @@ class Login extends React.Component {
     this.setState({
       params, url, method
     })
-    this.login(url, params, method)
+    // this.login(url, params, method)
+    this.login()
   }
 
   urlChange(e) {
@@ -177,6 +179,23 @@ class Login extends React.Component {
   //   }
   // }
 
+  login() {
+    let cookie = this.getCookie();
+    if (cookie) {
+      cookie = JSON.parse(cookie);
+      let currentDate = moment();
+      let expiresDate = cookie.expires_in;
+      if (moment(currentDate).isBefore(expiresDate)) {
+        this.loginByToken();
+      }
+      else {
+        this.initLogin();
+      }
+    } else {
+      this.initLogin();
+    }
+
+  }
   loginByToken(id) {
     let cookie = JSON.parse(this.getCookie());
     let { url } = this.state.data['LOGINBYTOKEN'];
@@ -203,13 +222,15 @@ class Login extends React.Component {
       }
     })
   }
-  login(uri, params, method) {
+  initLogin(params, method) {
+    let uri = this.state.data[this.props.currentPanel.str].url;
+    
     let _params = Object.assign({}, params, {
       captcha_id: this.state.captcha_id,
       captcha_solution: this.state.captcha
     })
     let _method = method.toLowerCase();
-    let cookie = this.getCookie();
+
     if (!cookie) {
       this.setState({
         tips: '首次登录'
