@@ -108,6 +108,7 @@ class Login extends React.Component {
         </div>}
 
         <button className="btn btn-primary" onClick={this.login.bind(this, this.state.url, this.state.params, this.state.method)}>请求</button>
+        <button className="btn btn-primary" onClick={this.loginByToken.bind(this, this.state.url, this.state.params, this.state.method)}>根据token请求</button>
         <button className="btn btn-primary" onClick={this.clearCookie.bind(this, 'btn')}>清理登录信息</button>
 
 
@@ -149,19 +150,105 @@ class Login extends React.Component {
 
   login() {
     let cookie = this.getCookie();
-    if (cookie) {
-      cookie = JSON.parse(cookie);
-      let currentDate = moment();
-      let expiresDate = cookie.expires_in;
-      if (moment(currentDate).isBefore(expiresDate)) {
-        this.loginByToken();
-      }
-      else {
-        this.initLogin();
-      }
+
+    let uri = this.state.data[this.props.currentPanel.str].url;
+    
+    let _params = Object.assign({}, params, {
+      captcha_id: this.state.captcha_id,
+      captcha_solution: this.state.captcha
+    })
+    let _method = method.toLowerCase();
+
+    if (!cookie) {
+      this.setState({
+        tips: '首次登录'
+      })
+      request[_method](uri, {
+        json: true,
+        qs: _params
+      }).on('error', err => {
+        // res.status(500).end(err)
+      }).on('data', data => {
+        try {
+          data = JSON.parse(data)
+          this.setState({
+            result: JSON.stringify(data, undefined, '\t')
+          })
+          // 请求成功时localStorage存下信息
+          if (data.code === 1) {
+            let res = data.data
+            let _musicer = JSON.stringify({
+              id: res.douban_user_id,//data.account_info.id,
+              expires_in: moment().add(res.expires_in, 's'),
+              token: res.refresh_token//data.token
+            })
+            localStorage.setItem(MUSICER, _musicer);
+            // 根据token登录获取基本信息
+            // this.loginByToken(res.douban_user_id);
+            this.getBasic()
+            // 请求完成后清除验证码
+            this.setState({
+              captchaRequire: false,
+              captchaImageUrl: null,
+              captcha: null,
+              captchaId: null
+            })
+          }
+          // 当需要验证码时
+          if (data.code === -2) {
+            // 验证码
+            this.setState({
+              captchaRequire: true,
+              captchaImageUrl: data.payload.captcha_image_url,
+              captchaId: data.payload.captcha_id
+            })
+          } else {
+            console.log('------------------------------------')
+            console.log(data)
+            console.log('------------------------------------')
+          }
+        } catch (err) {
+          this.setState({
+            result: err.toString()
+          })
+        }
+      })
     } else {
-      this.initLogin();
+      let _cookie = JSON.parse(cookie)
+      let currentDate = moment()
+      let expiresDate = _cookie.expires_in
+      // cookie未过期
+
+
+      if (moment(currentDate).isBefore(expiresDate)) {
+        this.setState({
+          tips: '采用token登录：cookie未过期'
+        })
+        this.loginByToken(_cookie.id)
+      } else {
+        this.setState({
+          tips: '采用token登录：cookie过期,重新登录'
+        })
+        // 过期
+        this.clearCookie('login event');
+        this.login(uri, params, method);
+
+      }
     }
+    
+    // if (cookie) {
+    //   cookie = JSON.parse(cookie);
+    //   let currentDate = moment();
+    //   let expiresDate = cookie.expires_in;
+    //   if (moment(currentDate).isBefore(expiresDate)) {
+    //     this.loginByToken();
+    //   }
+    //   else {
+    //     this.initLogin();
+    //   }
+    // } else {
+    //   this.initLogin();
+    // }
 
   }
   loginByToken(id) {
