@@ -108,6 +108,17 @@ function get(key) {
 }
 
 /**
+ * delete specified value by key
+ * 
+ * @param {any} params 
+ */
+function deleteByKey(key) {
+    let data = getAll();
+    delete data[key]
+}
+
+
+/**
  * get specified value by key sync
  * @param {string} key
  */
@@ -120,6 +131,8 @@ function getSync(key) {
         return null;
     }
 }
+
+
 
 /**
  * check the data is valid or not
@@ -149,3 +162,4 @@ exports.getAll = getAll;
 exports.get = get;
 exports.getAllSync = getAllSync;
 exports.getSync = getSync;
+exports.deleteByKey = deleteByKey;
