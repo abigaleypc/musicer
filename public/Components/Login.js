@@ -1,6 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+const {shell} = require('electron')
 
 import {  } from '../store/actions'
 
@@ -15,6 +16,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({}, dispatch)
 }
 
+let registerURL= 'https://accounts.douban.com/register'
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +31,9 @@ class Login extends React.Component {
   
   }
 
+  goRegister(){
+    shell.openExternal(registerURL)
+  }
   render() {
 
     return (
@@ -63,7 +69,7 @@ class Login extends React.Component {
           </div>
           <a type="button" className="btn">登录</a>
 
-        <div className="register">注册</div>
+        <a className="register" onClick={this.goRegister}>注册</a>
         </form>}
       </div>
     )
