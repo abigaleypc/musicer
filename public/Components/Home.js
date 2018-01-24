@@ -7,6 +7,7 @@ import { userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction,
 
 import Lyric from './Lyric'
 import Share from './Share'
+import Login from './Login'
 import ToneAnimation from './ToneAnimation'
 
 import '../style/Home.less'
@@ -253,14 +254,11 @@ class Home extends React.Component {
           {/* 主面板 */}
           <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <div className="tone-animation"><ToneAnimation /></div>
-            {/* <a className="interface_control_btn"><i className="fa fa-user-circle-o" aria-hidden="true"></i></a> */}
+            <a className="interface_control_btn"  onClick={this.showPanel.bind(this, 'login')}><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
 
               {/* 右上角按钮 */}
               <img src={this.props.songInfo.picture} className='img_filter_normal' />
-
-
-
               <div className='btnAndInfo'>
                 <div className="text_info center layout_row">
                   <div className="left"><a onClick={this.showPanel.bind(this, 'lyric')}>詞</a></div>
@@ -315,6 +313,16 @@ class Home extends React.Component {
 
             <div className='contains'>
               <Share />
+            </div>
+          </div>
+
+          {/* 登录面板 */}
+          <div className={this.props.currentPanel == 'login' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
+            <a className="interface_control_btn" onClick={this.goBack}><i className="fa fa-angle-left" aria-hidden="true"></i></a>
+            <img src={this.props.songInfo.picture} className='img_blur_10' />
+
+            <div className='contains'>
+              <Login />
             </div>
           </div>
 
