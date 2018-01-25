@@ -18,7 +18,7 @@ export const CURRENT_TIME = 'CURRENT_TIME';
  * action 创建函数
  */
 
-export function tologinAction(payload) {
+export function loginAction(payload) {
   return { type: LOGIN, payload }
 }
 

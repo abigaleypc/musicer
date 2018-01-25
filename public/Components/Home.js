@@ -129,7 +129,6 @@ class Home extends React.Component {
       .then((data) => {
         let songInfo = [];
         if (data.song.length > 0) {
-
           songInfo = data.song[0];
           this.props.songInfoAction({ songInfo });
           this.setState({

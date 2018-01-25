@@ -3,7 +3,7 @@ import { LOGIN, USER_INFO, SONG_INFO, CURRENT_PANEL, FORWARD_PANEL, IS_PLAY, IS_
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
-function toLoginReducer(state = { isLogin: false }, action) {
+function loginReducer(state = { isLogin: false }, action) {
   const { type, payload } = action;
   let nextState = Object.assign({}, state);
   if (type === LOGIN) {
@@ -109,7 +109,7 @@ function currentTimeReducer(state = { currentTime: 0 }, action) {
 }
 
 const doubanFmReducers = combineReducers({
-  toLoginReducer,
+  loginReducer,
   userInfoReducer,
   songInfoReducer,
   currentPanelReducer,

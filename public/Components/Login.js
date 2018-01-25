@@ -1,76 +1,114 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 const {shell} = require('electron')
 
-import {  } from '../store/actions'
+import {api} from '../config/const'
+import { loginAction } from '../store/actions'
 
-import '../style/Login.less';
-const QRCode = require('qrcode');
+import '../style/Login.less'
 
-function mapStateToProps(state) {
-  const { sid, ssid, picture, title } = state.songInfoReducer.songInfo;
-  return { sid, ssid, picture, title };
+function mapStateToProps (state) {
+  const { isLogin } = state.loginReducer
+  return {isLogin}
 }
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({}, dispatch)
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    loginAction
+  }, dispatch)
 }
 
-let registerURL= 'https://accounts.douban.com/register'
+let registerURL = 'https://accounts.douban.com/register'
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       qrcode: null,
-      isNeedVeri:false
+      isNeedVeri: false,
+      username:null,
+      tip:''
     }
+    this.login = this.login.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-  
+  /**
+   * 监视props变化
+   * 
+   * @param {any} nextProps 
+   * @memberof Login
+   */
+  componentWillReceiveProps (nextProps) {
   }
 
-  goRegister(){
+  goRegister () {
     shell.openExternal(registerURL)
   }
-  render() {
+  login () {
+    let username = this.username.value;
+    let password = this.password.value;
+    api
+    fetch(`${api}/user/login?username=${username}&password=${password}`,{method:'POST'})
+      .then(res=>{
+        return res.json();
+      })
+      .then(data =>{
+        if(data.code == 1) {
 
+        }else {
+          this.setState({
+            tip:'登录失败'
+          })
+        }
+      })
+    this.props.loginAction({isLogin:true})
+    this.props.isLogin
+
+  }
+
+  render () {
     return (
-      <div className="login">
-        <div className="logo">登录</div>
+      <div className='login'>
+        <div className='logo'>
+          登录
+        </div>
         {/* 需要验证码的布局 */}
-        {this.state.isNeedVeri && <form className="">
-          <div className="input-item">
-            <i className="fa fa-user" aria-hidden="true"></i>
-            <input placeholder="用户名"/>
+        {this.state.isNeedVeri && 
+        <form className=''>
+          <div className='input-item'>
+            <i className='fa fa-user' aria-hidden='true'></i>
+            <input placeholder='用户名' type='text' ref={(username) => {
+              this.username = username;}} />
           </div>
-          <div className="input-item">
-            <i className="fa fa-lock" aria-hidden="true"></i>
-            <input placeholder="密码" />
+          <div className='input-item'>
+            <i className='fa fa-lock' aria-hidden='true'></i>
+            <input placeholder='密码' ref='password' />
           </div>
-          <div className="input-item verification">
-            
+          <div className='input-item verification'>
           </div>
-          <div className="input-item">
-            <input placeholder="验证码" />
+          <div className='input-item'>
+            <input placeholder='验证码' />
           </div>
-          <a type="button" className="btn">登录</a>
+          <a type='button' className='btn'>登录</a>
         </form>}
         {/* 不需要验证码的布局 */}
-        {!this.state.isNeedVeri &&<form className="no-veri-layout">
-          <div className="input-item">
-            <i className="fa fa-user" aria-hidden="true"></i>
-            <input placeholder="用户名"/>
-          </div>
-          <div className="input-item">
-            <i className="fa fa-lock" aria-hidden="true"></i>
-            <input placeholder="密码" />
-          </div>
-          <a type="button" className="btn">登录</a>
-
-        <a className="register" onClick={this.goRegister}>注册</a>
-        </form>}
+        {!this.state.isNeedVeri && 
+        <form className='no-veri-layout'>
+                                     <div className='input-item'>
+                                       <i className='fa fa-user' aria-hidden='true'></i>
+                                       <input placeholder='用户名' ref={(username) => {
+                                                                      this.username = username;}}  />
+                                     </div>
+                                     <div className='input-item'>
+                                       <i className='fa fa-lock' aria-hidden='true'></i>
+                                       <input placeholder='密码' ref={(password) => {
+                                                                      this.password = password;}}  />
+                                     </div>
+                                     <a type='button' className='btn' onClick={this.login}>登录</a>
+                                     <a className='register' onClick={this.goRegister}>注册</a>
+        <span>{this.state.tip}</span>
+                                   </form>}
+        
       </div>
     )
   }
@@ -79,6 +117,6 @@ class Login extends React.Component {
 const connectLogin = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Login);
+)(Login)
 
-export default connectLogin;
+export default connectLogin
