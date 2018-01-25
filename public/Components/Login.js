@@ -6,6 +6,8 @@ const {shell} = require('electron')
 import {api} from '../config/const'
 import { loginAction } from '../store/actions'
 
+import moment from 'moment';
+
 import '../style/Login.less'
 
 function mapStateToProps (state) {
@@ -52,17 +54,20 @@ class Login extends React.Component {
       .then(res=>{
         return res.json();
       })
-      .then(data =>{
-        if(data.code == 1) {
-
+      .then(res =>{
+        if(res.code == 1) {
+          this.props.loginAction({isLogin:true})
+          // 将有效时间存在内存
+          let musicer = JSON.stringify({
+            // id:res.
+          })
         }else {
           this.setState({
             tip:'登录失败'
           })
         }
       })
-    this.props.loginAction({isLogin:true})
-    this.props.isLogin
+   
 
   }
 
@@ -94,18 +99,18 @@ class Login extends React.Component {
         {/* 不需要验证码的布局 */}
         {!this.state.isNeedVeri && 
         <form className='no-veri-layout'>
-                                     <div className='input-item'>
-                                       <i className='fa fa-user' aria-hidden='true'></i>
-                                       <input placeholder='用户名' ref={(username) => {
+          <div className='input-item'>
+            <i className='fa fa-user' aria-hidden='true'></i>
+            <input placeholder='用户名' ref={(username) => {
                                                                       this.username = username;}}  />
-                                     </div>
-                                     <div className='input-item'>
-                                       <i className='fa fa-lock' aria-hidden='true'></i>
-                                       <input placeholder='密码' ref={(password) => {
+          </div>
+          <div className='input-item'>
+            <i className='fa fa-lock' aria-hidden='true'></i>
+            <input placeholder='密码' ref={(password) => {
                                                                       this.password = password;}}  />
-                                     </div>
-                                     <a type='button' className='btn' onClick={this.login}>登录</a>
-                                     <a className='register' onClick={this.goRegister}>注册</a>
+      </div>
+      <a type='button' className='btn' onClick={this.login}>登录</a>
+      <a className='register' onClick={this.goRegister}>注册</a>
         <span>{this.state.tip}</span>
                                    </form>}
         

@@ -12,7 +12,7 @@
     "package": "electron-packager ./ musicer --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules --icon=public/assets/musicer.icns",
     "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --out=build --icon=public/assets/musicer.ico"
   },
-  "main":"./public/main.js",
+  "main": "./public/main.js",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -39,6 +39,7 @@
     "crypto-js": "^3.1.9-1",
     "express": "~4.15.2",
     "font-awesome": "^4.7.0",
+    "moment": "^2.20.1",
     "qrcode": "^1.0.0",
     "react": "^16.0.0",
     "react-color": "^2.13.8",
