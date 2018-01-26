@@ -9,6 +9,7 @@ form {
     position: relative;
     color: #fff;
     .input-item {
+        width: 155px;
         position: relative;
         i {
             position: absolute;
@@ -17,9 +18,10 @@ form {
             font-size: 14px;
         }
         input {
+            width: 78%;
             border: 1px solid rgba(255, 255, 255, 0.7);
             background: rgba(255, 255, 255, 0.1);
-            padding: 5px;
+            padding: 5px 5px 5px 25px;
             color: #fff;
         }
          ::-webkit-input-placeholder {
@@ -44,35 +46,47 @@ form {
             outline-color: #de6262
         }
     }
-    .input-item:first-child {
+    .login-top-radius {
+        margin-bottom: -1px;
         input {
-            padding-left: 25px;
             border-radius: 5px 5px 0 0;
         }
     }
-    .input-item:nth-child(2) {
-        margin-top: 10px;
+    .login-bottom-radius {
         margin-top: -1px;
         input {
-            padding-left: 25px;
             border-radius: 0 0 5px 5px;
         }
     }
-    .input-item:nth-child(4) {
-        width: 100%;
-        input {
-            width: 92%;
-        }
+    .img-verification {
+        position: absolute;
+        width: 99%;
+        height: 25px;
+        z-index: 0;
     }
-    .verification {
-        margin-top: 5px;
-        width: 100%;
-        height: 30px;
-        background: #fff;
+    .input-verification {
+        position: absolute;
+        z-index: 1;
+        border-radius: 0 0 5px 5px;
     }
+
+}
+
+.no-veri-layout {
+    margin: 50px 10px;
+
+
+}
+
+
+.login-bottom-block {
+    position: absolute;
+    bottom: -113px;
+    width: 100%;
+
     .btn {
         display: block;
-        width: 100%;
+        width: 92%;
         height: 30px;
         background: #de6262;
         border-radius: 5px;
@@ -80,19 +94,13 @@ form {
         line-height: 30px;
         color: white;
         margin-top: 10px;
-        &:hover{
-          font-weight: bold;
-          background: #ca4646
+        &:hover {
+            font-weight: bold;
+            background: #ca4646
         }
     }
-}
-
-.no-veri-layout {
-    margin: 50px 10px;
-    .btn {
-        margin-top: 40px;
-    }
     .register {
+        width: 92%;
         text-align: right;
         padding-right: 5px;
         padding-top: 5px;

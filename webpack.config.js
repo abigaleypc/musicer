@@ -1,16 +1,16 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   entry: {
-    bundle: "./public/entry.js",
-    login: "./public/login.js"
+    bundle: './public/entry.js',
+    login: './public/login.js'
   },
   output: {
-    path: path.resolve(__dirname, "public/dist"),
-    filename: "[name].js"
+    path: path.resolve(__dirname, 'public/dist'),
+    filename: '[name].js'
   },
-  devtool: "source-map",
-  target: "electron",
+  devtool: 'source-map',
+  target: 'electron',
   module: {
     rules: [
       {
@@ -30,19 +30,19 @@ module.exports = {
           {
             loader: 'image-webpack-loader',
             options: {
-              bypassOnDebug: true,
-            },
-          },
-        ],
+              bypassOnDebug: true
+            }
+          }
+        ]
       },
       {
         test: /\.less$/,
         use: [{
-          loader: "style-loader" // 将 JS 字符串生成为 style 节点
+          loader: 'style-loader' // 将 JS 字符串生成为 style 节点
         }, {
-          loader: "css-loader" // 将 CSS 转化成 CommonJS 模块
+          loader: 'css-loader' // 将 CSS 转化成 CommonJS 模块
         }, {
-          loader: "less-loader" // 将 Less 编译成 CSS
+          loader: 'less-loader' // 将 Less 编译成 CSS
         }]
       }
     ]
@@ -53,4 +53,4 @@ module.exports = {
     fs: 'empty',
     tls: 'empty'
   }
-};
+}

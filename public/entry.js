@@ -6,8 +6,8 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import { api } from './config/const';
-import Header from './Components/Header';
-import Home from './Components/Home';
+import Header from './Components/Header.jsx';
+import Home from './Components/Home.jsx';
 import reducers from './store/reducers'
 
 

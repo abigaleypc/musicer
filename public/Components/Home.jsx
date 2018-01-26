@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { api } from '../config/const';
 import { userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 
-import Lyric from './Lyric'
-import Share from './Share'
-import Login from './Login'
-import ToneAnimation from './ToneAnimation'
+import Lyric from './Lyric.jsx'
+import Share from './Share.jsx'
+import Login from './Login.jsx'
+import ToneAnimation from './ToneAnimation.jsx'
 
 import '../style/Home.less'
 import { ipcRenderer } from 'electron';

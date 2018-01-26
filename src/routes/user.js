@@ -99,9 +99,31 @@ user.get('/basic', function (req, res) {
     LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { dbcl2: value }))
     getUserAc(username)
   }).on('error', err => {
-  }).on('data', data => {
-    LKV.set(`${username}_basic_info`,data)
-    res.send(data)
+    res.json({
+      code: 0,
+      msg: err
+    })
+  }).on('data', result => {
+    let data = JSON.parse(result)
+    if (data.message == 'success') {
+      LKV.set(`${username}_basic_info`, data)
+      res.send({
+        code: 1,
+        msg: 'success',
+        data: data.payload.account_info
+      })
+    }else if(data.message == 'captcha_required'){
+      res.send({
+        code: -1,
+        msg: 'success',
+        data: data.payload
+      })
+    }else {
+      res.json({
+        code: 0,
+        msg: 'failed'
+      })
+    }
   })
 })
 
@@ -140,9 +162,9 @@ function getUserCk (username, bid) {
     }).on('response', function (response) {
       // let headers = response.headers['set-cookie']
       // let value = getValueByKey(headers, 'ck')
-      // console.log('------------------------------------');
-      // console.log(value);
-      // console.log('------------------------------------');
+      // console.log('------------------------------------')
+      // console.log(value)
+      // console.log('------------------------------------')
       // LKV.get(`${username}_sensitive_info`).then(obj => {
       //   LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ck: value }))
       //   return obj
