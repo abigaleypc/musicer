@@ -26,14 +26,17 @@ class Login extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      qrcode: null,
-      isNeedVeri: false,
       username: null,
+      password: null,
+      captcha:null,
+      isNeedCaptcha: false,
       tip: '',
-      captchaImageUrl: './assets/captcha.jpeg'
+      captchaImageUrl: './assets/captcha.jpeg',
+      captchaId: ''
     }
     this.login = this.login.bind(this)
   }
+
 
   /**
    * 监视props变化
@@ -63,7 +66,7 @@ class Login extends React.Component {
             expires_in: moment().add(data.expires_in, 's'),
             token: data.access_token
           })
-          localStorage.setItem(`musicer_${username}_info`, JSON.stringify(userToken))
+          localStorage.setItem(`musicer_${username}_info`, userToken)
         } else {
           this.setState({
             tip: '登录失败'
@@ -78,27 +81,27 @@ class Login extends React.Component {
   getBasicInfo() {
     let username = this.username.value;
     let password = this.password.value;
-    // http://localhost:8082/user/basic?username=13798994068&password=1234567890ypc&token=9c4af15ec3df22e3d4e0d41c4b9d68a9
+    let captcha = this.captcha && this.captcha.value ? this.captcha.value : '';
     let userToken = JSON.parse(localStorage.getItem(`musicer_${username}_info`))
-    fetch(`${api}/user/basic?username=${username}&password=${password}&token=${userToken.token}`)
+    fetch(`${api}/user/basic?username=${username}&password=${password}&token=${userToken.token}&solution=${captcha}&id=${this.state.captchaId}`)
+      .then(res => res.json())
       .then(res => {
-        return res.json()
-      })
-      .then(res => {
-        console.log('------------------------------------');
-        console.log(res);
-        console.log('------------------------------------');
         if (res.code == 1) {
           this.setState({
-            isNeedVeri: false
+            isNeedCaptcha: false,
+            tip: ''
           })
           let data = Object.assign({}, userToken, res.data)
           localStorage.setItem(`musicer_${username}_info`, JSON.stringify(data))
 
+          //跳转到登录完成界面
+
         } else if (res.code == -1) {
           this.setState({
-            isNeedVeri: true,
-            captchaImageUrl: res.data.captcha_image_url
+            isNeedCaptcha: true,
+            tip: '',
+            captchaImageUrl: res.data.captcha_image_url,
+            captchaId: res.data.captcha_id
           })
           // 需要验证码
           // 返回 
@@ -111,9 +114,23 @@ class Login extends React.Component {
           // }
         } else {
 
+          this.setState({
+            tip: '登录失败，请重新登录',
+            isNeedCaptcha: false,
+            password:'',
+            captcha:''
+          })
         }
       })
   }
+
+  handleChange(key, event) {
+    const {target: {value}} = event;
+    this.setState({
+      [key]: value
+    });
+  }
+
 
   render() {
     return (
@@ -122,47 +139,42 @@ class Login extends React.Component {
           登录
         </div>
         {/* 需要验证码的布局 */}
-        {this.state.isNeedVeri &&
-          <form className=''>
-            <div className='input-item login-top-radius'>
-              <i className='fa fa-user' aria-hidden='true'></i>
-              {/* <input placeholder='用户名' type='text' ref={(username) => {
+        <form className=''>
+          <div className='input-item login-top-radius'>
+            <i className='fa fa-user' aria-hidden='true'></i>
+            {/* <input placeholder='用户名' type='text' ref={(username) => {
                 this.username = username;
               }} /> */}
-              <input placeholder='用户名' ref={(username) => {
-                this.username = username;
-              }} />
-            </div>
-            <div className='input-item'>
-              <i className='fa fa-lock' aria-hidden='true'></i>
-              <input placeholder='密码' ref='password' />
-            </div>
-            {/* <div className='input-item verification'>
+            <input placeholder='用户名' ref={(username) => {
+              this.username = username;
+            }}
+              value={this.state.username}
+              onChange={this.handleChange.bind(this, 'username')}/>
+          </div>
+          <div className='input-item'>
+            <i className='fa fa-lock' aria-hidden='true'></i>
+            <input placeholder='密码' ref={(password) => {
+              this.password = password;
+            }}
+              value={this.state.password}
+              onChange={this.handleChange.bind(this, 'password')}/>
+          </div>
+          {/* <div className='input-item verification'>
                                    <img src={this.state.captchaImageUrl}/>
                                    </div> */}
 
-            <div className='input-item  login-bottom-radius ' >
-              <img src={this.state.captchaImageUrl} className='img-verification' />
-              <input placeholder='验证码' className='input-verification' />
-            </div>
-          </form>}
-        {/* 不需要验证码的布局 */}
-        {!this.state.isNeedVeri &&
-          <form className='no-veri-layout'>
-            <div className='input-item login-top-radius'>
-              <i className='fa fa-user' aria-hidden='true'></i>
-              <input placeholder='用户名' ref={(username) => {
-                this.username = username;
-              }} />
-            </div>
-            <div className='input-item  login-bottom-radius'>
-              <i className='fa fa-lock' aria-hidden='true'></i>
-              <input placeholder='密码' ref={(password) => {
-                this.password = password;
-              }} />
-            </div>
-          </form>
-        }
+          {this.state.isNeedCaptcha && <div className='input-item  login-bottom-radius ' >
+            <img src={this.state.captchaImageUrl} className='img-captcha' />
+            {/* <input placeholder='' className='input-captcha'
+              ref={(captcha) => { this.captcha = captcha }}
+              value={this.state.captcha} /> */}
+            <input placeholder='' className='input-captcha' ref={(captcha) => {
+              this.captcha = captcha;
+            }}
+              value={this.state.captcha}
+              onChange={this.handleChange.bind(this, 'captcha')}/>
+          </div>}
+        </form>
         <div className='login-bottom-block '>
           <a type='button' className='btn center' onClick={this.login}>登录</a>
           <a className='register' onClick={this.goRegister}>注册</a>

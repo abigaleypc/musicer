@@ -92,6 +92,9 @@ user.get('/basic', function (req, res) {
       captcha_id: id ? id : null
     }
   }).on('response', function (response) {
+    console.log('------------------------------------');
+    console.log(response);
+    console.log('------------------------------------');
     // get dbcl2
     let headers = response.headers['set-cookie']
     let value = getValueByKey(headers, 'dbcl2')
@@ -144,7 +147,7 @@ function getUserBid (username) {
 }
 
 function getUserCk (username, bid) {
-  let user
+  // let user
   LKV.get(`${username}_sensitive_info`).then(res => {
     user = res
   }).then(() => {
@@ -154,10 +157,7 @@ function getUserCk (username, bid) {
         {},
         doubanFmHeader,
         {
-          'Cookie': `flag="ok"; 
-          bid=${bid}; 
-          ac=${user.ac}; 
-          dbcl2=${user.dbcl2}`
+          'Cookie': `flag="ok";bid=${bid};ac=${user.ac};dbcl2=${user.dbcl2}`
         })
     }).on('response', function (response) {
       // let headers = response.headers['set-cookie']
