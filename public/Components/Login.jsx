@@ -4,18 +4,22 @@ import { connect } from 'react-redux'
 const { shell } = require('electron')
 
 import { api } from '../config/const'
-import { loginAction } from '../store/actions'
+import { currentPanelAction, loginAction } from '../store/actions'
 
 import moment from 'moment'
+
+import { getAccountList } from "../utils/account";
 
 import '../style/Login.less'
 
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
-  return { isLogin }
+  const { currentPanel } = state.currentPanelReducer;
+  return { currentPanel, isLogin }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    currentPanelAction,
     loginAction
   }, dispatch)
 }
@@ -26,9 +30,9 @@ class Login extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: null,
-      password: null,
-      captcha:null,
+      username: '',
+      password: '',
+      captcha: '',
       isNeedCaptcha: false,
       tip: '',
       captchaImageUrl: './assets/captcha.jpeg',
@@ -37,6 +41,14 @@ class Login extends React.Component {
     this.login = this.login.bind(this)
   }
 
+  componentWillMount() {
+    let accountList = getAccountList()
+    if(accountList.length>0){
+      
+    }else {
+
+    }
+  }
 
   /**
    * 监视props变化
@@ -95,6 +107,9 @@ class Login extends React.Component {
           localStorage.setItem(`musicer_${username}_info`, JSON.stringify(data))
 
           //跳转到登录完成界面
+          this.props.currentPanelAction({
+            currentPanel: 'main'
+          })
 
         } else if (res.code == -1) {
           this.setState({
@@ -113,19 +128,18 @@ class Login extends React.Component {
           //   }
           // }
         } else {
-
           this.setState({
             tip: '登录失败，请重新登录',
             isNeedCaptcha: false,
-            password:'',
-            captcha:''
+            password: '',
+            captcha: ''
           })
         }
       })
   }
 
   handleChange(key, event) {
-    const {target: {value}} = event;
+    const { target: { value } } = event;
     this.setState({
       [key]: value
     });
@@ -149,7 +163,7 @@ class Login extends React.Component {
               this.username = username;
             }}
               value={this.state.username}
-              onChange={this.handleChange.bind(this, 'username')}/>
+              onChange={this.handleChange.bind(this, 'username')} />
           </div>
           <div className='input-item'>
             <i className='fa fa-lock' aria-hidden='true'></i>
@@ -157,7 +171,7 @@ class Login extends React.Component {
               this.password = password;
             }}
               value={this.state.password}
-              onChange={this.handleChange.bind(this, 'password')}/>
+              onChange={this.handleChange.bind(this, 'password')} />
           </div>
           {/* <div className='input-item verification'>
                                    <img src={this.state.captchaImageUrl}/>
@@ -172,7 +186,7 @@ class Login extends React.Component {
               this.captcha = captcha;
             }}
               value={this.state.captcha}
-              onChange={this.handleChange.bind(this, 'captcha')}/>
+              onChange={this.handleChange.bind(this, 'captcha')} />
           </div>}
         </form>
         <div className='login-bottom-block '>
