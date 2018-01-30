@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 const { shell } = require('electron')
 
 import { api } from '../config/const'
-import { currentPanelAction, loginAction } from '../store/actions'
+import { currentPanelAction, loginAction, userInfoAction } from '../store/actions'
 
 import moment from 'moment'
 
@@ -15,12 +15,14 @@ import '../style/Login.less'
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
   const { currentPanel } = state.currentPanelReducer;
-  return { currentPanel, isLogin }
+  const { userInfo } = state.userInfoReducer;
+  return { currentPanel, isLogin, userInfo }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     currentPanelAction,
-    loginAction
+    loginAction,
+    userInfoAction
   }, dispatch)
 }
 
@@ -43,9 +45,11 @@ class Login extends React.Component {
 
   componentWillMount() {
     let accountList = getAccountList()
-    if(accountList.length>0){
-      
-    }else {
+    if (accountList.length > 0) {
+      this.props.currentPanelAction({
+        currentPanel: 'account'
+      })
+    } else {
 
     }
   }
@@ -79,6 +83,7 @@ class Login extends React.Component {
             token: data.access_token
           })
           localStorage.setItem(`musicer_${username}_info`, userToken)
+
         } else {
           this.setState({
             tip: '登录失败'
@@ -109,6 +114,9 @@ class Login extends React.Component {
           //跳转到登录完成界面
           this.props.currentPanelAction({
             currentPanel: 'main'
+          })
+          this.props.userInfoAction({
+            userInfo: data
           })
 
         } else if (res.code == -1) {

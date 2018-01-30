@@ -1,27 +1,39 @@
 import React from 'react'
-import { connect } from "react-connect";
+import { connect } from "react-redux";
 import { bindActionCreators } from 'redux'
 
-import { isLoginAction } from '../store/actions'
+import { loginAction, userInfoAction } from '../store/actions'
 
 function mapStateToProps(state) {
-  const { isLogin } = state.isLoginReducer;
-  return { isLogin }
+  const { isLogin } = state.loginReducer;
+  const { userInfo } = state.userInfoReducer;
+  return { isLogin, userInfo }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    isLoginAction
+    loginAction,
+    userInfoAction
   }, dispatch)
 }
 
 class Account extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state={}
+    this.state = {}
   }
 
-  render(){
+  componentWillMount(){
+   
+  }
+
+  componentDidUpdate(){
+
+  }
+
+  render() {
+    this.props
+    debugger
     return (
       <div>Account</div>
     )
