@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux'
 
-import { loginAction ,userInfoAction} from '../store/actions'
+import { loginAction, userInfoAction } from '../store/actions'
 
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer;
   const { userInfo } = state.userInfoReducer;
-  return { isLogin ,userInfo}
+  return { isLogin, userInfo }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -20,15 +20,25 @@ function mapDispatchToProps(dispatch) {
 
 
 class Account extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state={}
+    this.state = {}
   }
   componentWillMount(){
     this.props.userInfo.name
   }
 
-  render(){
+  componentWillMount(){
+   
+  }
+
+  componentDidUpdate(){
+
+  }
+
+  render() {
+    this.props
+    debugger
     return (
       <div>Account
         {this.props.userInfo.name}

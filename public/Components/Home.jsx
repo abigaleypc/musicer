@@ -8,7 +8,7 @@ import { userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction,
 import Lyric from './Lyric.jsx'
 import Share from './Share.jsx'
 import Login from './Login.jsx'
-import Account from "./Account.jsx";
+import Account from './Account.jsx'
 import ToneAnimation from './ToneAnimation.jsx'
 
 import '../style/Home.less'
@@ -327,11 +327,10 @@ class Home extends React.Component {
           </div>
 
 
-          {/* 账号面板 */}
+          {/* 个人信息面板 */}
           <div className={this.props.currentPanel == 'account' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <a className="interface_control_btn" onClick={this.goBack}><i className="fa fa-angle-left" aria-hidden="true"></i></a>
             <img src={this.props.songInfo.picture} className='img_blur_10' />
-
             <div className='contains'>
               <Account />
             </div>

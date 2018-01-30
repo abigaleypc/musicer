@@ -87,6 +87,7 @@ class Login extends React.Component {
             token: data.access_token
           })
           localStorage.setItem(`musicer_${username}_info`, userToken)
+
         } else {
           this.setState({
             tip: '登录失败'
@@ -122,6 +123,9 @@ class Login extends React.Component {
           //跳转到登录完成界面
           this.props.currentPanelAction({
             currentPanel: 'main'
+          })
+          this.props.userInfoAction({
+            userInfo: data
           })
 
         } else if (res.code == -1) {
@@ -160,7 +164,7 @@ class Login extends React.Component {
 
   isExpire(date){
     let currentDate=new Date()
-    if
+    // if
 
   }
 
