@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 const { shell } = require('electron')
 
 import { api } from '../config/const'
-import { currentPanelAction, loginAction } from '../store/actions'
+import { currentPanelAction, loginAction, userInfoAction } from '../store/actions'
 
 import moment from 'moment'
 
@@ -15,12 +15,14 @@ import '../style/Login.less'
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
   const { currentPanel } = state.currentPanelReducer;
-  return { currentPanel, isLogin }
+  const { userInfo } = state.userInfoReducer;
+  return { currentPanel, isLogin, userInfo }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     currentPanelAction,
-    loginAction
+    loginAction,
+    userInfoAction
   }, dispatch)
 }
 
@@ -43,9 +45,14 @@ class Login extends React.Component {
 
   componentWillMount() {
     let accountList = getAccountList()
-    if(accountList.length>0){
-      
-    }else {
+    if (accountList.length > 0) {
+      this.props.currentPanelAction({
+        currentPanel: 'account'
+      })
+      this.props.userInfoAction({
+        userInfo: JSON.parse(localStorage.getItem(accountList[0]))
+      })
+    } else {
 
     }
   }
@@ -61,6 +68,7 @@ class Login extends React.Component {
   goRegister() {
     shell.openExternal(registerURL)
   }
+
   login() {
     let username = this.username.value
     let password = this.password.value
@@ -106,6 +114,11 @@ class Login extends React.Component {
           let data = Object.assign({}, userToken, res.data)
           localStorage.setItem(`musicer_${username}_info`, JSON.stringify(data))
 
+          this.props.userInfoAction({
+            userInfo: data
+          })
+
+
           //跳转到登录完成界面
           this.props.currentPanelAction({
             currentPanel: 'main'
@@ -143,6 +156,12 @@ class Login extends React.Component {
     this.setState({
       [key]: value
     });
+  }
+
+  isExpire(date){
+    let currentDate=new Date()
+    if
+
   }
 
 
