@@ -46,12 +46,19 @@ class Login extends React.Component {
   componentWillMount() {
     let accountList = getAccountList()
     if (accountList.length > 0) {
-      this.props.currentPanelAction({
-        currentPanel: 'account'
-      })
-      this.props.userInfoAction({
-        userInfo: JSON.parse(localStorage.getItem(accountList[0]))
-      })
+      // 判断是否过了有效期
+      let data = JSON.parse(localStorage.getItem(accountList[0]))
+      let isExpire = moment().isBefore(data.expires_in)
+      if (isExpire) {
+        this.props.currentPanelAction({
+          currentPanel: 'account'
+        })
+        this.props.userInfoAction({
+          userInfo: data
+        })
+      } else {
+
+      }
     } else {
 
     }
@@ -87,7 +94,6 @@ class Login extends React.Component {
             token: data.access_token
           })
           localStorage.setItem(`musicer_${username}_info`, userToken)
-
         } else {
           this.setState({
             tip: '登录失败'
@@ -118,7 +124,6 @@ class Login extends React.Component {
           this.props.userInfoAction({
             userInfo: data
           })
-
 
           //跳转到登录完成界面
           this.props.currentPanelAction({
@@ -162,8 +167,8 @@ class Login extends React.Component {
     });
   }
 
-  isExpire(date){
-    let currentDate=new Date()
+  isExpire(date) {
+    let currentDate = new Date()
     // if
 
   }

@@ -37,8 +37,6 @@ class Account extends React.Component {
   }
 
   render() {
-    this.props
-    debugger
     return (
       <div>Account
         {this.props.userInfo.name}

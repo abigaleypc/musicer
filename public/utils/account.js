@@ -1,15 +1,16 @@
-import {createStore} from 'redux'
-import reducer  from '../store/reducers'
-
-let store = createStore(reducer)
-
-store.dispatch({
-  type:'LOGIN',
-  text:{isLogin:true}
-},{isLogin:true})
+import { createStore } from 'redux'
+import reducer from '../store/reducers'
 
 
-debugger
+// 以下是更新获取reducer的方法
+// let store = createStore(reducer)
+// let state = store.getState()
+// const { userInfo } = state.userInfoReducer
+// store.dispatch({
+//   type: 'LOGIN',
+//   payload: {isLogin: true}
+// })
+
 export function getAccountList () {
   let str = /musicer_(\w+)_info/g
   let keys = Object.keys(localStorage)
@@ -23,6 +24,8 @@ export function getAccountList () {
   return accountList
 }
 
-export function getToken(username) {
-  
+// export function getUserInfo () {
+// }
+
+export function getToken (username) {
 }

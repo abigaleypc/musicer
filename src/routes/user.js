@@ -92,9 +92,6 @@ user.get('/basic', function (req, res) {
       captcha_id: id ? id : null
     }
   }).on('response', function (response) {
-    console.log('------------------------------------');
-    console.log(response);
-    console.log('------------------------------------');
     // get dbcl2
     let headers = response.headers['set-cookie']
     let value = getValueByKey(headers, 'dbcl2')
@@ -140,7 +137,8 @@ function getUserBid (username) {
 
     LKV.get(`${username}_sensitive_info`).then(obj => {
       LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { bid: value }))
-    }).then(() => {
+      return value
+    }).then((value) => {
       getUserCk(username, value)
     })
   })
@@ -148,9 +146,7 @@ function getUserBid (username) {
 
 function getUserCk (username, bid) {
   // let user
-  LKV.get(`${username}_sensitive_info`).then(res => {
-    user = res
-  }).then(() => {
+  LKV.get(`${username}_sensitive_info`).then(user  => {
     request.get(userCkUrl, {
       json: true,
       headers: Object.assign(
@@ -160,21 +156,12 @@ function getUserCk (username, bid) {
           'Cookie': `flag="ok";bid=${bid};ac=${user.ac};dbcl2=${user.dbcl2}`
         })
     }).on('response', function (response) {
-      // let headers = response.headers['set-cookie']
-      // let value = getValueByKey(headers, 'ck')
-      // console.log('------------------------------------')
-      // console.log(value)
-      // console.log('------------------------------------')
-      // LKV.get(`${username}_sensitive_info`).then(obj => {
-      //   LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ck: value }))
-      //   return obj
-      // }).then((data) => {
-      //   console.log(`success: ${data}`)
-      // })
-
-      // LKV.get(`${username}_sensitive_info`).then((data) => {
-      //   console.log(`success: ${data}`)
-      // })
+      let headers = response.headers['set-cookie']
+      let value = getValueByKey(headers, 'ck')
+      LKV.get(`${username}_sensitive_info`).then(obj => {
+        LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ck: value }))
+        return obj
+      })
     })
   })
 }
