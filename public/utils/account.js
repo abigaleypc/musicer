@@ -1,15 +1,5 @@
-import { createStore } from 'redux'
-import reducer from '../store/reducers'
 
 
-// 以下是更新获取reducer的方法
-// let store = createStore(reducer)
-// let state = store.getState()
-// const { userInfo } = state.userInfoReducer
-// store.dispatch({
-//   type: 'LOGIN',
-//   payload: {isLogin: true}
-// })
 
 export function getAccountList () {
   let str = /musicer_(\w+)_info/g
@@ -23,6 +13,7 @@ export function getAccountList () {
   }
   return accountList
 }
+
 
 // export function getUserInfo () {
 // }

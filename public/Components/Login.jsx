@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 const { shell } = require('electron')
 
 import { api } from '../config/const'
-import { currentPanelAction, loginAction, userInfoAction } from '../store/actions'
+import { currentPanelAction, forwardPanelAction, loginAction, userInfoAction } from '../store/actions'
 
 import moment from 'moment'
 
@@ -12,17 +12,21 @@ import { getAccountList } from "../utils/account";
 
 import '../style/Login.less'
 
+import { changePanel } from "./../utils/panel";
+
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
   const { currentPanel } = state.currentPanelReducer;
   const { userInfo } = state.userInfoReducer;
-  return { currentPanel, isLogin, userInfo }
+  const { forwardPanel } = state.forwardPanelReducer;
+  return { currentPanel, isLogin, userInfo, forwardPanel }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     currentPanelAction,
     loginAction,
-    userInfoAction
+    userInfoAction,
+    forwardPanelAction
   }, dispatch)
 }
 
@@ -44,24 +48,7 @@ class Login extends React.Component {
   }
 
   componentWillMount() {
-    let accountList = getAccountList()
-    if (accountList.length > 0) {
-      // 判断是否过了有效期
-      let data = JSON.parse(localStorage.getItem(accountList[0]))
-      let isExpire = moment().isBefore(data.expires_in)
-      if (isExpire) {
-        this.props.currentPanelAction({
-          currentPanel: 'account'
-        })
-        this.props.userInfoAction({
-          userInfo: data
-        })
-      } else {
 
-      }
-    } else {
-
-    }
   }
 
   /**
@@ -70,7 +57,40 @@ class Login extends React.Component {
    * @param {any} nextProps 
    * @memberof Login
    */
-  componentWillReceiveProps(nextProps) { }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.currentPanel == 'login') {
+      let accountList = getAccountList()
+      if (accountList.length > 0) {
+        // 判断是否过了有效期
+        let data = JSON.parse(localStorage.getItem(accountList[0]))
+        let isExpire = moment().isBefore(data.expires_in)
+        if (isExpire) {
+          this.props.currentPanelAction({
+            currentPanel: 'account'
+          })
+          this.props.forwardPanelAction({
+            forwardPanel: this.props.currentPanel
+          })
+          this.props.userInfoAction({
+            userInfo: data
+          })
+        } else {
+          // this.setState({
+          //   username: data.username,
+          //   password: '',
+          //   captcha: ''
+          // })
+        }
+      } else {
+        // this.setState({
+        //   username: '',
+        //   password: '',
+        //   captcha: ''
+        // })
+
+      }
+    }
+  }
 
   goRegister() {
     shell.openExternal(registerURL)
@@ -91,7 +111,8 @@ class Login extends React.Component {
           let userToken = JSON.stringify({
             id: data.douban_user_id,
             expires_in: moment().add(data.expires_in, 's'),
-            token: data.access_token
+            token: data.access_token,
+            username
           })
           localStorage.setItem(`musicer_${username}_info`, userToken)
         } else {
@@ -126,9 +147,8 @@ class Login extends React.Component {
           })
 
           //跳转到登录完成界面
-          this.props.currentPanelAction({
-            currentPanel: 'main'
-          })
+          changePanel()
+
           this.props.userInfoAction({
             userInfo: data
           })

@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import { api } from './config/const';
 import Header from './Components/Header.jsx';
-import Home from './Components/Home.jsx';
+import Main from './Components/Main.jsx';
 import reducers from './store/reducers'
 
 
@@ -49,7 +49,7 @@ class Root extends React.Component {
     return (
       <div style={styles.content}>
         {/* <Header /> */}
-        <Home />
+        <Main />
       </div>
     );
   }

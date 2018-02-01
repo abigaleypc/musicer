@@ -31,7 +31,7 @@ function songInfoReducer(state = { songInfo: {} }, action) {
   return nextState;
 }
 
-function currentPanelReducer(state = { currentPanel: 'login' }, action) {
+function currentPanelReducer(state = { currentPanel: 'main' }, action) {
   const { type, payload } = action;
   let nextState = Object.assign({}, state);
   if (type == CURRENT_PANEL) {

@@ -11,6 +11,8 @@ import Login from './Login.jsx'
 import Account from './Account.jsx'
 import ToneAnimation from './ToneAnimation.jsx'
 
+import { changePanel } from "./../utils/panel";
+
 import '../style/Home.less'
 import { ipcRenderer } from 'electron';
 
@@ -232,6 +234,7 @@ class Home extends React.Component {
     }
   }
   showPanel(panel) {
+    changePanel()
     let currentPanel = panel;
     let forwardPanel = this.props.currentPanel;
     this.props.currentPanelAction({ currentPanel })
@@ -239,12 +242,7 @@ class Home extends React.Component {
   }
 
   goBack() {
-    let currentPanel = this.props.forwardPanel;
-    let forwardPanel = this.props.currentPanel;
-    this.props.currentPanelAction({ currentPanel })
-    this.props.forwardPanelAction({ forwardPanel })
-
-
+    changePanel()
   }
 
   render() {
