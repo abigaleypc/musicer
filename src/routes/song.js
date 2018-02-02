@@ -3,13 +3,13 @@ const request = require('request')
 
 const LKV = require('../utils/lkv')
 
-const {httpHeader, AuthKey, playlistUrl, access_token, lyricUrl} = require('../config/config')
+const {httpHeader, AuthKey, playlistUrl, access_token, lyricUrl, nextSongUrl, likeSongUrl, deleteSongUrl, recentPlayedUrl} = require('../config/config')
 
 const app = express()
 
 app.get('/list', function (req, res) {
-  let Authorization
-  access_token && (Authorization = 'Bearer ' + access_token)
+  let {token} = req.query
+  let Authorization = 'Bearer ' + token;
   request.get(playlistUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
@@ -47,7 +47,7 @@ app.get('/next', function (req, res) {
   } else {
     sid = req.query.sid
   }
-  request.get('https://douban.fm/j/v2/playlist', {
+  request.get(nextSongUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
     Authorization}),
@@ -79,7 +79,7 @@ app.get('/like', function (req, res) {
   let isLike = req.query.isLike === 'true' ? 'r' : 'u'
   let Authorization = 'Bearer ' + req.query.token
   LKV.get(`${username}_sensitive_info`).then(obj => {
-    request.get('https://douban.fm/j/v2/playlist', {
+    request.get(likeSongUrl, {
       json: true,
       headers: Object.assign({}, httpHeader, {
       Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
@@ -109,7 +109,7 @@ app.get('/delete', function (req, res) {
     }).then((obj) => {
       let Authorization
       access_token && (Authorization = 'Bearer ' + access_token)
-      request.get('https://douban.fm/j/v2/playlist', {
+      request.get(deleteSongUrl, {
         json: true,
         headers: Object.assign({}, httpHeader, {
         Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
@@ -140,7 +140,7 @@ app.get('/recent_played', function (req, res) {
     }).then((obj) => {
       let Authorization
       access_token && (Authorization = 'Bearer ' + access_token)
-      request.get('https://douban.fm/j/v2/recent_played_songs', {
+      request.get(recentPlayedUrl, {
         json: true,
         headers: Object.assign({}, httpHeader, {
         Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),

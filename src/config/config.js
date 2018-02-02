@@ -46,9 +46,14 @@ exports.AuthKey = {
   redirect_uri: 'http://www.douban.com/mobile/fm'
 }
 
-exports.loginUrl = 'https://www.douban.com/service/auth2/token'
-exports.playlistUrl = 'https://api.douban.com/v2/fm/playlist'
 exports.access_token = '0a95c075f8a9d30d1fc14161e9fd7927'
+
+exports.loginUrl = 'https://www.douban.com/service/auth2/token'
+exports.nextSongUrl='https://douban.fm/j/v2/playlist'
+exports.likeSongUrl='https://douban.fm/j/v2/playlist'
+exports.deleteSongUrl='https://douban.fm/j/v2/playlist'
+exports.recentPlayedUrl='https://douban.fm/j/v2/recent_played_songs'
+exports.playlistUrl = 'https://api.douban.com/v2/fm/playlist'
 exports.lyricUrl = 'https://douban.fm/j/v2/lyric'
 exports.basicUrl = 'https://accounts.douban.com/j/popup/login/basic'
 exports.doubanFmUrl = 'https://douban.fm'

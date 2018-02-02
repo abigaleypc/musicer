@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api } from '../config/const';
-import { loginAction,userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
+import { loginAction, userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 import moment from 'moment'
 import Lyric from './Lyric.jsx'
 import Share from './Share.jsx'
@@ -29,7 +29,7 @@ function mapStateToProps(state) {
   const { lyricList } = state.lyricListReducer;
   const { lyricTimeList } = state.lyricTimeListReducer;
   const { currentTime } = state.currentTimeReducer;
-  return { isLogin,userInfo, songInfo, currentPanel, forwardPanel, isPlay, isLike, lyricType, lyricList, lyricTimeList, currentTime };
+  return { isLogin, userInfo, songInfo, currentPanel, forwardPanel, isPlay, isLike, lyricType, lyricList, lyricTimeList, currentTime };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -121,14 +121,13 @@ class Home extends React.Component {
   }
 
   like() {
-    if(this.props.isLogin){
-
+    if (this.props.isLogin) {
       fetch(`${api}/song/like?sid=${this.props.songInfo.sid}&isLike=${!this.props.isLike}&username=${this.props.userInfo.username}&token=${this.props.userInfo.token}`)
-        .then((res)=>{
+        .then((res) => {
           return res.json()
         });
       this.props.isLikeAction({ isLike: !this.props.isLike })
-    }else {
+    } else {
       let currentPanel = 'login';
       let forwardPanel = 'main';
       this.props.currentPanelAction({ currentPanel })
@@ -165,7 +164,6 @@ class Home extends React.Component {
         if (songInfo)
           this.getLyric();
       });
-
   }
 
   onPlay() {
@@ -198,7 +196,6 @@ class Home extends React.Component {
 
   toggleType(type) {
     if (type == 'lyric') {
-
     } else if (type == 'download') {
       this.setState({
         isShowDisk: !this.state.isShowDisk
@@ -217,7 +214,6 @@ class Home extends React.Component {
       this.setState({
         isShowShare: !this.state.isShowShare
       })
-
     }
   }
 
@@ -258,12 +254,13 @@ class Home extends React.Component {
         this.props.userInfoAction({
           userInfo: data
         })
-      }} else {
-        let currentPanel = panel;
-        let forwardPanel = this.props.currentPanel;
-        this.props.currentPanelAction({ currentPanel })
-        this.props.forwardPanelAction({ forwardPanel })
       }
+    } else {
+      let currentPanel = panel;
+      let forwardPanel = this.props.currentPanel;
+      this.props.currentPanelAction({ currentPanel })
+      this.props.forwardPanelAction({ forwardPanel })
+    }
   }
 
   goBack() {

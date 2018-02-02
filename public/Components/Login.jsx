@@ -126,7 +126,6 @@ class Login extends React.Component {
           this.props.userInfoAction({
             userInfo: data
           })
-
         } else if (res.code == -1) {
           this.setState({
             isNeedCaptcha: true,
