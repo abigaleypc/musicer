@@ -1,26 +1,19 @@
-const express = require('express');
-const request = require('request');
+const express = require('express')
+const request = require('request')
 
-const LKV = require('../utils/lkv');
+const LKV = require('../utils/lkv')
 
-const {
-  httpHeader,
-  AuthKey,
-  playlistUrl,
-  access_token,
-  lyricUrl
-} = require('../config/config');
+const {httpHeader, AuthKey, playlistUrl, access_token, lyricUrl} = require('../config/config')
 
-const app = express();
+const app = express()
 
 app.get('/list', function (req, res) {
-  let Authorization;
-  access_token && (Authorization = 'Bearer ' + access_token);
+  let Authorization
+  access_token && (Authorization = 'Bearer ' + access_token)
   request.get(playlistUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
-      Authorization
-    }),
+    Authorization}),
     qs: {
       alt: 'json',
       apikey: AuthKey.apikey,
@@ -36,31 +29,28 @@ app.get('/list', function (req, res) {
       version: 100
     }
   }).on('error', err => {
-    res.status(500).end(err);
+    res.status(500).end(err)
   }).on('data', data => {
     try {
-      data = JSON.parse(data);
-    } catch (err) {
-
-    }
+      data = JSON.parse(data)
+    } catch (err) {}
     res.json(data)
   })
-});
+})
 
 app.get('/next', function (req, res) {
-  let Authorization, sid;
-  access_token && (Authorization = 'Bearer ' + access_token);
+  let Authorization, sid
+  access_token && (Authorization = 'Bearer ' + access_token)
 
   if (!(res.query && res.query.sid)) {
-    sid = parseInt(Math.random() * 1000000 + 1000000);
+    sid = parseInt(Math.random() * 1000000 + 1000000)
   } else {
-    sid = req.query.sid;
+    sid = req.query.sid
   }
   request.get('https://douban.fm/j/v2/playlist', {
     json: true,
     headers: Object.assign({}, httpHeader, {
-      Authorization
-    }),
+    Authorization}),
     qs: {
       'channel': -10,
       'kbps': 128,
@@ -74,49 +64,40 @@ app.get('/next', function (req, res) {
       'apikey': ''
     }
   }).on('error', err => {
-    res.status(500).end(err);
+    res.status(500).end(err)
   }).on('data', data => {
     try {
-      data = JSON.parse(data);
-      res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true });
+      data = JSON.parse(data)
+      res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
       res.json(data)
-
-    } catch (err) {
-
-    }
+    } catch (err) {}
   })
 })
 
-
 app.get('/like', function (req, res) {
-  let isLike = req.query.isLike === 'true' ? 'r' : 'u';
-  LKV.get('username').then(username => {
-    LKV.get(username).then(obj => {
-      return obj
-    }).then((obj) => {
-      let Authorization;
-      access_token && (Authorization = 'Bearer ' + access_token);
-      request.get('https://douban.fm/j/v2/playlist', {
-        json: true,
-        headers: Object.assign({}, httpHeader, {
-          Authorization
-        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
-        qs: {
-          channel: -10,
-          kbps: 192,
-          client: 's:mainsite|y:3.0',
-          app_name: 'radio_website',
-          version: 100,
-          type: isLike,
-          sid: req.query.sid,
-          pt: 949.3770000000001,
-          pb: 128,
-          apikey: ''
-        }
-      }).on('data', (data) => {
-        data = JSON.parse(data)
-        res.json(data)
-      })
+  let { username } = req.query
+  let isLike = req.query.isLike === 'true' ? 'r' : 'u'
+  let Authorization = 'Bearer ' + req.query.token
+  LKV.get(`${username}_sensitive_info`).then(obj => {
+    request.get('https://douban.fm/j/v2/playlist', {
+      json: true,
+      headers: Object.assign({}, httpHeader, {
+      Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+      qs: {
+        channel: -10,
+        kbps: 192,
+        client: 's:mainsite|y:3.0',
+        app_name: 'radio_website',
+        version: 100,
+        type: isLike,
+        sid: req.query.sid,
+        pt: 949.3770000000001,
+        pb: 128,
+        apikey: ''
+      }
+    }).on('data', (data) => {
+      data = JSON.parse(data)
+      res.json(data)
     })
   })
 })
@@ -126,13 +107,12 @@ app.get('/delete', function (req, res) {
     LKV.get(username).then(obj => {
       return obj
     }).then((obj) => {
-      let Authorization;
-      access_token && (Authorization = 'Bearer ' + access_token);
+      let Authorization
+      access_token && (Authorization = 'Bearer ' + access_token)
       request.get('https://douban.fm/j/v2/playlist', {
         json: true,
         headers: Object.assign({}, httpHeader, {
-          Authorization
-        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+        Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
         qs: {
           channel: -10,
           kbps: 192,
@@ -153,21 +133,20 @@ app.get('/delete', function (req, res) {
   })
 })
 
-app.get('/recent_played',function (req,res) {
+app.get('/recent_played', function (req, res) {
   LKV.get('username').then(username => {
     LKV.get(username).then(obj => {
       return obj
     }).then((obj) => {
-      let Authorization;
-      access_token && (Authorization = 'Bearer ' + access_token);
+      let Authorization
+      access_token && (Authorization = 'Bearer ' + access_token)
       request.get('https://douban.fm/j/v2/recent_played_songs', {
         json: true,
         headers: Object.assign({}, httpHeader, {
-          Authorization
-        }, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
+        Authorization}, { cookie: `bid=${obj.bid}; flag="ok"; ac=${obj.ac}; dbcl2=${obj.dbcl2}; ck=${obj.ck}` }),
         qs: {
-          start:0,
-          limit:100
+          start: 0,
+          limit: 100
         }
       }).on('data', (data) => {
         data = JSON.parse(data)
@@ -192,13 +171,13 @@ app.get('/lyric', function (req, res) {
         ssid: req.query.ssid
       }
     }).on('data', (data) => {
-      // data = JSON.parse(data);
+      // data = JSON.parse(data)
       // res.json(data)
-      data = JSON.parse(data);
+      data = JSON.parse(data)
       let result = {}
 
       if (data.lyric == '暂无歌词') {
-        result.type = null;
+        result.type = null
       } else {
         let lyricSplit = data.lyric.split('\r\n'),
           lyricList = [],
@@ -208,9 +187,9 @@ app.get('/lyric', function (req, res) {
         lyricSplit.forEach(it => {
           it.replace(/(\[(.+?)\])?(.*)/, (str, $1, $2, $3) => {
             if ($2) {
-              timeSplit = $2.split(':');
-              time = Number(timeSplit[0] * 60 + Number(timeSplit[1])).toFixed(2);
-              timeList.push(Number(time));
+              timeSplit = $2.split(':')
+              time = Number(timeSplit[0] * 60 + Number(timeSplit[1])).toFixed(2)
+              timeList.push(Number(time))
               lyricList.push({
                 'time': $1,
                 'content': $3
@@ -228,14 +207,14 @@ app.get('/lyric', function (req, res) {
         } else {
           result.type = 'noTime'
         }
-        result.lyricList = lyricList;
-        result.name = data.name;
-        result.sid = data.sid;
-        result.timeList = timeList;
+        result.lyricList = lyricList
+        result.name = data.name
+        result.sid = data.sid
+        result.timeList = timeList
       }
       res.json(result)
     })
   }
 })
 
-module.exports = app;
+module.exports = app

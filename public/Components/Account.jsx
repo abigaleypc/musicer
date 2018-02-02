@@ -11,17 +11,17 @@ import { changePanel } from "./../utils/panel";
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer;
   const { userInfo } = state.userInfoReducer;
-  // const { currentPanel } = state.currentPanelReducer;
-  // const { forwardPanel } = state.forwardPanelReducer;
-  return { isLogin, userInfo }
+  const { currentPanel } = state.currentPanelReducer;
+  const { forwardPanel } = state.forwardPanelReducer;
+  return { isLogin, userInfo, currentPanel, forwardPanel }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loginAction,
     userInfoAction,
-    // currentPanelAction,
-    // forwardPanelAction
+    currentPanelAction,
+    forwardPanelAction
   }, dispatch)
 }
 
@@ -58,10 +58,14 @@ class Account extends React.Component {
     let key = `musicer_${username}_info`
     localStorage.removeItem(key)
 
-    changePanel()
-   
+    // changePanel()
+    let currentPanel = this.props.forwardPanel;
+    let forwardPanel = this.props.currentPanel;
+    this.props.currentPanelAction({ currentPanel })
+    this.props.forwardPanelAction({ forwardPanel })
 
-   
+
+
   }
 
   render() {

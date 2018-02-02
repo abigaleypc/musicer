@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api } from '../config/const';
-import { userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
-
+import { loginAction,userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
+import moment from 'moment'
 import Lyric from './Lyric.jsx'
 import Share from './Share.jsx'
 import Login from './Login.jsx'
@@ -12,11 +12,13 @@ import Account from './Account.jsx'
 import ToneAnimation from './ToneAnimation.jsx'
 
 import { changePanel } from "./../utils/panel";
+import { getAccountList } from "../utils/account";
 
 import '../style/Home.less'
 import { ipcRenderer } from 'electron';
 
 function mapStateToProps(state) {
+  const { isLogin } = state.loginReducer
   const { userInfo } = state.userInfoReducer;
   const { songInfo } = state.songInfoReducer;
   const { currentPanel } = state.currentPanelReducer;
@@ -27,7 +29,7 @@ function mapStateToProps(state) {
   const { lyricList } = state.lyricListReducer;
   const { lyricTimeList } = state.lyricTimeListReducer;
   const { currentTime } = state.currentTimeReducer;
-  return { userInfo, songInfo, currentPanel, forwardPanel, isPlay, isLike, lyricType, lyricList, lyricTimeList, currentTime };
+  return { isLogin,userInfo, songInfo, currentPanel, forwardPanel, isPlay, isLike, lyricType, lyricList, lyricTimeList, currentTime };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -119,11 +121,19 @@ class Home extends React.Component {
   }
 
   like() {
-    fetch(`${api}/song/like?sid=${this.props.songInfo.sid}&isLike=${!this.props.isLike}`);
-    this.props.isLikeAction({ isLike: !this.props.isLike })
-    // this.setState({
-    //   isLike: !this.state.isLike
-    // })
+    if(this.props.isLogin){
+
+      fetch(`${api}/song/like?sid=${this.props.songInfo.sid}&isLike=${!this.props.isLike}&username=${this.props.userInfo.username}&token=${this.props.userInfo.token}`)
+        .then((res)=>{
+          return res.json()
+        });
+      this.props.isLikeAction({ isLike: !this.props.isLike })
+    }else {
+      let currentPanel = 'login';
+      let forwardPanel = 'main';
+      this.props.currentPanelAction({ currentPanel })
+      this.props.forwardPanelAction({ forwardPanel })
+    }
   }
 
   delete() {
@@ -234,15 +244,35 @@ class Home extends React.Component {
     }
   }
   showPanel(panel) {
-    changePanel()
-    let currentPanel = panel;
-    let forwardPanel = this.props.currentPanel;
-    this.props.currentPanelAction({ currentPanel })
-    this.props.forwardPanelAction({ forwardPanel })
+    let accountList = getAccountList()
+    if (panel == 'login' && accountList && accountList.length > 0) {
+      let data = JSON.parse(localStorage.getItem(accountList[0]))
+      let isExpire = moment().isBefore(data.expires_in)
+      if (isExpire) {
+        this.props.currentPanelAction({
+          currentPanel: 'account'
+        })
+        this.props.forwardPanelAction({
+          forwardPanel: this.props.currentPanel
+        })
+        this.props.userInfoAction({
+          userInfo: data
+        })
+      }} else {
+        let currentPanel = panel;
+        let forwardPanel = this.props.currentPanel;
+        this.props.currentPanelAction({ currentPanel })
+        this.props.forwardPanelAction({ forwardPanel })
+      }
   }
 
   goBack() {
-    changePanel()
+    // changePanel()
+
+    let currentPanel = this.props.forwardPanel;
+    let forwardPanel = this.props.currentPanel;
+    this.props.currentPanelAction({ currentPanel })
+    this.props.forwardPanelAction({ forwardPanel })
   }
 
   render() {
@@ -252,7 +282,7 @@ class Home extends React.Component {
           {/* 主面板 */}
           <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
             <div className="tone-animation"><ToneAnimation /></div>
-            <a className="interface_control_btn"  onClick={this.showPanel.bind(this, 'login')}><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
+            <a className="interface_control_btn" onClick={this.showPanel.bind(this, 'login')}><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
 
               {/* 右上角按钮 */}

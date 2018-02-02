@@ -58,38 +58,7 @@ class Login extends React.Component {
    * @memberof Login
    */
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentPanel == 'login') {
-      let accountList = getAccountList()
-      if (accountList.length > 0) {
-        // 判断是否过了有效期
-        let data = JSON.parse(localStorage.getItem(accountList[0]))
-        let isExpire = moment().isBefore(data.expires_in)
-        if (isExpire) {
-          this.props.currentPanelAction({
-            currentPanel: 'account'
-          })
-          this.props.forwardPanelAction({
-            forwardPanel: this.props.currentPanel
-          })
-          this.props.userInfoAction({
-            userInfo: data
-          })
-        } else {
-          // this.setState({
-          //   username: data.username,
-          //   password: '',
-          //   captcha: ''
-          // })
-        }
-      } else {
-        // this.setState({
-        //   username: '',
-        //   password: '',
-        //   captcha: ''
-        // })
 
-      }
-    }
   }
 
   goRegister() {
@@ -147,8 +116,13 @@ class Login extends React.Component {
           })
 
           //跳转到登录完成界面
-          changePanel()
-
+          // changePanel()
+          let currentPanel = this.props.forwardPanel;
+          let forwardPanel = this.props.currentPanel;
+          console.log(currentPanel)
+          console.log(forwardPanel)
+          this.props.currentPanelAction({ currentPanel })
+          this.props.forwardPanelAction({ forwardPanel })
           this.props.userInfoAction({
             userInfo: data
           })

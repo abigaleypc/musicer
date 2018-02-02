@@ -13,7 +13,10 @@ store.dispatch({
 export function changePanel () {
   let { currentPanel } = state.currentPanelReducer
   let { forwardPanel } = state.forwardPanelReducer
-debugger
+  console.log('----------changePanel---------------');
+  console.log('currentPanel:  '+currentPanel);
+  console.log('forwardPanel:  '+forwardPanel);
+  console.log('------------------------------------');
   currentPanelAction({
     currentPanel: forwardPanel
   })
