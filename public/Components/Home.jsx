@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
 import { api } from '../config/const';
-import { loginAction, userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
+import { userInfoAction, songInfoAction, currentPanelAction, forwardPanelAction, isPlayAction, isLikeAction, lyricTypeAction, lyricListAction, lyricTimeListAction, currentTimeAction } from '../store/actions'
 import moment from 'moment'
 import Lyric from './Lyric.jsx'
 import Share from './Share.jsx'
@@ -11,11 +11,9 @@ import Login from './Login.jsx'
 import Account from './Account.jsx'
 import ToneAnimation from './ToneAnimation.jsx'
 
-import { changePanel } from "./../utils/panel";
 import { getAccountList } from "../utils/account";
 
 import '../style/Home.less'
-import { ipcRenderer } from 'electron';
 
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
@@ -65,7 +63,6 @@ class Home extends React.Component {
     this.onTimeUpdate = this.onTimeUpdate.bind(this)
     this.like = this.like.bind(this)
     this.delete = this.delete.bind(this)
-    this.toggleType = this.toggleType.bind(this);
     this.showPanel = this.showPanel.bind(this);
     this.goBack = this.goBack.bind(this);
   }
@@ -194,28 +191,6 @@ class Home extends React.Component {
   }
 
 
-  toggleType(type) {
-    if (type == 'lyric') {
-    } else if (type == 'download') {
-      this.setState({
-        isShowDisk: !this.state.isShowDisk
-      })
-      if (this.state.isShowDisk) {
-        ipcRenderer.send('window-layout', {
-          width: -220
-        })
-      } else {
-        ipcRenderer.send('window-layout', {
-          width: 220
-        })
-
-      }
-    } else {
-      this.setState({
-        isShowShare: !this.state.isShowShare
-      })
-    }
-  }
 
   getLyric() {
     let { sid, ssid } = this.props.songInfo;
@@ -264,8 +239,6 @@ class Home extends React.Component {
   }
 
   goBack() {
-    // changePanel()
-
     let currentPanel = this.props.forwardPanel;
     let forwardPanel = this.props.currentPanel;
     this.props.currentPanelAction({ currentPanel })
