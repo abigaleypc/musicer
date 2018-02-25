@@ -42,17 +42,21 @@ app.get('/next', function (req, res) {
   let Authorization, sid
   access_token && (Authorization = 'Bearer ' + access_token)
 
-  if (!(res.query && res.query.sid)) {
+  if (!(req.query && req.query.sid)) {
     sid = parseInt(Math.random() * 1000000 + 1000000)
   } else {
     sid = req.query.sid
   }
+
+  const channelId = req.query.channelId || -10;
+  console.log(req.query, '------------------------')
+
   request.get(nextSongUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
     Authorization}),
     qs: {
-      'channel': -10,
+      'channel': channelId,
       'kbps': 128,
       'client': 's:mainsite|y:3.0',
       'app_name': 'radio_website',

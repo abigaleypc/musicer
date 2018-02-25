@@ -16,7 +16,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-  
+
   }, dispatch)
 
 }
@@ -50,7 +50,7 @@ class Lyric extends React.Component {
       this.setState({
         lyricTip: null
       })
-      for (let i = 0; i < lyricTimeList.length; i++) {
+      for (let i = 0; i < lyricTimeList && lyricTimeList.length; i++) {
         if (lyricTimeList[i] < currentTime && lyricTimeList[i + 1] > currentTime) {
           if (this.state.currentLyricIndex != i) {
             this.setState({
