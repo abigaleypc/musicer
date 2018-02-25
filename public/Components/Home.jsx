@@ -13,7 +13,7 @@ import ToneAnimation from './ToneAnimation.jsx'
 
 import { getAccountList } from "../utils/account";
 
-import '../style/Home.less'
+import '../style/Home.less';
 
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer

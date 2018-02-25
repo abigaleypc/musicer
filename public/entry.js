@@ -6,15 +6,12 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import { api } from './config/const';
-import Header from './Components/Header.jsx';
 import Main from './Components/Main.jsx';
-import reducers from './store/reducers'
-
+import reducers from './store/reducers';
 
 const logger = createLogger({
   collapsed: true
-});
-
+}); 
 
 const store = createStore(
   reducers,
@@ -48,7 +45,6 @@ class Root extends React.Component {
   render() {
     return (
       <div style={styles.content}>
-        {/* <Header /> */}
         <Main />
       </div>
     );

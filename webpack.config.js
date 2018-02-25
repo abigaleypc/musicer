@@ -2,8 +2,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    bundle: './public/entry.js',
-    login: './public/login.js'
+    bundle: './public/entry.js'
   },
   output: {
     path: path.resolve(__dirname, 'public/dist'),
