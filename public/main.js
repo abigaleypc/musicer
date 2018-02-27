@@ -1,4 +1,6 @@
 const electron = require('electron')
+const express = require('../index');
+
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -44,7 +46,11 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function() {
+  createWindow();
+  // 如果想直接 npm start 把下面的注释去掉
+  // express();
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -70,17 +76,3 @@ const { ipcMain } = require('electron')
 ipcMain.on('login-event', (event, arg) => {
   mainWindow.webContents.send('login-event', arg);
 })
-
-const express = require('express');
-const {user, test, song} = require('../src/routes');
-
-const PORT = process.env.PORT || 8082;
-const server = express();
-
-server.use('/user', user);
-server.use('/test', test);
-server.use('/song', song);
-
-server.listen(PORT, () => {
-  console.log(`The server has been set up at 0.0.0.0:${PORT}`);
-});
