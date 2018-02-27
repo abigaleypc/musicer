@@ -10,6 +10,7 @@ import Share from './Share.jsx'
 import Login from './Login.jsx'
 import Account from './Account.jsx'
 import ToneAnimation from './ToneAnimation.jsx'
+import Channel from './Channel.jsx';
 
 import { getAccountList } from "../utils/account";
 
@@ -53,7 +54,8 @@ class Home extends React.Component {
       isNextSong: false,
       isShowShare: false,
       isShowDisk: false,
-      forwardModule: ''
+      forwardModule: '',
+      channelId: ''
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -68,7 +70,7 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-    this.nextSong();
+    this.nextSong(this.props.songInfo.sid);
   }
 
   initSong() {
@@ -79,12 +81,14 @@ class Home extends React.Component {
 
   }
 
-  nextSong() {
+  nextSong(sid) {
+    const {channelId} = this.state;
+
     this.initSong();
     this.setState({
       isNextSong: true
     })
-    fetch(`${api}/song/next?sid=${this.props.songInfo.sid}`)
+    fetch(`${api}/song/next?sid=${sid || ''}&channelId=${channelId}`)
       .then((res) => {
         return res.json();
       })
@@ -107,7 +111,7 @@ class Home extends React.Component {
           this.props.isLikeAction({ isLike: false })
         }
         else {
-          this.nextSong();
+          this.nextSong(this.props.songInfo.sid);
         }
         return songInfo;
       })
@@ -153,7 +157,7 @@ class Home extends React.Component {
           this.props.currentTimeAction({ currentTime: 0 })
         }
         else {
-          this.nextSong();
+          this.nextSong(this.props.songInfo.sid);
         }
         return songInfo;
       })
@@ -181,7 +185,7 @@ class Home extends React.Component {
     let { second, minute } = this.dateFormat(_currentTime)
 
     if (_currentTime > this.state.totalTime) {
-      this.nextSong();
+      this.nextSong(this.props.songInfo.sid);
     } else {
       this.setState({
         currentSecond: second,
@@ -245,13 +249,22 @@ class Home extends React.Component {
     this.props.forwardPanelAction({ forwardPanel })
   }
 
+  /**
+   * 修改频道
+   * @param {string} channelId 频道id
+   */
+  changeChannel(channelId) {
+    this.setState({channelId});
+    this.nextSong('');
+  }
+
   render() {
     return (
       <section>
         <div className="warpper">
           {/* 主面板 */}
           <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
-            <div className="tone-animation"><ToneAnimation /></div>
+            <div className="tone-animation" onClick={this.showPanel.bind(this, 'channel')}><ToneAnimation /></div>
             <a className="interface_control_btn" onClick={this.showPanel.bind(this, 'login')}><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
 
@@ -331,6 +344,15 @@ class Home extends React.Component {
             <img src={this.props.songInfo.picture} className='img_blur_10' />
             <div className='contains'>
               <Account />
+            </div>
+          </div>
+
+          {/* 换频道面板 */}
+          <div className={this.props.currentPanel == 'channel' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'} style={{overflow:'auto'}}>
+            <a className="interface_control_btn" onClick={this.goBack}><i className="fa fa-angle-left" aria-hidden="true"></i></a>
+            <img src={this.props.songInfo.picture} className='img_blur_10' />
+            <div className='contains'>
+              <Channel changeChannel={this.changeChannel.bind(this)} />
             </div>
           </div>
 

@@ -1,6 +1,8 @@
 const express = require('express')
 const request = require('request')
 
+require('request-debug')(request);
+
 const LKV = require('../utils/lkv')
 
 const {httpHeader, AuthKey, playlistUrl, access_token, lyricUrl, nextSongUrl, likeSongUrl, deleteSongUrl, recentPlayedUrl} = require('../config/config')
@@ -39,25 +41,30 @@ app.get('/list', function (req, res) {
 })
 
 app.get('/next', function (req, res) {
-  let Authorization, sid
-  access_token && (Authorization = 'Bearer ' + access_token)
+  let Authorization
+  // access_token && (Authorization = 'Bearer ' + access_token)
 
-  if (!(res.query && res.query.sid)) {
-    sid = parseInt(Math.random() * 1000000 + 1000000)
-  } else {
-    sid = req.query.sid
-  }
+  // if (!(req.query && req.query.sid)) {
+  //   sid = parseInt(Math.random() * 1000000 + 1000000)
+  // } else {
+  //   sid = req.query.sid
+  // }
+
+  const sid = req.query.sid || ''
+
+  const channelId = req.query.channelId || -10;
+
   request.get(nextSongUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
     Authorization}),
     qs: {
-      'channel': -10,
+      'channel': channelId,
       'kbps': 128,
       'client': 's:mainsite|y:3.0',
       'app_name': 'radio_website',
       'version': 100,
-      'type': 's',
+      'type': 'n',
       'sid': sid,
       'pt': '',
       'pb': 128,
@@ -69,6 +76,8 @@ app.get('/next', function (req, res) {
     try {
       data = JSON.parse(data)
       res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
+      console.log(data);
+      
       res.json(data)
     } catch (err) {}
   })

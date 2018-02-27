@@ -49,7 +49,7 @@ exports.AuthKey = {
 exports.access_token = '0a95c075f8a9d30d1fc14161e9fd7927'
 
 exports.loginUrl = 'https://www.douban.com/service/auth2/token'
-exports.nextSongUrl='https://douban.fm/j/v2/playlist'
+exports.nextSongUrl='http://douban.fm/j/v2/playlist'
 exports.likeSongUrl='https://douban.fm/j/v2/playlist'
 exports.deleteSongUrl='https://douban.fm/j/v2/playlist'
 exports.recentPlayedUrl='https://douban.fm/j/v2/recent_played_songs'
