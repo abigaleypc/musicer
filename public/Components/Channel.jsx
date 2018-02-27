@@ -2,6 +2,8 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import '../style/Channel.less'
+
 function mapStateToProps(state) {
   const { lyricType } = state.lyricTypeReducer;
   const { lyricList } = state.lyricListReducer;

@@ -70,16 +70,16 @@ ipcMain.on('login-event', (event, arg) => {
   mainWindow.webContents.send('login-event', arg);
 })
 
-// const express = require('express');
-// const {user, test, song} = require('../src/routes');
+const express = require('express');
+const {user, test, song} = require('../src/routes');
 
-// const PORT = process.env.PORT || 8082;
-// const server = express();
+const PORT = process.env.PORT || 8082;
+const server = express();
 
-// server.use('/user', user);
-// server.use('/test', test);
-// server.use('/song', song);
+server.use('/user', user);
+server.use('/test', test);
+server.use('/song', song);
 
-// server.listen(PORT, () => {
-//   console.log(`The server has been set up at 0.0.0.0:${PORT}`);
-// });
+server.listen(PORT, () => {
+  console.log(`The server has been set up at 0.0.0.0:${PORT}`);
+});

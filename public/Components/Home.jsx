@@ -70,7 +70,7 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-    this.nextSong();
+    this.nextSong(this.props.songInfo.sid);
   }
 
   initSong() {
@@ -81,14 +81,14 @@ class Home extends React.Component {
 
   }
 
-  nextSong() {
+  nextSong(sid) {
     const {channelId} = this.state;
 
     this.initSong();
     this.setState({
       isNextSong: true
     })
-    fetch(`${api}/song/next?sid=${this.props.songInfo.sid || ''}&channelId=${channelId}`)
+    fetch(`${api}/song/next?sid=${sid || ''}&channelId=${channelId}`)
       .then((res) => {
         return res.json();
       })
@@ -111,7 +111,7 @@ class Home extends React.Component {
           this.props.isLikeAction({ isLike: false })
         }
         else {
-          this.nextSong();
+          this.nextSong(this.props.songInfo.sid);
         }
         return songInfo;
       })
@@ -157,7 +157,7 @@ class Home extends React.Component {
           this.props.currentTimeAction({ currentTime: 0 })
         }
         else {
-          this.nextSong();
+          this.nextSong(this.props.songInfo.sid);
         }
         return songInfo;
       })
@@ -185,7 +185,7 @@ class Home extends React.Component {
     let { second, minute } = this.dateFormat(_currentTime)
 
     if (_currentTime > this.state.totalTime) {
-      this.nextSong();
+      this.nextSong(this.props.songInfo.sid);
     } else {
       this.setState({
         currentSecond: second,
@@ -255,7 +255,7 @@ class Home extends React.Component {
    */
   changeChannel(channelId) {
     this.setState({channelId});
-    this.nextSong();
+    this.nextSong('');
   }
 
   render() {
