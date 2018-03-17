@@ -7,7 +7,7 @@
 
 ### 最终效果
 
-![效果图](/images/Musicer/musicer.jpg)
+![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
 
 
 下面是两篇关于该项目前后端的一些讲解哟(*@ο@*) 
