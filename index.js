@@ -1,8 +1,8 @@
 const express = require('express');
+const PORT = require('./src/config/config').PORT;
 const {user, test, song} = require('./src/routes');
 
 const run = function() {
-  const PORT = process.env.PORT || 8082;
   const server = express();
 
   server.use('/user', user);

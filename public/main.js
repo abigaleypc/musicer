@@ -47,9 +47,10 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function() {
-  createWindow();
   // 如果想直接 npm start 把下面的注释去掉
-  // express();
+  express();
+
+  createWindow();
 })
 
 // Quit when all windows are closed.
