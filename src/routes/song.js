@@ -1,7 +1,7 @@
 const express = require('express')
 const request = require('request')
 
-require('request-debug')(request);
+// require('request-debug')(request);
 
 const LKV = require('../utils/lkv')
 
@@ -50,14 +50,15 @@ app.get('/next', function (req, res) {
   //   sid = req.query.sid
   // }
 
-  const sid = req.query.sid || ''
-
-  const channelId = req.query.channelId || -10;
+  const sid = req.query.sid || '',
+        channelId = req.query.channelId || 1,
+        bid = LKV.getSync('songBid') || '';
 
   request.get(nextSongUrl, {
     json: true,
     headers: Object.assign({}, httpHeader, {
-    Authorization}),
+      Cookie: `bid=${bid};`
+    }),
     qs: {
       'channel': channelId,
       'kbps': 128,
@@ -72,14 +73,19 @@ app.get('/next', function (req, res) {
     }
   }).on('error', err => {
     res.status(500).end(err)
+  }).on('response', response => {
+    const cookies = response.headers['set-cookie'] || [];
+    const bid = getCookieByKey(cookies, 'bid');
+    if (bid) {
+      LKV.set('songBid', bid);
+    }
   }).on('data', data => {
     try {
       data = JSON.parse(data)
-      res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
-      console.log(data);
-      
-      res.json(data)
+      // res.cookie('name', 'tobi', { domain: '.example.com', path: '/admin', secure: true })
     } catch (err) {}
+
+    res.json(data)
   })
 })
 
@@ -225,5 +231,19 @@ app.get('/lyric', function (req, res) {
     })
   }
 })
+
+function getCookieByKey (array, key) {
+  let obj = {}
+  let newArray = []
+  array.forEach(it => {
+    let newItem = it.split(';')
+    newArray = newArray.concat(newItem)
+  })
+  newArray.forEach(it => {
+    let newItem = it.trim().split('=')
+    obj[newItem[0]] = newItem[1]
+  })
+  return obj[key]
+}
 
 module.exports = app

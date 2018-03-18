@@ -6,6 +6,9 @@ const Crypto = require("crypto-js");
 const lkvDir = path.join(__dirname, '../data');
 const lkvPath = path.join(lkvDir, 'lkv');
 
+!fs.existsSync(lkvDir) && fs.mkdirSync(lkvDir);
+!fs.existsSync(lkvPath) && fs.writeFileSync(lkvPath, `{}`);
+
 function encrypt(data) {
     const secret = 'lkv';
     return Crypto.AES.encrypt(JSON.stringify(data), secret);
@@ -24,8 +27,8 @@ function decrypt(data) {
  * @returns {Promise}
  */
 function set(key, data, expireTime) {
-    !fs.existsSync(lkvDir) && fs.mkdirSync(lkvDir);
-    !fs.existsSync(lkvPath) && fs.writeFileSync(lkvPath, `{}`);
+    // !fs.existsSync(lkvDir) && fs.mkdirSync(lkvDir);
+    // !fs.existsSync(lkvPath) && fs.writeFileSync(lkvPath, `{}`);
 
     let kvs = fs.readFileSync(lkvPath);
     kvs = JSON.parse(kvs.toString());
@@ -109,8 +112,8 @@ function get(key) {
 
 /**
  * delete specified value by key
- * 
- * @param {any} params 
+ *
+ * @param {any} params
  */
 function deleteByKey(key) {
     let data = getAll();

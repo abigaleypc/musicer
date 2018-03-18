@@ -11,12 +11,12 @@ import reducers from './store/reducers';
 
 const logger = createLogger({
   collapsed: true
-}); 
+});
 
 const store = createStore(
   reducers,
   applyMiddleware(
-    logger,
+    // logger,
     thunk
   )
 );
