@@ -9,11 +9,9 @@
     "webpack": "webpack",
     "webpack:watch": "npm run webpack -- --watch",
     "test": "mocha -R nyan",
-    "prepackage": "npm run clean",
-    "prepackage:win": "npm run clean",
     "package": "electron-packager ./ musicer --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules --icon=public/assets/musicer.icns",
     "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --out=build --icon=public/assets/musicer.ico",
-    "clean": "rimraf build && rimraf public/dist"
+    "clean": "rimraf build && rimraf public/dist && rimraf src/data"
   },
   "main": "./public/main.js",
   "devDependencies": {
