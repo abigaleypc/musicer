@@ -1,17 +1,21 @@
 const express = require('express');
+const PORT = require('./src/config/config').PORT;
 const {user, test, song} = require('./src/routes');
 
-const PORT = process.env.PORT || 8082;
-const server = express();
+const run = function() {
+  const server = express();
 
-server.use('/user', user);
-server.use('/song', song);
+  server.use('/user', user);
+  server.use('/test', test);
+  server.use('/song', song);
 
-server.listen(PORT, () => {
-  console.log(`The server has been set up at 0.0.0.0:${PORT}`);
-});
+  server.listen(PORT, () => {
+    console.log(`The server has been set up at 0.0.0.0:${PORT}`);
+  });
+};
 
+module.exports = run;
 
-
-
-// server.use('/test', test);
+if (require.main === module) {
+  run();
+}

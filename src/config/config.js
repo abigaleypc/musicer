@@ -58,3 +58,5 @@ exports.lyricUrl = 'https://douban.fm/j/v2/lyric'
 exports.basicUrl = 'https://accounts.douban.com/j/popup/login/basic'
 exports.doubanFmUrl = 'https://douban.fm'
 exports.userCkUrl = 'https://douban.fm/j/check_loggedin?san=1'
+
+exports.PORT = 65534;

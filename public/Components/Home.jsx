@@ -14,7 +14,7 @@ import Channel from './Channel.jsx';
 
 import { getAccountList } from "../utils/account";
 
-import '../style/Home.less'
+import '../style/Home.less';
 
 function mapStateToProps(state) {
   const { isLogin } = state.loginReducer
@@ -55,7 +55,7 @@ class Home extends React.Component {
       isShowShare: false,
       isShowDisk: false,
       forwardModule: '',
-      channelId: ''
+      channelId: localStorage.getItem('channelId') || ''
     };
 
     this.nextSong = this.nextSong.bind(this)
@@ -70,7 +70,7 @@ class Home extends React.Component {
   }
 
   componentWillMount() {
-    this.nextSong(this.props.songInfo.sid);
+    this.nextSong();
   }
 
   initSong() {
@@ -81,20 +81,23 @@ class Home extends React.Component {
 
   }
 
-  nextSong(sid) {
+  nextSong() {
+    // 一次只允许一个请求
+    if (this.state.isNextSong) return;
+
     const {channelId} = this.state;
+    const sid = this.props.songInfo.sid || '';
 
     this.initSong();
-    this.setState({
-      isNextSong: true
-    })
-    fetch(`${api}/song/next?sid=${sid || ''}&channelId=${channelId}`)
+    this.setState({isNextSong: true})
+
+    return fetch(`${api}/song/next?sid=${sid}&channelId=${channelId}`)
       .then((res) => {
         return res.json();
-      })
-      .then((data) => {
-        let songInfo = []
-        if (data.song.length > 0) {
+      }).then((data) => {
+        let songInfo = [];
+
+        if (data.song.length) {
           songInfo = data.song[0];
           this.props.songInfoAction({ songInfo });
           this.setState({
@@ -109,15 +112,14 @@ class Home extends React.Component {
           this.props.currentTimeAction({ currentTime: 0 })
           this.props.isPlayAction({ isPlay: true })
           this.props.isLikeAction({ isLike: false })
-        }
-        else {
-          this.nextSong(this.props.songInfo.sid);
-        }
-        return songInfo;
-      })
-      .then((songInfo) => {
-        if (songInfo)
+
           this.getLyric();
+        } else {
+          this.setState({isNextSong: false});
+          return this.nextSong();
+        }
+
+        return songInfo;
       });
   }
 
@@ -155,15 +157,12 @@ class Home extends React.Component {
           });
           this._video.src = songInfo.url;
           this.props.currentTimeAction({ currentTime: 0 })
-        }
-        else {
-          this.nextSong(this.props.songInfo.sid);
+        } else {
+          this.nextSong();
         }
         return songInfo;
-      })
-      .then((songInfo) => {
-        if (songInfo)
-          this.getLyric();
+      }).then(() => {
+        this.getLyric();
       });
   }
 
@@ -185,7 +184,7 @@ class Home extends React.Component {
     let { second, minute } = this.dateFormat(_currentTime)
 
     if (_currentTime > this.state.totalTime) {
-      this.nextSong(this.props.songInfo.sid);
+      this.nextSong();
     } else {
       this.setState({
         currentSecond: second,
@@ -254,8 +253,10 @@ class Home extends React.Component {
    * @param {string} channelId 频道id
    */
   changeChannel(channelId) {
-    this.setState({channelId});
-    this.nextSong('');
+    this.setState({channelId}, () => {
+      localStorage.setItem('channelId', channelId);
+      this.nextSong().then(() => this.goBack());
+    });
   }
 
   render() {
