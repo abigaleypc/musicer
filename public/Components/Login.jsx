@@ -53,8 +53,8 @@ class Login extends React.Component {
 
   /**
    * 监视props变化
-   * 
-   * @param {any} nextProps 
+   *
+   * @param {any} nextProps
    * @memberof Login
    */
   componentWillReceiveProps(nextProps) {
@@ -134,7 +134,7 @@ class Login extends React.Component {
             captchaId: res.data.captcha_id
           })
           // 需要验证码
-          // 返回 
+          // 返回
           // {
           //   data:{
           //     "captcha_signature_sample": "17:c,18:6",
@@ -188,7 +188,7 @@ class Login extends React.Component {
           </div>
           <div className='input-item'>
             <i className='fa fa-lock' aria-hidden='true'></i>
-            <input placeholder='密码' ref={(password) => {
+            <input placeholder='密码' type="password" ref={(password) => {
               this.password = password;
             }}
               value={this.state.password}

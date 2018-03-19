@@ -94,7 +94,7 @@ user.get('/basic', function (req, res) {
   }).on('response', function (response) {
     // get dbcl2
     let headers = response.headers['set-cookie']
-    let value = getValueByKey(headers, 'dbcl2')
+    let value = getCookieByKey(headers, 'dbcl2')
     let obj = {}
     LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { dbcl2: value }))
     getUserAc(username)
@@ -133,7 +133,7 @@ function getUserBid (username) {
     headers: httpHeader
   }).on('response', function (response) {
     let headers = response.headers['set-cookie']
-    let value = getValueByKey(headers, 'bid')
+    let value = getCookieByKey(headers, 'bid')
 
     LKV.get(`${username}_sensitive_info`).then(obj => {
       LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { bid: value }))
@@ -157,7 +157,7 @@ function getUserCk (username, bid) {
         })
     }).on('response', function (response) {
       let headers = response.headers['set-cookie']
-      let value = getValueByKey(headers, 'ck')
+      let value = getCookieByKey(headers, 'ck')
       LKV.get(`${username}_sensitive_info`).then(obj => {
         LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ck: value }))
         return obj
@@ -188,7 +188,7 @@ function serviceAcount (url, username) {
     )
   }).on('response', function (response) {
     let headers = response.headers['set-cookie']
-    let bid = getValueByKey(headers, 'bid')
+    let bid = getCookieByKey(headers, 'bid')
     goDouBanFm(response.request.uri.href, bid, username)
   })
 }
@@ -206,7 +206,7 @@ function goDouBanFm (url, bid, username) {
     followRedirect: false
   }).on('response', function (response) {
     let headers = response.headers['set-cookie']
-    let value = getValueByKey(headers, 'ac')
+    let value = getCookieByKey(headers, 'ac')
     LKV.get(`${username}_sensitive_info`).then(obj => {
       LKV.set(`${username}_sensitive_info`, Object.assign({}, obj, { ac: value }))
     }).then(() => {
@@ -215,7 +215,7 @@ function goDouBanFm (url, bid, username) {
   })
 }
 
-function getValueByKey (array, key) {
+function getCookieByKey (array, key) {
   let obj = {}
   let newArray = []
   array.forEach(it => {
