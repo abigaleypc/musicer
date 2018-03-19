@@ -14,19 +14,12 @@
     "code": 1, 
     "msg": "success", // failed
     "data" : {  
-      <!-- 成功：1  -->
-      "code": 1,
-      "msg": "success",
-      "data": {
-          "access_token": "25a64943770f2dbca55d46995",
-          "douban_user_name": "abigaleyu",
-          "douban_user_id": "1688842",
-          "expires_in": 7775999,
-          "refresh_token": "5f2388c502a9a4f0799f2f9"
-      }
-      <!-- 失败 0 -->
-      "code": -1,
-      "msg": "failed"
+        "access_token": "25a64943770f2dbca55d46995",
+        "douban_user_name": "abigaleyu",
+        "douban_user_id": "1688842",
+        "expires_in": 7775999,
+        "refresh_token": "5f2388c502a9a4f0799f2f9"
+      
     }  
 	} 
 
