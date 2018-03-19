@@ -2,7 +2,7 @@
 
 
 export function getAccountList () {
-  let str = /musicer_(\w+)_info/g
+  let str = /musicer_info_(.*)/g
   let keys = Object.keys(localStorage)
   let accountList = []
   for (let i = 0; i < keys.length; i++) {

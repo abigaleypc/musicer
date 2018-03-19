@@ -83,7 +83,7 @@ class Login extends React.Component {
             token: data.access_token,
             username
           })
-          localStorage.setItem(`musicer_${username}_info`, userToken)
+          localStorage.setItem(`musicer_info_${username}`, userToken)
         } else {
           this.setState({
             tip: '登录失败'
@@ -99,7 +99,7 @@ class Login extends React.Component {
     let username = this.username.value;
     let password = this.password.value;
     let captcha = this.captcha && this.captcha.value ? this.captcha.value : '';
-    let userToken = JSON.parse(localStorage.getItem(`musicer_${username}_info`))
+    let userToken = JSON.parse(localStorage.getItem(`musicer_info_${username}`))
     fetch(`${api}/user/basic?username=${username}&password=${password}&token=${userToken.token}&solution=${captcha}&id=${this.state.captchaId}`)
       .then(res => res.json())
       .then(res => {
@@ -109,7 +109,7 @@ class Login extends React.Component {
             tip: ''
           })
           let data = Object.assign({}, userToken, res.data)
-          localStorage.setItem(`musicer_${username}_info`, JSON.stringify(data))
+          localStorage.setItem(`musicer_info_${username}`, JSON.stringify(data))
 
           this.props.userInfoAction({
             userInfo: data

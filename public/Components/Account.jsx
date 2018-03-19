@@ -41,10 +41,9 @@ class Account extends React.Component {
   }
   componentWillMount() {
     this.props.userInfo.name;
-    console.log(this.props);
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   logout() {
     this.props.loginAction({ isLogin: false });
@@ -54,7 +53,7 @@ class Account extends React.Component {
     });
 
     let { username } = this.props.userInfo;
-    let key = `musicer_${username}_info`;
+    let key = `musicer_info_${username}`;
     localStorage.removeItem(key);
 
     // changePanel()
@@ -65,34 +64,26 @@ class Account extends React.Component {
   }
 
   render() {
-    let _userInfo = {
-      avatar: {
-        icon: "https://img3.doubanio.com/icon/ui168889042-1.jpg",
-        large: "https://img3.doubanio.com/icon/ul168889042-1.jpg",
-        median: "https://img3.doubanio.com/icon/us168889042-1.jpg",
-        medium: "https://img3.doubanio.com/icon/up168889042-1.jpg",
-        raw: "https://img3.doubanio.com/icon/ur168889042-1.jpg",
-        small: "https://img3.doubanio.com/icon/u168889042-1.jpg"
-      },
-      expires_in: "2018-06-17T08:32:07.323Z",
-      id: "168889042",
-      name: "abigaleyu",
-      token: "376b2bcb9ab737cca6418362d025a764",
-      uid: "168889042",
-      username: "13798994068"
-    };
-    console.log(this.props);
-    return (
-      <div>
-        <div className="account_warpper">
-          <img src={_userInfo.avatar.medium} alt="" className="avatar" />
-          <div className="username">{this.props.userInfo.name}</div>
-          <a onClick={this.logout} className="logout">
-            退出登录
+
+    if (Object.keys(this.props.userInfo).length > 0) {
+      let { name, avatar: { medium: avatar } } = this.props.userInfo;
+
+      return (
+        <div>
+          {this.props.userInfo &&
+            <div className="account_warpper">
+              <img src={avatar} alt="" className="avatar" />
+              <div className="username">{name}</div>
+              <a onClick={this.logout} className="logout">
+                退出登录
           </a>
+            </div>
+          }
         </div>
-      </div>
-    );
+      );
+    } else {
+      return <div>无消息</div>
+    }
   }
 }
 
