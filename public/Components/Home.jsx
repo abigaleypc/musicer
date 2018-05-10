@@ -357,7 +357,8 @@ class Home extends React.Component {
             </div>
           </div>
 
-          <video src={this.props.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0" autoPlay></video>
+          <video src={this.props.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0" ></video>
+          {/* autoPlay */}
 
 
 

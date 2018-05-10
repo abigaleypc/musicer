@@ -9,10 +9,6 @@ import { api } from './config/const';
 import Main from './Components/Main.jsx';
 import reducers from './store/reducers';
 
-const logger = createLogger({
-  collapsed: true
-});
-
 const store = createStore(
   reducers,
   applyMiddleware(

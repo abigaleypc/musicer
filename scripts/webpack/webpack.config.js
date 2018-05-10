@@ -1,18 +1,22 @@
-const path = require('path')
+'use strict';
 
+// projects
+const paths = require('../paths')();
+
+const isProd = process.env.NODE_ENV === 'production' ? true : false;
 module.exports = {
+  mode: isProd ? 'production': 'development',
   entry: {
-    bundle: './public/entry.js'
+    bundle: paths.appPublic
   },
   output: {
-    path: path.resolve(__dirname, 'public/dist'),
+    path: paths.appDist,
     filename: '[name].js'
   },
   devtool: 'source-map',
   target: 'electron',
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: [{
@@ -51,5 +55,6 @@ module.exports = {
     net: 'mock',
     fs: 'empty',
     tls: 'empty'
-  }
+  },
+  target: 'node'
 }
