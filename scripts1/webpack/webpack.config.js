@@ -1,9 +1,13 @@
 'use strict';
 
 // projects
-const paths = require('../paths')();
+const paths = require('../paths.js')();
+console.log('------------------------------------');
+console.log(paths.appPublic);
+console.log('------------------------------------');
 
 const isProd = process.env.NODE_ENV === 'production' ? true : false;
+
 module.exports = {
   mode: isProd ? 'production': 'development',
   entry: {
@@ -49,12 +53,5 @@ module.exports = {
         }]
       }
     ]
-  },
-  node: {
-    dns: 'mock',
-    net: 'mock',
-    fs: 'empty',
-    tls: 'empty'
-  },
-  target: 'node'
+  }
 }
