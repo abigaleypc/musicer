@@ -1,0 +1,112 @@
+Arguments: 
+  /Users/yuabigale/.nvm/versions/node/v9.3.0/bin/node /Users/yuabigale/.nvm/versions/node/v9.3.0/bin/yarn add jest-enzyme --dev
+
+PATH: 
+  /Users/yuabigale/.pyenv/plugins/pyenv-virtualenv/shims:/Users/yuabigale/.pyenv/shims:/Users/yuabigale/.pyenv/bin:/Users/yuabigale/.nvm/versions/node/v9.3.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/yuabigale/.pyenv/plugins/pyenv-virtualenv/shims:/Users/yuabigale/.pyenv/shims:/Users/yuabigale/.pyenv/bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  9.3.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+    "name": "musicer",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "start": "npm-run-all --parallel electron webpack:watch",
+      "serve": "nodemon index.js",
+      "electron": "electron ./public/main.js",
+      "webpack": "webpack",
+      "webpack:watch": "npm run webpack -- --watch",
+      "test": "mocha -R nyan",
+      "prepackage": "npm run webpack",
+      "package": "electron-packager ./ musicer --win --out build --arch=x64 --version 1.7.9 --overwrite --ignore=node_modules --icon=public/assets/musicer.icns",
+      "prepackage:win": "npm run webpack",
+      "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --out=build --icon=public/assets/musicer.ico",
+      "clean": "rimraf build && rimraf public/dist && rimraf src/data"
+    },
+    "main": "./public/main.js",
+    "devDependencies": {
+      "babel-core": "^6.26.0",
+      "babel-loader": "^7.1.2",
+      "babel-preset-env": "^1.6.1",
+      "babel-preset-react": "^6.24.1",
+      "chai": "^4.1.2",
+      "css-loader": "^0.28.7",
+      "electron": "^1.7.9",
+      "electron-packager": "^9.1.0",
+      "electron-prebuilt": "^1.4.13",
+      "electron-reload": "^1.2.2",
+      "enzyme": "^3.3.0",
+      "enzyme-adapter-react-16": "^1.1.1",
+      "eslint": "^4.11.0",
+      "eslint-plugin-react": "^7.4.0",
+      "less": "^2.7.3",
+      "less-loader": "^4.0.5",
+      "lodash.isequal": "^4.5.0",
+      "mocha": "^4.0.1",
+      "nodemon": "^1.12.1",
+      "npm-run-all": "^4.1.1",
+      "request-debug": "^0.2.0",
+      "rimraf": "^2.6.2",
+      "style-loader": "^0.19.0",
+      "webpack": "^3.8.1"
+    },
+    "dependencies": {
+      "crypto-js": "^3.1.9-1",
+      "express": "~4.15.2",
+      "font-awesome": "^4.7.0",
+      "moment": "^2.20.1",
+      "qrcode": "^1.0.0",
+      "react": "^16.0.0",
+      "react-color": "^2.13.8",
+      "react-dom": "^16.0.0",
+      "react-native-video": "^2.0.0",
+      "react-redux": "^5.0.6",
+      "react-tap-event-plugin": "^3.0.2",
+      "redux": "^3.7.2",
+      "redux-logger": "^3.0.6",
+      "redux-thunk": "^2.2.0",
+      "request": "^2.83.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: /Users/yuabigale/Documents/Codes/bitbucket/douban.fm/node_modules/electron: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c node install.js
+  Directory: /Users/yuabigale/Documents/Codes/bitbucket/douban.fm/node_modules/electron
+  Output:
+  Downloading electron-v1.8.7-darwin-x64.zip
+  [>                                            ] 0.0% (0 B/s)
+  [1000D[0K[1A[1000D[0K[1A[1000D[0KDownloading electron-v1.8.7-darwin-x64.zip
+  Error: connect ETIMEDOUT 54.231.33.155:443
+  /Users/yuabigale/Documents/Codes/bitbucket/douban.fm/node_modules/electron/install.js:47
+    throw err
+    ^
+  
+  Error: connect ETIMEDOUT 54.231.33.155:443
+      at Object._errnoException (util.js:999:13)
+      at _exceptionWithHostPort (util.js:1020:20)
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1207:14)
+      at ProcessTermError.MessageError (/Users/yuabigale/.nvm/versions/node/v9.3.0/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/Users/yuabigale/.nvm/versions/node/v9.3.0/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/Users/yuabigale/.nvm/versions/node/v9.3.0/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at ChildProcess.emit (events.js:159:13)
+      at maybeClose (internal/child_process.js:943:16)
+      at Socket.stream.socket.on (internal/child_process.js:363:11)
+      at Socket.emit (events.js:159:13)
+      at Pipe._handle.close [as _onclose] (net.js:568:12)
