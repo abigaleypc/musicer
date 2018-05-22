@@ -17,6 +17,28 @@ function mapDispatchToProps(dispatch) {
   }, dispatch)
 }
 
+
+const k_v = [{
+  key: 'scenario',
+  value: '心情 / 场景'
+}, {
+  key: 'language',
+  value: '语言 / 年代'
+}, {
+  key: 'genre',
+  value: '风格 / 流派'
+}, {
+  key: 'artist',
+  value: '从艺术家出发'
+}, {
+  key: 'track',
+  value: '从单曲出发'
+}, {
+  key: 'brand',
+  value: '品牌兆赫'
+}]
+
+
 class Channel extends React.Component {
   constructor(props) {
     super(props);
@@ -27,8 +49,8 @@ class Channel extends React.Component {
 
   componentWillMount() {
     this.getChannels().then(data => {
-      const {data:{channels}} = data;
-      this.setState({channels});
+      const { data: { channels } } = data;
+      this.setState({ channels });
     })
   }
 
@@ -44,7 +66,6 @@ class Channel extends React.Component {
       console.error('get channels failed', error);
       return Promise.reject(error);
     });
-
     return p;
   }
 
@@ -53,24 +74,24 @@ class Channel extends React.Component {
   }
 
   render() {
-    const {channels} = this.state;
-
+    const { channels } = this.state;
     return (
       <div className="channel-content">
-        {Object.keys(channels).map(typeKey => {
-          return (
-            <div className="channel-type" key={typeKey}>
-              {/* <h5>{typeKey}</h5> */}
-              {channels[typeKey].map(channel => {
-                return (
-                  <p key={channel.id}
-                    onClick={this.onChangeChannel.bind(this, channel.id)}
-                    style={{cursor:'pointer'}}>{channel.name}</p>
-                );
-              })}
-            </div>
-          )
-        })}
+        {
+          k_v.map(it => {
+            return (
+              <div className="channel-type" key={it.key}>
+              <div className="channel-title">{it.value}</div>
+                {it.key && channels[it.key] && channels[it.key].map(channel => {
+                  return (
+                    <span key={channel.id}
+                      onClick={this.onChangeChannel.bind(this, channel.id)}
+                      className="channel-btn">{channel.name}</span>
+                  );
+                })}
+              </div>
+            )
+          })}
       </div>
     )
   }

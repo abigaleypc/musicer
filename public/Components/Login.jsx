@@ -68,6 +68,20 @@ class Login extends React.Component {
   login() {
     let username = this.username.value
     let password = this.password.value
+    if (!username) {
+      this.setState({
+        tip: '用户名不能为空'
+      })
+      return
+    }
+    if (!password) {
+      this.setState({
+        tip: '密码不能为空'
+      })
+      return
+    }
+
+
     fetch(`${api}/user/login?username=${username}&password=${password}`, { method: 'POST' })
       .then(res => {
         return res.json()
@@ -84,14 +98,18 @@ class Login extends React.Component {
             username
           })
           localStorage.setItem(`musicer_info_${username}`, userToken)
+          return true
         } else {
           this.setState({
-            tip: '登录失败'
+            tip: '用户名和密码不匹配'
           })
+          return false
         }
       })
-      .then(() => {
-        this.getBasicInfo()
+      .then((res) => {
+        if (res) {
+          this.getBasicInfo()
+        }
       })
   }
 
@@ -168,11 +186,12 @@ class Login extends React.Component {
 
 
   render() {
+    const { username, password } = this.state;
     return (
       <div className='login'>
-        <div className='logo'>
+        {/* <div className='logo'>
           登录
-        </div>
+        </div> */}
         {/* 需要验证码的布局 */}
         <form className=''>
           <div className='input-item login-top-radius'>
@@ -211,7 +230,8 @@ class Login extends React.Component {
           </div>}
         </form>
         <div className='login-bottom-block '>
-          <a type='button' className='btn center' onClick={this.login}>登录</a>
+          {username && password && <a type='button' className='btn center allow-btn' onClick={this.login}>登录</a>}
+          {(!username || !password) && <a className='btn center'>登录</a>}
           <a className='register' onClick={this.goRegister}>注册</a>
           <span>{this.state.tip}</span>
         </div>

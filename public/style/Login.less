@@ -24,16 +24,16 @@ form {
             padding: 5px 5px 5px 25px;
             color: #fff;
         }
-         ::-webkit-input-placeholder {
+        ::-webkit-input-placeholder {
             color: rgba(255, 255, 255, 0.7);
             ;
         }
-         ::-moz-placeholder {
+        ::-moz-placeholder {
             color: rgba(255, 255, 255, 0.7);
             ;
         }
         /* firefox 19+ */
-         :-ms-input-placeholder {
+        :-ms-input-placeholder {
             color: rgba(255, 255, 255, 0.7);
             ;
         }
@@ -42,7 +42,7 @@ form {
             color: rgba(255, 255, 255, 0.7);
             ;
         }
-         :focus {
+        :focus {
             outline-color: #de6262
         }
     }
@@ -69,31 +69,31 @@ form {
         z-index: 1;
         border-radius: 0 0 5px 5px;
     }
-
 }
 
 .no-captcha-layout {
     margin: 50px 10px;
-
-
 }
-
 
 .login-bottom-block {
     position: absolute;
     bottom: -113px;
     width: 100%;
-
     .btn {
         display: block;
         width: 92%;
         height: 30px;
-        background: #de6262;
+        background: #797474;
         border-radius: 5px;
         text-align: center;
         line-height: 30px;
         color: white;
         margin-top: 10px;
+        cursor: not-allowed;
+    }
+    .allow-btn {
+        cursor: pointer;
+        background: #de6262;
         &:hover {
             font-weight: bold;
             background: #ca4646

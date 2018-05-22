@@ -265,7 +265,7 @@ class Home extends React.Component {
         <div className="warpper">
           {/* 主面板 */}
           <div className={this.props.currentPanel == 'main' ? 'rotate_wrapper opacity_1' : 'rotate_wrapper opacity_0'}>
-            <div className="tone-animation" onClick={this.showPanel.bind(this, 'channel')}><ToneAnimation /></div>
+            <a className="tone-animation" onClick={this.showPanel.bind(this, 'channel')}><ToneAnimation />频道</a>
             <a className="interface_control_btn" onClick={this.showPanel.bind(this, 'login')}><i className="fa fa-user-circle-o" aria-hidden="true"></i></a>
             <div className="playing_info">
 
@@ -357,7 +357,7 @@ class Home extends React.Component {
             </div>
           </div>
 
-          <video src={this.props.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0" ></video>
+          <video autoPlay src={this.props.songInfo.url} controls="controls" ref={r => this._video = r} onPlay={this.onPlay} onTimeUpdate={this.onTimeUpdate} className="opacity_0" ></video>
           {/* autoPlay */}
 
 
