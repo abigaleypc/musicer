@@ -9,7 +9,7 @@
 ### 最终效果
 
 * 切换频道
-<video src="./video/channels.mp4" width="320" height="200" controls preload antoPlay></video>
+<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload antoPlay></video>
 
 * 点击下一首
 <video src="./video/next.mp4" width="320" height="200" controls preload antoPlay></video>
@@ -21,7 +21,7 @@
 <video src="./video/share.mp4" width="320" height="200" controls preload antoPlay></video>
 
 * 登录
-<video src="./video/share.mp4" width="320" height="200" controls preload antoPlay></video>
+<video src="./video/login.mp4" width="320" height="200" controls preload antoPlay></video>
 
 ![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
 
