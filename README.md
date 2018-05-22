@@ -10,6 +10,10 @@
 
 * 切换频道
 
+  <video  style="display:block; width:100%; height:auto;" autoplay controls loop="loop">
+       <source src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" type="video/mp4" />
+   </video>
+
 <video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload></video>
 
 <video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4raw=true" controls="controls" autoplay="autoplay" loop="loop" style="width:50%;">
