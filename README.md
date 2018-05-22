@@ -5,7 +5,11 @@
 * 安装依赖 npm install
 * 启动 npm start
 
+
 ### 最终效果
+
+* 切换频道
+[![切换频道](./video/channels.mp4)]
 
 ![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
 
