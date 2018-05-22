@@ -9,10 +9,15 @@
 ### 最终效果
 
 * 切换频道
+
 <video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload></video>
 
+<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4raw=true" controls="controls" autoplay="autoplay" loop="loop" style="width:50%;">
+</video>
+
+
 * 点击下一首
-<video src="./video/next.mp4" width="320" height="200" controls preload antoPlay></video>
+<video src="./video/next.mp4" width="320" height="200" controls preload></video>
 
 * 显示歌词
 <video src="./video/lyric.mp4" width="320" height="200" controls preload antoPlay></video>
