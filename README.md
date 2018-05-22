@@ -9,7 +9,7 @@
 ### 最终效果
 
 * 切换频道
-<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload antoPlay></video>
+<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload></video>
 
 * 点击下一首
 <video src="./video/next.mp4" width="320" height="200" controls preload antoPlay></video>
