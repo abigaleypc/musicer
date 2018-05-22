@@ -9,7 +9,19 @@
 ### 最终效果
 
 * 切换频道
-[![切换频道](./video/channels.mp4)]
+<video src="./video/channels.mp4" width="320" height="200" controls preload antoPlay></video>
+
+* 点击下一首
+<video src="./video/next.mp4" width="320" height="200" controls preload antoPlay></video>
+
+* 显示歌词
+<video src="./video/lyric.mp4" width="320" height="200" controls preload antoPlay></video>
+
+* 分享
+<video src="./video/share.mp4" width="320" height="200" controls preload antoPlay></video>
+
+* 登录
+<video src="./video/share.mp4" width="320" height="200" controls preload antoPlay></video>
 
 ![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
 
