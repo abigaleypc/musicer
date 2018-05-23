@@ -10,22 +10,28 @@
 ### 最终效果
 
 * 切换频道
+
  ![切换频道](https://raw.githubusercontent.com/abigaleypc/Musicer/master/images/channels.gif)
 
 * 点击下一首
+
  ![点击下一首](https://raw.githubusercontent.com/abigaleypc/Musicer/master/images/next.gif)
 
 * 显示歌词
+
  ![显示歌词](https://raw.githubusercontent.com/abigaleypc/Musicer/master/images/lyric.gif)
 
 * 分享
+
  ![分享](https://raw.githubusercontent.com/abigaleypc/Musicer/master/images/share.gif)
 
 * 登录
+
  ![分享](https://raw.githubusercontent.com/abigaleypc/Musicer/master/images/login.gif)
 
 * 效果图
-![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
+
+  ![效果图](https://raw.githubusercontent.com/abigaleypc/Musicer/master/musicer.jpg)
 
 下面是两篇关于该项目前后端的一些讲解哟(_@ο@_)
 
