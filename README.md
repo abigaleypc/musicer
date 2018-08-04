@@ -10,13 +10,18 @@
 
 * 切换频道
 
+<video src="https://github.com/abigaleypc/wxapp-demo/blob/master/wxapp.mp4?raw=true" controls="controls" autoplay="autoplay" loop="loop" style="width:50%;">
+</video>
+
+[![Alt text for your video](https://img.youtube.com/vi/T-D1KVIuvjA/0.jpg)](http://www.youtube.com/watch?v=T-D1KVIuvjA)
+
   <video  style="display:block; width:100%; height:auto;" autoplay controls loop="loop">
-       <source src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" type="video/mp4" />
+       <source src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4?raw=true" type="video/mp4" />
    </video>
 
-<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4" controls preload></video>
+<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4?raw=true" controls preload></video>
 
-<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4raw=true" controls="controls" autoplay="autoplay" loop="loop" style="width:50%;">
+<video src="https://github.com/abigaleypc/musicer/blob/master/video/channels.mp4?raw=true" controls="controls" autoplay="autoplay" loop="loop" style="width:50%;">
 </video>
 
 
